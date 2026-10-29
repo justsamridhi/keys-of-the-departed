@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keys-of-the-departed.dev/schemas/case.schema.json",
+  "title": "Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "bundle_id",
+    "account_id",
+    "claims_accepted",
+    "claims_removed",
+    "owner_status",
+    "purpose_status",
+    "ghost_type",
+    "model",
+    "latency_ms"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string"
+    },
+    "bundle_id": {
+      "type": "string"
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "claims_accepted": {
+      "type": "array",
+      "items": {
+        "$ref": "claim.schema.json"
+      }
+    },
+    "claims_removed": {
+      "type": "array",
+      "items": {
+        "$ref": "removed_claim.schema.json"
+      }
+    },
+    "owner_status": {
+      "type": "string",
+      "enum": ["verified", "supported", "conflicting", "no_evidence"]
+    },
+    "purpose_status": {
+      "type": "string",
+      "enum": ["verified", "supported", "no_evidence"]
+    },
+    "ghost_type": {
+      "type": "string",
+      "enum": ["LOST", "FORGOTTEN", "LONELY", "INNOCENT", "NOT_GHOST"]
+    },
+    "model": {
+      "type": "string"
+    },
+    "latency_ms": {
+      "type": "number",
+      "minimum": 0
+    }
+  }
+}

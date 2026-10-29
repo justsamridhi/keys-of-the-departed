@@ -123,15 +123,15 @@ Implement a deterministic Python generator that constructs the underlying truth 
 
 Generate 40 synthetic accounts:
 
-| Category | Count |
-|---|---:|
-| LOST | 8 |
-| FORGOTTEN | 8 |
-| LONELY | 6 |
-| INNOCENT | 6 |
-| Legitimate bots without HR records | 6 |
-| Difficult cases: nicknames, conflicting tickets, prompt injection | 6 |
-| **Total** | **40** |
+| Category                                                          |  Count |
+| ----------------------------------------------------------------- | -----: |
+| LOST                                                              |      8 |
+| FORGOTTEN                                                         |      8 |
+| LONELY                                                            |      6 |
+| INNOCENT                                                          |      6 |
+| Legitimate bots without HR records                                |      6 |
+| Difficult cases: nicknames, conflicting tickets, prompt injection |      6 |
+| **Total**                                                         | **40** |
 
 Include at least three evidence records containing adversarial instructions.
 
@@ -285,16 +285,16 @@ The GitHub token must not authorize actions against any repository other than th
 
 ### 5.7 API endpoints
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/api/bundles` | Validate and ingest a bundle |
-| GET | `/api/bundles/:id/ghosts` | List classified accounts |
-| GET | `/api/cases/:id` | Retrieve an investigation case |
-| GET | `/api/records/:id` | Retrieve a source evidence record |
-| POST | `/api/cases/:id/revocations` | Request an approved revocation; login required |
-| GET | `/api/revocations/:id` | Retrieve revocation status |
-| GET | `/api/eval/latest` | Return the latest evaluation results |
-| GET | `/healthz` | Report database, model and score availability |
+| Method | Endpoint                     | Purpose                                        |
+| ------ | ---------------------------- | ---------------------------------------------- |
+| POST   | `/api/bundles`               | Validate and ingest a bundle                   |
+| GET    | `/api/bundles/:id/ghosts`    | List classified accounts                       |
+| GET    | `/api/cases/:id`             | Retrieve an investigation case                 |
+| GET    | `/api/records/:id`           | Retrieve a source evidence record              |
+| POST   | `/api/cases/:id/revocations` | Request an approved revocation; login required |
+| GET    | `/api/revocations/:id`       | Retrieve revocation status                     |
+| GET    | `/api/eval/latest`           | Return the latest evaluation results           |
+| GET    | `/healthz`                   | Report database, model and score availability  |
 
 The demo bundle may be read without login. Any revocation request requires authentication and explicit authorization. Return documented status codes and validated response bodies.
 
@@ -461,4 +461,3 @@ If CIBA or Token Vault is unavailable, tests must validate the explicitly docume
 8. Verify optional service features, model licences, embedding dimensions and provider availability before depending on them.
 9. Use clear fallbacks instead of pretending an unavailable integration works.
 10. Do not mark a stage complete until its tests and acceptance gate pass.
-

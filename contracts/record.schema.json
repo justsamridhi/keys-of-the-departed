@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keys-of-the-departed.dev/schemas/record.schema.json",
+  "title": "EvidenceRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "type",
+    "ts",
+    "author_handle",
+    "assignee_handle",
+    "actor_account_id",
+    "content",
+    "structured"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Unique within a bundle."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["commit", "ticket", "deploy_log", "policy"]
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "author_handle": {
+      "type": ["string", "null"]
+    },
+    "assignee_handle": {
+      "type": ["string", "null"]
+    },
+    "actor_account_id": {
+      "type": ["string", "null"]
+    },
+    "content": {
+      "type": "string"
+    },
+    "structured": {
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keys-of-the-departed.dev/schemas/account.schema.json",
+  "title": "Account",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "account_id",
+    "kind",
+    "created_at",
+    "last_used_at",
+    "permissions",
+    "tags",
+    "expires_at"
+  ],
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "Unique within a bundle."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["deploy_key", "service_account", "bot"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_used_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "permissions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  }
+}

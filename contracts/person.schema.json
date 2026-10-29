@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keys-of-the-departed.dev/schemas/person.schema.json",
+  "title": "PersonDirectoryEntry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["person_id", "display_name", "handles", "status", "departed_at"],
+  "properties": {
+    "person_id": {
+      "type": "string"
+    },
+    "display_name": {
+      "type": "string"
+    },
+    "handles": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "departed"]
+    },
+    "departed_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  }
+}

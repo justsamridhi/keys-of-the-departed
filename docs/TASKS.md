@@ -7,6 +7,7 @@
 **Goal:** Establish reproducible project tooling, secret protection, and CI.
 
 **Files allowed:**
+
 - `.gitignore`
 - `.env.example`
 - `package.json`
@@ -18,12 +19,14 @@
 - `server/` and `client/` configuration files only
 
 **Required checks:**
+
 - Missing required environment variables produce clear startup errors.
 - Lint, TypeScript checks, and unit tests run in CI.
 - Secret scanning reports no exposed credentials.
 - Entire creates a checkpoint after the first commit.
 
 **Out of scope:**
+
 - Application features.
 - Database schemas and data generation.
 - AI integration.
@@ -35,17 +38,20 @@
 **Goal:** Implement the canonical schemas for accounts, people, evidence records, claims, removed claims, cases, and API payloads.
 
 **Files allowed:**
+
 - `contracts/`
 - `server/src/schemas/`
 - `tests/contracts/`
 
 **Required checks:**
+
 - Valid fixtures pass schema validation.
 - Invalid account kinds, record types, missing fields, and invalid claim structures fail.
 - TypeScript and runtime validation agree.
 - All contract tests pass.
 
 **Out of scope:**
+
 - Database connections.
 - Model calls.
 - Frontend components.
@@ -56,12 +62,14 @@
 **Goal:** Generate deterministic synthetic accounts, directory entries, evidence records, and a separate gold dataset.
 
 **Files allowed:**
+
 - `python-tools/`
 - `data/fixtures/`
 - `data/generated/`
 - `tests/python/`
 
 **Required checks:**
+
 - Same seed produces byte-identical output.
 - Dataset counts match the specification.
 - At least three prompt-injection records exist.
@@ -71,6 +79,7 @@
 - The frozen test split hash is reproducible.
 
 **Out of scope:**
+
 - Atlas writes.
 - AI calls.
 - Live GitHub resources.
@@ -81,12 +90,14 @@
 **Goal:** Verify evidence claims and compute owner status and ghost type using pure application code.
 
 **Files allowed:**
+
 - `server/src/verifier/`
 - `server/src/classification/`
 - `tests/verifier/`
 - `tests/classification/`
 
 **Required checks:**
+
 - All V-1 through V-14 checks in `docs/SPEC.md` pass.
 - Rejected claims contain the correct reason codes.
 - Injected text cannot independently establish verified ownership.
@@ -94,6 +105,7 @@
 - Ghost-type precedence is deterministic.
 
 **Out of scope:**
+
 - LLM calls.
 - Database persistence.
 - Frontend.
@@ -104,6 +116,7 @@
 **Goal:** Retrieve evidence, request structured claims from Gemma, validate output, and evaluate the investigation results.
 
 **Files allowed:**
+
 - `server/src/investigation/`
 - `server/src/model/`
 - `python-tools/evaluation/`
@@ -111,6 +124,7 @@
 - `tests/evaluation/`
 
 **Required checks:**
+
 - Output parses or the model abstains.
 - Schema failure retries once, then abstains.
 - Timeouts produce a model-unavailable state.
@@ -119,6 +133,7 @@
 - Development-split evaluation produces the specified three-way comparison.
 
 **Out of scope:**
+
 - Production deployment.
 - Live revocation.
 - UI redesign.
@@ -129,11 +144,13 @@
 **Goal:** Generate reproducible anomaly scores from behaviour-only features and compare them against baselines.
 
 **Files allowed:**
+
 - `python-tools/ranking/`
 - `data/generated/`
 - `tests/ranking/`
 
 **Required checks:**
+
 - Feature list contains no owner identities or gold labels.
 - Ranking is reproducible for a fixed seed.
 - Offline execution works after weights are cached.
@@ -142,6 +159,7 @@
 - Licence and distribution restrictions are documented.
 
 **Out of scope:**
+
 - Loading TabPFN weights in the web runtime.
 - Model training on gold labels.
 - Frontend implementation.
@@ -151,11 +169,13 @@
 **Goal:** Persist bundles, accounts, records, people, cases, decisions, and verified memory with bundle isolation.
 
 **Files allowed:**
+
 - `server/src/db/`
 - `server/src/repositories/`
 - `tests/database/`
 
 **Required checks:**
+
 - Ingestion is idempotent.
 - Duplicate record IDs are rejected.
 - Malformed documents fail validation.
@@ -165,6 +185,7 @@
 - Demo uploads expire.
 
 **Out of scope:**
+
 - Production data.
 - Unrestricted database access.
 - Automatic revocation.
@@ -175,6 +196,7 @@
 **Goal:** Implement the endpoints documented in `docs/SPEC.md`.
 
 **Files allowed:**
+
 - `server/src/routes/`
 - `server/src/middleware/`
 - `server/src/app.ts`
@@ -182,6 +204,7 @@
 - `tests/api/`
 
 **Required checks:**
+
 - Endpoint status codes and response schemas are tested.
 - Invalid or oversized uploads return safe errors.
 - Rate limiting works.
@@ -190,6 +213,7 @@
 - Raw, unvalidated model output never reaches the client.
 
 **Out of scope:**
+
 - UI components.
 - Unapproved destructive actions.
 - Production secrets in source code.
@@ -199,10 +223,12 @@
 **Goal:** Build the book-inspired investigation UI, evidence viewer, removed-claims view, approval modal, and evaluation results.
 
 **Files allowed:**
+
 - `client/`
 - `tests/e2e/`
 
 **Required checks:**
+
 - All frontend acceptance checks F-1 through F-10 pass.
 - Loading, empty, error, and partial states exist.
 - Evidence quotes link to their source records.
@@ -212,6 +238,7 @@
 - Playwright golden path passes.
 
 **Out of scope:**
+
 - Verifier logic in the browser.
 - Client-side secrets.
 - Direct GitHub revocation from the browser.
@@ -221,6 +248,7 @@
 **Goal:** Authenticate reviewers and implement explicit, auditable approval for sandbox deploy-key revocation.
 
 **Files allowed:**
+
 - `server/src/auth/`
 - `server/src/approval/`
 - `server/src/integrations/github/`
@@ -228,6 +256,7 @@
 - `tests/integrations/`
 
 **Required checks:**
+
 - Auth0 login works.
 - Revocation cannot proceed without approval.
 - Approval, denial, and timeout behaviours are tested.
@@ -237,6 +266,7 @@
 - Any fallback is explicitly labelled and does not claim CIBA or Token Vault guarantees.
 
 **Out of scope:**
+
 - Production repositories.
 - Broad personal GitHub tokens.
 - Automatic revocation without human approval.
@@ -246,6 +276,7 @@
 **Goal:** Deploy from a clean clone and prepare reproducible evaluation evidence.
 
 **Files allowed:**
+
 - `render.yaml`
 - deployment scripts
 - smoke-test scripts
@@ -253,6 +284,7 @@
 - submission assets
 
 **Required checks:**
+
 - Render deployment succeeds from a clean clone.
 - Live `/healthz` and smoke tests pass.
 - Cold-start messaging works.
@@ -262,6 +294,7 @@
 - Required submission tags, links, prize details, and Entire evidence are checked.
 
 **Out of scope:**
+
 - Unsupported performance claims.
 - Fabricated evaluation results.
 - Unverified integrations.

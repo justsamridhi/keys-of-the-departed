@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keys-of-the-departed.dev/schemas/claim.schema.json",
+  "title": "InvestigationClaim",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "account_id", "person_id", "record_id", "quote", "text"],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": ["owner", "purpose"]
+    },
+    "account_id": {
+      "type": "string"
+    },
+    "person_id": {
+      "type": ["string", "null"]
+    },
+    "record_id": {
+      "type": "string"
+    },
+    "quote": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    }
+  }
+}
