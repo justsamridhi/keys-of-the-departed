@@ -1,0 +1,490 @@
+i want you to first anlsye what i will give you before strating the implimentation # Keys of the Departed — Project Onboarding, Challenge Briefing and Repository Audit
+
+**Mode: READ, INSPECT, DOCUMENT, REPORT. Do not implement application features.**
+
+You are joining an existing Hacktoberfest 2026 project with a hard deadline of November 1, 2026, at 12:29 PM IST.
+
+Work from three perspectives:
+1. Senior full-stack engineer — architecture, contracts, integration boundaries and testability.
+2. Senior product designer — user workflow, visual identity, accessibility and demo quality.
+3. Security-minded reviewer — evidence integrity, secret handling, prompt injection, approval boundaries and honest evaluation.
+
+Do only the onboarding and audit described below. Do not start Task 1 until I explicitly approve it.
+
+## 1. Read the project context first
+
+I am providing a document titled **Keys of the Departed: Agent Context Brief**, drafted October 29, 2026.
+
+Treat that supplied document as the authoritative source for the project's product workflow, design direction, quality expectations, prize-category plans and unresolved decisions.
+
+Create `docs/CONTEXT.md` as a faithful, complete copy of the supplied brief. Preserve its technical requirements, decisions, terminology and open questions. Do not silently omit requirements or replace them with generic advice.
+
+If the exact source document is not available to you, do not reconstruct it from memory. Report that the source is missing and ask me to provide it.
+
+After that, read these repository files completely:
+- `docs/CONTEXT.md`
+- `docs/SPEC.md`
+- `docs/TASKS.md`
+- `.gitignore`
+- `server/.env.example`
+- `.agents/` and `.entire/` configuration
+
+Inspect the actual directory structure and current Git state. Do not read, print, copy, modify or commit `server/.env`.
+
+## 2. Project identity and purpose
+
+**Project:** Keys of the Departed
+
+**Tagline:** The engineer left. Their access didn't.
+
+The application investigates forgotten machine identities, including deployment keys, service accounts and bots. It ranks suspicious accounts, retrieves relevant engineering records, asks Gemma to propose ownership and purpose with exact quotations, verifies evidence in deterministic code, abstains when evidence is insufficient, and permits sensitive sandbox actions only after human approval.
+
+The product is an investigation narrative, not a generic rule-based security scanner. Do not recreate APK-Xray's heavy rules layer.
+
+The Dia de los Muertos altar calendar provides the visual structure: chapters, tombstones, candles and an altar. A ghost represents a lingering machine identity, never a deceased person. Keep the tone respectful and factual.
+
+## 3. Understand the Hacktoberfest and DEV challenge requirements
+
+Inspect any DEV Challenge 4 instructions, official submission templates, challenge requirements, partner documentation or session exports that I have supplied or attached.
+
+For every requirement, distinguish:
+- Verified from official source material.
+- Verified from repository contents or a successful test.
+- A project decision recorded in the context/specification.
+- A proposed implementation.
+- An unresolved assumption.
+
+Do not invent Challenge 4 rules, partner integrations, eligibility, judging criteria, submission requirements or prize guarantees.
+
+If the official Challenge 4 instructions are not available, mark those requirements **UNVERIFIED — SOURCE REQUIRED**. Continue the repository audit without pretending that the project brief proves the challenge requirements.
+
+Identify which project features and evidence would be relevant to the challenge once its official instructions are available.
+
+## 4. DevRelay and agent-session history
+
+I will provide the relevant DevRelay session export or transcript separately.
+
+When it becomes available:
+- Read the supplied session material.
+- Extract decisions, completed work, commands, test results, agent prompts, partner integrations and unresolved issues.
+- Separate actual execution results from plans and recommendations.
+- Identify contradictions between the session and the current repository.
+- Do not expose tokens, API keys, passwords or other secrets.
+- Never claim that a session was saved, attached, restored or inspected unless the available evidence confirms it.
+
+If the export is not yet attached, record it as a missing input. Do not invent its contents or block the rest of the read-only audit.
+
+## 5. Locked project decisions
+
+Preserve these decisions unless I explicitly approve a change:
+
+- Verification is minimal: exact-quote checks, owner statuses Verified, Supported, Conflicting and No evidence, plus reason codes R1–R5.
+- No scores, severities, confidence values, unnecessary rule IDs or claim ledgers in the verification contract.
+- Gemma reads retrieved records and proposes claims with record IDs and exact quotes; it must abstain when records are silent.
+- TabPFN runs offline. The application reads its precomputed scores.
+- English only.
+- Gold labels never enter runtime contracts, runtime database records or served fixtures.
+- The pipeline is an explicit state machine, not a free-roaming agent loop.
+- Only an approved Auth0 path may change anything outside the application, and only in a dedicated sandbox repository.
+- No production revocation, real HR/AD/Okta/AWS integrations, automatic revocation, multi-tenancy or unsupported claims of real-world accuracy.
+- Never claim an integration is working without evidence that it was tested.
+
+Read the exact schema names, fields and enums from `docs/SPEC.md`; do not invent replacements.
+
+## 6. Prize-category architecture to understand
+
+Audit the project against these intended end-to-end outcomes without implementing them:
+
+**Gemma**
+- Local Ollama model and a hosted endpoint for the public demo.
+- Structured claims with exact quotations, abstention, model name and latency.
+- Evaluation comparing baselines, Gemma and Gemma plus verifier.
+
+**Render**
+- One web service serves the API, pipeline and built frontend.
+- A `render.yaml` blueprint, truthful `/healthz`, demo banner and cold-start handling.
+- Deploy only after CI passes.
+
+**TabPFN**
+- Offline Python workflow using behavior-only features.
+- Precomputed scores and manifest, compared against inactivity and Isolation Forest baselines.
+- Verify the official licence before deciding what weights or inference artifacts can be distributed or hosted.
+
+**MongoDB Atlas**
+- Bundle-scoped collections for accounts, records, people, cases, decisions and memory.
+- Retrieval and human-verified memory with appropriate tests and evidence provenance.
+
+**Auth0 for AI Agents**
+- Human approval for sensitive actions.
+- Token Vault supplies a sandbox-scoped GitHub token only after approval.
+- A static `GITHUB_TOKEN` is reserved for the setup script, never the revoke path.
+- CIBA availability and the fallback approval flow remain unresolved until verified.
+
+**Entire**
+- Preserve the existing integration.
+- Record non-obvious decisions in `docs/DECISIONS.md` with their rationale.
+- Never paste secrets into agent chats.
+- Later, verify that real agent work is captured in checkpoints.
+
+Do not assume any of these integrations has been completed merely because the plan describes it.
+
+## 7. Inspect the repository and current setup
+
+Inspect the repository without modifying application code. Report:
+- Current branch, Git status, latest commit and remote-tracking status.
+- Existing files and the state of `docs/SPEC.md` and `docs/TASKS.md`.
+- Existing package files, workspace setup, scripts, tests and CI, if present.
+- Environment-template names and consistency with the specification, without reading actual secret values.
+- Entire status and configuration without changing them.
+- Any difference between the documented setup and the actual repository.
+
+Previously reported setup facts include:
+- Repository: `https://github.com/justsamridhi/keys-of-the-departed`
+- Initial commit: `a139cf7`, pushed to `origin/main`.
+- Node.js 24.19.0 and Python 3.13.3 are installed locally.
+- The project targets Node.js 22.
+- Gitleaks 8.30.1 works through its installed executable; the bare command previously was not found in PowerShell.
+- Ollama and `gemma3:4b` were tested successfully.
+- Entire is enabled for Antigravity.
+
+Treat these as historical context and verify only what is safe and necessary. Do not change global runtimes or install packages during this task.
+
+## 8. Produce a read-only audit report
+
+Report using these headings:
+
+1. **Project understanding:** concise description of the user, problem, core workflow and intended demo.
+2. **Challenge requirements:** confirmed requirements, evidence source and missing official materials.
+3. **DevRelay history:** findings if the export is available; otherwise state that it is pending.
+4. **Repository audit:** actual branch, commit, files, scripts, tests and CI.
+5. **Specification alignment:** conflicts between CONTEXT.md, SPEC.md, TASKS.md, and the actual repository.
+6. **Integration risks:** CIBA/Token Vault, GitHub sandbox, TabPFN licence/runtime, Gemma model choices, embeddings and deployment.
+7. **Task sequence:** prerequisites and exit gates for Tasks 1–10, preserving the existing task map.
+8. **Decisions required:** only decisions that genuinely require my input.
+9. **Task 1 readiness:** ready/not ready, with specific evidence and blockers.
+
+Do not implement features, install dependencies, change configuration, modify `.env`, commit, push, alter remotes or rewrite history.
+
+If `docs/CONTEXT.md` is the only intended documentation change, create it from the supplied brief and report that change. Otherwise, keep the audit read-only.
+
+Finish the report and stop. Wait for my explicit approval before beginning Task 1.
+
+---
+
+analsye this docs also don't start implimenetation firstGhost in the Machine
+Build something with open-source AI at its core.
+That can mean running an open-weight model, building on an open-source agent harness or framework, running inference locally, or all three. Whatever you pick, the open pieces should be what makes your project work.
+In your post, tell us why open innovation matters for what you built. Does it run on a laptop with no internet? Keep someone's data off a server they don't control? Let you fine-tune, swap models, or change how your agent behaves? Cost nothing to run? Tell us where your open-based approach worked better than a closed one.
+This Week's Theme: Ghost in the Machine
+Build something spooky, or something that honors the past in the spirit of Día de los Muertos, with open-weight models or open-source AI.
+This week brings us Halloween on October 31 and Día de los Muertos on November 1 and 2, a stretch of the calendar when the line between past and present feels a little thinner. Whether that brings to mind things that go bump in the night, ofrendas glowing with candlelight and marigolds, or the memories and stories we carry with us, we want to see what it inspires you to build. The theme is intentionally broad, so interpret it however you'd like!
+That can mean running an open-weight model, building on an open-source agent harness or framework, running inference locally, or all three. Whatever you pick, the open pieces should be what makes your project work.
+A few ideas to get you going:
+A haunted terminal that "possesses" your shell and whispers back eerie commentary on the commands you run
+A virtual ofrenda builder that helps you write a remembrance for a loved one and gather their favorite foods, songs, and stories
+An offline séance chatbot that channels the spirit of a long-dead programming language
+A local oral history tool that records and transcribes family stories so they're never lost
+A ghost story generator that weaves your smart home's sensor logs into a creepy tale of what happened while you were asleep
+A project that brings an abandoned open-source tool or a forgotten corner of internet history back to life
+In your post, tell us why open innovation matters for what you built. Does running your own model mean your project works with the lights (and the internet) off? Keep your family's photos and stories private and on your own machine? Make sure what you build isn't locked inside a service that might disappear someday? Tell us where your open-based approach worked better than a closed one.
+[Submission Template](https://dev.to/new?prefill=---%0Atitle%3A%20%0Apublished%3A%20%0Atags%3A%20devchallenge%2C%20hf26challenge%0A---%0A%0A%2AThis%20is%20a%20submission%20for%20the%20%5BHacktoberfest%20Open-Source%20AI%20Challenge%20Week%204%3A%20Ghost%20in%20the%20Machine%5D%28https%3A%2F%2Fdev.to%2Fchallenges%2Fhacktoberfest-week4-2026-10-26%29%2A%0A%0A%23%23%20What%20I%20Built%0A%3C%21--%20What%20does%20it%20do%2C%20and%20how%20did%20you%20interpret%20the%20theme%3F%20What%20inspired%20it%3F%20--%3E%0A%0A%23%23%20Demo%0A%3C%21--%20Share%20a%20deployed%20link%20or%20a%20video%20demo.%20--%3E%0A%0A%23%23%20Code%0A%3C%21--%20Show%20us%20the%20code%21%20%20You%20can%20embed%20a%20GitHub%20repo%20directly%20into%20your%20post.%20--%3E%0A%0A%23%23%20How%20I%20Built%20It%0A%3C%21--%20Which%20open-source%20AI%20did%20you%20use%20%28open-weight%20models%2C%20agent%20harnesses%2C%20frameworks%2C%20local%20inference%29%2C%20and%20how%20is%20your%20project%20built%20around%20it%3F%20--%3E%0A%0A%23%23%20Why%20Does%20Open%20Innovation%20Matter%3F%0A%3C%21--%20Why%20does%20open%20innovation%20matter%20for%20what%20you%20built%3F%20%20What%20did%20it%20make%20possible%20that%20a%20closed%20API%20wouldn%27t%3F%20--%3E%0A%0A%23%23%20My%20Agent%20Session%0A%3C%21--%20Optional%2C%20but%20judges%20love%20it.%20%20Save%20your%20session%20with%20DevRelay%20and%20embed%20it%20with%20the%20agent_session%20tag%20%28see%20the%20challenge%20page%29%2C%20or%20link%20to%20it.%20--%3E%0A%0A%23%23%20The%20Spirit%20of%20It%0A%3C%21--%20Optional%2C%20but%20this%20is%20where%20you%20can%20make%20your%20post%20stand%20out.%20%20Did%20it%20give%20someone%20chills%2C%20bring%20back%20a%20memory%2C%20or%20keep%20a%20story%20alive%3F%20%20Show%20us%20the%20moment%20it%20landed.%20%20If%20not%2C%20remove%20this%20section.%20--%3E%0A%0A%23%23%20Prize%20Categories%0A%3C%21--%20Which%20partner%20categories%20are%20you%20entering%3F%20%20List%20every%20one%20that%20applies%2C%20or%20remove%20this%20section.%20--%3E%0A%0A%3C%21--%20Team%20Submissions%3A%20Please%20pick%20one%20member%20to%20publish%20the%20submission%20and%20credit%20teammates%20by%20listing%20their%20DEV%20usernames%20directly%20in%20the%20body%20of%20the%20post.%20--%3E%0A%0A%3C%21--%20Thanks%20for%20participating%21%20--%3E%0A)Show your work. We'd love to see how you built it. Save your agent session with [DevRelay](https://devrelay.com/) and embed it in your post, or link to it. It's optional, but it helps the judges understand your process.
+
+---
+
+# Task 0 + Task 1 — Test Plan Approval Gate
+
+Read `docs/CONTEXT.md`, `docs/SPEC.md`, and `docs/TASKS.md` completely. Inspect the current repository and Git status using actual terminal commands.
+
+We are starting the repository foundation and walking skeleton together.
+
+## Phase 1: propose tests only
+
+Before implementation, prepare a test plan at `docs/plans/task-1-tests.md`. Do not create application code, install dependencies, change package configuration, commit, or push.
+
+The proposed test plan must cover:
+
+1. **Contracts:** specification field names and enums, strict unknown-key rejection, valid and invalid fixtures, JSON Schema parity.
+2. **Configuration:** core mode starts without secrets; enabled features fail fast with missing variable names only; `TABPFN_TOKEN` is never required by the server.
+3. **Health and API:** `/healthz`, `/api/health`, fixture case success, unknown case ID, malformed or invalid fixture, safe error bodies.
+4. **Evidence display:** status, claim, and exact quote highlighting; safe rendering of HTML/script-like record text.
+5. **Runtime and portability:** Node 22 target versus local Node 24, Windows CRLF/LF behavior, occupied port, reproducible install.
+6. **CI and security:** lint, format check, typecheck, unit tests, builds, Gitleaks.
+7. **Deployment configuration:** Render build/start commands and `/healthz` path; do not deploy.
+8. **Adversarial tests:** five proposed tests targeting likely contract, API, or rendering failures.
+
+Use the edge cases in the supplied project brief and build specification. Distinguish tests that can run in Task 0+1 from tests belonging to later tasks.
+
+For each test, include:
+- Test ID and behavior.
+- Expected result.
+- Why it matters.
+- Whether it is required for Task 0+1 or deferred.
+
+Do not invent schema fields. Use `docs/SPEC.md` as the authority for existing contract names, fields and enums.
+
+## Phase 2: report and stop
+
+Report the file created, any source conflicts, missing prerequisites, and recommended test priorities. Do not implement anything until I approve the test plan.
+
+---
+
+## Additional requirement — DevRelay compatibility and session submission
+
+This is a required project workflow. Do not defer all DevRelay verification until the final submission.
+
+**Phase 1 is verification and test planning only. Do not install, upgrade, authenticate, publish, or modify DevRelay configuration without approval. Do not change `.agents/`, `.entire/`, Git remotes, branches, or history.**
+
+Inspect the existing Windows PowerShell DevRelay installation and report observed results for:
+
+1. `devrelay --version` and `devrelay --help`.
+2. `devrelay doctor --help` or the supported diagnostic command, followed by a diagnostic only if it is read-only.
+3. `devrelay sessions --help`, including whether `list`, `submit`, `presign`, and `raw-url` are supported.
+4. Whether the installed DevRelay integration is registered with Antigravity and whether its skills/MCP configuration can be detected without modifying it.
+5. Authentication status using a documented read-only command. Report only connected/disconnected status; never print tokens, credentials, or private session contents.
+6. Whether a session can be submitted as a draft or saved without publishing a DEV article. Do not submit a real session during this phase.
+7. What transcript format and metadata the installed version requires, and whether it can produce a DEV-compatible agent-session embed identifier or URL.
+8. Windows-specific command resolution: PowerShell versus Git Bash, executable path, and whether the integration can launch successfully from the actual agent environment.
+
+Add a DevRelay section to `docs/plans/task-1-tests.md`. For each check include the test ID, exact command or action, expected result, observed result (only if actually run), failure interpretation, and whether it belongs to Task 0+1 or a later task.
+
+**Integration design requirements to evaluate (do not implement yet):**
+- Keep session export/submission separate from the application runtime. The deployed application must not require DevRelay credentials to start or serve requests.
+- Do not commit session transcripts, access tokens, `.devrelay` credentials, or private session data.
+- Prefer a deliberate end-of-session workflow that can save a sanitized transcript and provide the embed reference for the DEV submission.
+- Determine whether DevRelay can handle this workflow natively before proposing a custom script.
+- Keep the official session-embed requirement in the submission checklist.
+
+If the installed version lacks a required feature, document the exact missing capability and the smallest supported remedy. Do not automatically upgrade or reinstall. Do not claim DevRelay works merely because the CLI returns help text.
+
+Stop after updating the test plan. No application code, package changes, configuration changes, authentication, session upload, or commit/push.
+
+---
+
+Perform a final documentation-only review of `docs/plans/task-1-tests.md`. Do not implement code, install packages, change configuration, authenticate, submit sessions, or commit/push.
+
+1. Verify all contract names, fields, enums and the `HealthStatus` response against `docs/SPEC.md`. Report any mismatch instead of silently resolving it.
+2. Keep DevRelay CLI execution and live authentication explicitly pending until actual command output is available. Skill-file inspection alone must not be marked as proof that the CLI works.
+3. Strengthen DR-09: use synthetic canary secrets in representative transcript fields (user text, assistant text, tool-call inputs and tool outputs). Verify the export sanitizer removes them before transmission and does not include `.env` contents, private paths or unrelated session data. Do not use real credentials.
+4. Treat the Entire checkpoint as a post-commit verification. Do not require an artificial initial checkpoint.
+5. Ensure each test clearly distinguishes planned, actually run, passed, failed and deferred. Do not mark tests passed based solely on inspection or expected behavior.
+6. Keep DevRelay session submission and embed generation in the acceptance checklist, but do not require a live upload to approve the test plan.
+
+Report the exact discrepancies and changed sections. Stop without implementation and wait for explicit approval.
+
+---
+
+# APPROVED — START CODING NOW: Task 0 + Task 1
+
+**Authorization is granted. Do not ask for another approval before implementing Task 0 + Task 1.**
+
+Time budget: **90 minutes maximum**. Prioritize a working, tested foundation over additional documentation or optional polish. Do not spend this window producing more plans, audits, or review reports.
+
+## 1. Initial checks — then start implementation
+
+Read the existing `docs/CONTEXT.md`, `docs/SPEC.md`, `docs/TASKS.md` and `docs/plans/task-1-tests.md`. Run the necessary Git and terminal checks to establish the actual repository state.
+
+Do not create another planning document. Use the approved test plan as the implementation checklist. Make only the minimum necessary corrections to existing documentation when required by the four changes below.
+
+**If a terminal command fails, stop the affected workflow immediately and report the exact command, exit code and error. Do not infer success from file inspection.** Fix the terminal execution issue before continuing. Do not repeatedly ask for approval between implementation steps.
+
+## 2. Apply these four changes
+
+### Change 1 — Defer DevRelay
+
+Remove `DR-01` through `DR-09` from Task 1 acceptance criteria and defer DevRelay CLI, authentication, transcript handling, session submission and embed verification to Task 10.
+
+- Do not build a transcript sanitizer.
+- Do not add DevRelay runtime dependencies or credentials.
+- Do not change `.agents/`, `.entire/`, Git remotes, branches or history.
+- Keep the existing Entire integration intact. Verify its hooks and checkpoint workflow only where feasible; checkpoint verification remains post-commit.
+- Do not spend the Task 0 + Task 1 time budget troubleshooting DevRelay.
+
+### Change 2 — Correct health-check behavior
+
+Implement `GET /healthz` according to this explicit contract:
+
+- Each dependency check (`db`, `model`, `scores`) must be `ok`, `not_configured` or `unavailable`.
+- Return HTTP 200 when all configured dependencies are healthy and any unconfigured optional dependencies are explicitly reported as `not_configured`.
+- Return HTTP 503 when an **enabled/configured dependency is unavailable**.
+- Core/demo mode with no external dependencies configured must start successfully and return HTTP 200.
+- Keep the response fields and naming consistent with the authoritative specification. If `docs/SPEC.md` conflicts with this approved behavior, follow this prompt and record the discrepancy in the existing `docs/DECISIONS.md`. Do not silently invent a second health schema.
+- Add tests for core mode, healthy configured dependencies, and unavailable configured dependencies.
+
+### Change 3 — Pin contract enums
+
+Use these exact contract values:
+
+`owner_status`:
+- `verified`
+- `supported`
+- `conflicting`
+- `no_evidence`
+
+The UI may capitalize these labels for display without changing the underlying values.
+
+`ghost_type`:
+- `LOST`
+- `FORGOTTEN`
+- `LONELY`
+- `INNOCENT`
+- `NOT_GHOST`
+
+Use these exact values consistently in Zod schemas, JSON Schemas, fixtures, TypeScript types and tests. Do not introduce `unclassified` or alternate spellings.
+
+### Change 4 — Stop planning and implement
+
+Implement Task 0 and Task 1 now. Do not ask for approval between steps, and do not create more planning documents. Stop only when a terminal command fails or a genuine blocker makes safe progress impossible.
+
+## 3. Required implementation scope
+
+Build the minimum complete foundation:
+
+- npm workspaces for `client/`, `server/`, `contracts/` and `tests/`.
+- Pinned dependencies and lockfile.
+- Node 22 project target without changing the globally installed Node 24 runtime.
+- TypeScript, Zod, canonical JSON Schemas, Vitest, ESLint and Prettier.
+- `.gitattributes` with consistent LF handling and Prettier `endOfLine: "lf"`.
+- MIT `LICENSE`, CI workflow, `render.yaml` and the existing `docs/DECISIONS.md`.
+- Strict contract validation and Zod/JSON Schema parity tests.
+- Demo-mode configuration that starts without external credentials.
+- Fixture-backed walking-skeleton API, including health checks, case lookup and safe 404/error responses.
+- Minimal client that fetches and displays case evidence and owner status safely, renders exact evidence quotes without `dangerouslySetInnerHTML`, and treats record content as untrusted text.
+- Tests for strict schemas, unknown fields, invalid enums/references, safe errors, prompt-injection text treated as inert data, Unicode quote edge cases, oversized/null-byte inputs and other applicable approved adversarial cases.
+- Keep `TABPFN_TOKEN` out of server runtime requirements. Never introduce an unapproved runtime key-revocation path.
+
+Do not implement the generator, verifier, Gemma pipeline, TabPFN inference, Atlas retrieval, Auth0 approval flow or GitHub revocation during this task. The verifier is the next implementation task, before the generator, but it is **not authorized yet**.
+
+## 4. Test and security requirements
+
+Use a red-green workflow where practical. Run the actual commands and report their observed results.
+
+At minimum, attempt the relevant commands for:
+
+- Dependency installation from the lockfile.
+- Formatting check.
+- ESLint.
+- TypeScript typecheck.
+- Vitest test suite.
+- Client and server production builds.
+- Gitleaks using the known executable path if command lookup fails.
+- Node 22 compatibility through CI or an available Node 22 runtime; also check local Node 24 compatibility where feasible.
+
+Record each command with its actual exit code and result. Classify checks as **PASSED**, **FAILED** or **NOT RUN**, and explain why any check was not run. Do not mark tests passed based only on inspection.
+
+Do not weaken tests, silently skip failures or claim that Render deployment was tested when only `render.yaml` was inspected. Do not change the user's global Node installation.
+
+## 5. Repository safety
+
+- Do not commit or push.
+- Do not change Git remotes, history or branches.
+- Do not modify `.agents/` or `.entire/`.
+- Do not publish DEV content, submit sessions or expose credentials.
+- Do not automatically upgrade/reinstall DevRelay or authenticate.
+- Never print `.env` contents or secret values.
+- Stop the affected workflow if a terminal command fails; report the exact failure rather than guessing.
+
+## 6. Stop condition and final report
+
+**Stop after Task 0 + Task 1. Do not begin the verifier or generator.**
+
+Return a concise implementation report containing:
+
+1. Files created or changed.
+2. The implemented contracts and enum values.
+3. Health-check behavior and test coverage.
+4. Exact verification commands, exit codes and observed results.
+5. Passed, failed and not-run tests.
+6. Gitleaks result and any security concerns.
+7. Any remaining blocker, with the precise evidence needed to resolve it.
+
+Include a concise Git diff summary so I can review the actual changes before committing.
+
+**Start writing code now. No more planning documents and no additional approval requests unless a genuine blocker prevents safe progress.**
+
+---
+
+The terminal blocker is confirmed. Do not ask me which approach to choose; follow this recovery procedure.
+
+### 1. Fix command execution first
+
+The launcher is trying to execute `e:\keys-of-the-departed\powershell` instead of resolving the actual PowerShell executable.
+
+- Do not create a `powershell` executable, wrapper, or symlink in the repository.
+- Do not modify Git remotes, history, `.agents/`, or `.entire/`.
+- Inspect the agent's available terminal/shell configuration and use the absolute executable path for Windows PowerShell:
+  `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+- If the agent runner cannot be reconfigured from this session, stop trying shell variants and use the fallback below. Do not spend the 90-minute implementation budget debugging the launcher.
+
+### 2. Fallback: implement without claiming tests ran
+
+If terminal execution remains unavailable, start writing the Task 0+1 implementation files directly. Do not create further planning documents or ask for approval between files.
+
+Use the approved implementation prompt and the four changes:
+1. Defer DevRelay tests and transcript sanitization to Task 10.
+2. Health checks use `ok`, `not_configured`, or `unavailable`; core/demo mode returns HTTP 200, and HTTP 503 applies only when a configured dependency is unavailable.
+3. `owner_status`: `verified`, `supported`, `conflicting`, `no_evidence`.
+4. `ghost_type`: `LOST`, `FORGOTTEN`, `LONELY`, `INNOCENT`, `NOT_GHOST`.
+
+Implement the workspace, contracts, schemas, fixtures, walking-skeleton API, minimal safe client, CI, Render configuration, license, and tests. Keep the verifier and generator out of scope.
+
+Do not invent contract fields. Follow `docs/SPEC.md` except where the approved changes explicitly override it, and document any resulting conflict in the existing `docs/DECISIONS.md`.
+
+### 3. Verify as soon as the terminal works
+
+Use the actual terminal to install from the lockfile and run formatting, lint, typecheck, tests, builds, and Gitleaks. Record exact commands, exit codes, and output. Until a command has actually run, label its result `NOT RUN`.
+
+If I need to execute the checks manually, give me one ordered PowerShell command block with the exact commands and expected outcomes. Do not report the task as passing until the checks have actually passed.
+
+### 4. Stop after Task 0+1
+
+Do not commit or push. Return the file-change summary, test results, remaining blockers, and concise diff summary. Do not start the verifier or generator.
+
+**Start implementation now. No more planning documents and no additional approval requests.**
+
+---
+
+**Finish Task 0 + Task 1 verification for Keys of the Departed. No more planning documents. Fix the code, run the checks, and report actual results.**
+
+Repository: `E:\keys-of-the-departed`
+
+### Read first
+1. `docs/CONTEXT.md`
+2. `docs/SPEC.md`
+3. `docs/TASKS.md`
+4. Existing tests and package scripts relevant to Task 0 + Task 1.
+
+### Current status
+- Dependencies installed.
+- Prettier formatting passes.
+- Root TypeScript typecheck passes.
+- ESLint runs with `ESLINT_USE_FLAT_CONFIG=false`: zero errors, three warnings.
+- All 30 tests pass.
+- Frontend production build passes.
+- Backend production build fails with two TS2345 errors in `server/src/app.ts`, around lines 36 and 50:
+  - `req.params.id` has type `string | string[]`.
+  - The case ID and record ID regular expressions require a string.
+- DevRelay CLI `0.1.24` is installed.
+- Entire was previously enabled and its hooks/configuration were reported healthy.
+
+### Do this now
+1. Fix the two route-parameter type errors in `server/src/app.ts` using a minimal, type-safe change. Explicitly handle a non-string route parameter before applying the regex. Preserve the existing API behaviour for valid IDs, invalid IDs, known fixtures, and missing resources.
+2. Inspect the root scripts and ESLint configuration. Make `npm run check` usable without requiring the developer to remember a shell-only environment variable. Prefer a minimal, compatible configuration change; do not migrate the whole lint setup unnecessarily.
+3. Run the actual verification commands in sequence:
+   - `npm run format:check`
+   - `npm run lint`
+   - `npm run typecheck`
+   - `npm test`
+   - `npm run build`
+   - `npm run check` after any configuration fix.
+4. Fix only failures that block Task 0 + Task 1 acceptance. Do not weaken tests or remove validation to get a green result.
+5. Review `git diff` and `git status`. Report every changed file and why it changed. Check that no `.env`, secrets, generated build output, or unrelated files are being committed.
+6. Do not commit, push, change Git remotes/history, edit `.agents/` or `.entire/`, or create additional planning documents. Leave all changes for my review.
+
+### Report back
+Give me:
+- The exact code changes made.
+- The exit result of each verification command, distinguishing passed, failed, and not run.
+- Any remaining warnings or vulnerabilities, without attempting risky automatic dependency upgrades.
+- Whether Task 0 + Task 1 are ready for my review.
+
+Do not claim a check passed unless you actually ran it and observed the result. Do not start the verifier, generator, frontend implementation, or external integrations in this task.
