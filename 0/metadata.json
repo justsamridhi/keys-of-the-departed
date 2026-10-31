@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.12.0",
+  "checkpoint_id": "01M69H7E26F5VH12Q13HSVSRH1",
+  "session_id": "18bf75ef-2139-4b70-85d5-db10a057eda9",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-31T17:48:27.5740937Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    ".gitignore",
+    ".prettierignore",
+    "client/src/App.tsx",
+    "client/src/components/Footer.tsx",
+    "client/src/components/TopBar.tsx",
+    "client/src/demoData.ts",
+    "client/src/main.tsx",
+    "client/src/pages/ArchivePage.tsx",
+    "client/src/pages/AuthPage.tsx",
+    "client/src/pages/CasePage.tsx",
+    "client/src/pages/FreeSpiritPage.tsx",
+    "client/src/pages/IntegrationsPage.tsx",
+    "client/src/pages/LandingPage.tsx",
+    "client/src/pages/ResultsPage.tsx",
+    "client/src/pages/SetupPage.tsx",
+    "client/src/pages/UploadPage.tsx",
+    "client/src/theme.css",
+    "client/tsconfig.tsbuildinfo",
+    "client/vite.config.ts",
+    "eslint.config.js",
+    "server/src/app.ts",
+    "server/tsconfig.tsbuildinfo"
+  ],
+  "agent": "Antigravity",
+  "model": "gemini-3.8-flash-medium",
+  "turn_id": "a1801393de83",
+  "session_metrics": {
+    "turn_count": 1
+  }
+}

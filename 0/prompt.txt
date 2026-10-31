@@ -1,0 +1,975 @@
+# PROJECT HANDOVER + FRONTEND IMPLEMENTATION
+## KEYS OF THE DEPARTED — Hacktoberfest 2026
+
+You are taking over an existing software project called **Keys of the Departed**.
+
+You are a senior frontend engineer, product designer and full-stack application developer. Your responsibility is to understand the existing project, preserve its architecture and build a polished, fully interactive frontend.
+
+This is an existing project, NOT a request to create a new application from scratch.
+
+I have attached:
+1. The finalized interactive HTML design reference.
+2. The original visual assets used in the design.
+
+You MUST inspect these before implementing anything.
+
+---
+
+# PART 1 — UNDERSTAND THE EXISTING PROJECT
+
+## Project identity
+
+**Name:** Keys of the Departed
+
+**Tagline:** The engineer left. Their access didn't.
+
+**Concept:**
+
+Keys of the Departed is an evidence-first AI investigation system for forgotten machine identities, including:
+
+- Deploy keys
+- Service accounts
+- Build bots
+- Automation accounts
+- API-connected identities
+- Other orphaned machine identities
+
+The application investigates the ownership and purpose of forgotten identities by examining available engineering records.
+
+It reconstructs evidence, identifies uncertainty, distinguishes supported claims from conflicting claims, and requires human approval before sensitive sandbox actions.
+
+The application must never pretend that an identity is malicious merely because its owner is unknown.
+
+## Before changing any code
+
+Inspect the actual repository.
+
+Repository location:
+
+`E:\keys-of-the-departed`
+
+Read these documents first, if present:
+
+1. `docs/CONTEXT.md`
+2. `docs/SPEC.md`
+3. `docs/TASKS.md`
+4. `docs/DECISIONS.md`
+5. `README.md`
+6. Existing frontend and backend package manifests.
+
+Inspect:
+
+- Root directory structure.
+- `client/src/`
+- `server/src/`
+- `contracts/`
+- `tests/`
+- `assets/`
+- Existing API endpoints.
+- Existing React components.
+- Existing routing.
+- Existing frontend styles.
+- Existing fixture data.
+- Existing tests.
+- Git status and recent commits.
+
+Do not trust old audit reports blindly. Verify the current state of the repository yourself.
+
+Do not assume that the previous Antigravity account's conversation history is available. Recover project context from the actual files and documentation.
+
+### Critical preservation rule
+
+Do not overwrite or delete working implementations simply because you prefer a different architecture.
+
+You have permission to reorganize and improve the frontend, refactor components, improve CSS, create new pages and remove genuinely obsolete code after verifying it is unused.
+
+However:
+
+- Preserve the existing backend.
+- Preserve API contracts.
+- Preserve database schemas.
+- Preserve the existing project documentation.
+- Preserve existing tests.
+- Preserve environment variable names.
+- Never expose `.env` contents.
+- Never commit or push without my approval.
+- Do not modify unrelated infrastructure.
+
+If you discover an architectural problem, explain it and propose the smallest safe correction.
+
+---
+
+# PART 2 — DESIGN REFERENCE AND VISUAL ASSETS
+
+## The attached HTML is the primary visual reference
+
+Open and inspect the attached file:
+
+`keys-of-the-departed-theme-reference.html`
+
+Explore its pages and interactions.
+
+It represents the visual direction we finalized in the previous development session.
+
+Do not merely look at its landing page.
+
+Inspect the different sections, layouts, interactions, navigation, case investigation experience, demo mode and Free Spirit experience.
+
+Use its visual language as the foundation for the actual React application.
+
+IMPORTANT:
+
+The HTML file is a DESIGN AND UX REFERENCE.
+
+It is not the production application.
+
+Do not simply copy its HTML into one React component or embed the entire file in an iframe.
+
+Recreate its pages as properly structured React components with reusable components, state management and application routing.
+
+You may improve the reference wherever necessary to produce a more polished and usable experience.
+
+## Actual assets
+
+The repository contains an `assets/` directory with the original visual assets.
+
+Inspect every asset and identify its actual filename, dimensions, transparency and intended use.
+
+The asset collection includes:
+
+- `logo.png`
+- `landing.png`
+- `goldenbook.png`
+- `hunter.png`
+- `glyph-lost.png`
+- `glyph-forgotten.png`
+- `glyph-lonely.png`
+- `glyph-innocent.png`
+- `candleon.png`
+- `candleoff.png`
+- `frame.png`
+- `gothic-side-portal.png`
+- `windowframe.png`
+- `heart.png`
+- `heart-bleeding-gothic.png`
+- `parchment-texture.png`
+- `rose.png`
+- `rose-crimson-gold.png`
+- `seal-broken.png`
+- `seal-verified.png`
+- `moon-new.png`
+- `moon-waxing-crescent.png`
+- `moon-crescent-left.png`
+- `moon-crescent-right.png`
+- `moon-half-left.png`
+- `moon-half-right.png`
+- `moon-waning-gibbous.png`
+- `moon-full.png`
+
+These are expected asset names, not permission to assume every extension or filename is exact. Verify them against the actual directory.
+
+### Asset requirements
+
+- Use the original artwork.
+- Preserve transparency.
+- Preserve aspect ratios.
+- Do not stretch images.
+- Do not substitute emoji for the original chapter glyphs.
+- Do not use generic stock images.
+- Do not generate replacement assets.
+- Do not embed multi-megabyte base64 images into React components.
+- Use appropriate Vite asset imports or public asset paths.
+- Optimize loading without visibly damaging the artwork.
+
+Give each asset a deliberate visual purpose.
+
+Do not overcrowd every page with decorations.
+
+---
+
+# PART 3 — FINALIZED DESIGN SYSTEM
+
+The visual identity is a cinematic Gothic investigation archive inspired by Día de los Muertos.
+
+It should feel atmospheric, mysterious, elegant and technically credible.
+
+It must NOT look like:
+
+- A generic SaaS dashboard.
+- A generic AI chatbot.
+- A Halloween template.
+- A gaming website.
+- A generic admin panel.
+- A basic Bootstrap website.
+
+### Color direction
+
+Use a consistent design system based on:
+
+- Near-black backgrounds: `#0d0d11`
+- Antique gold: `#c5a059`
+- Deep crimson: `#8b1e2d`
+- Warm parchment: approximately `#e8d5b5`
+- Charcoal stone surfaces.
+- Aged brass borders.
+- Muted burgundy.
+- Warm cream typography.
+
+Create reusable CSS variables or design tokens.
+
+### Typography
+
+Use:
+
+- Cinzel / Cinzel Decorative for Gothic display headings.
+- Cormorant Garamond for editorial and narrative text.
+- A clean readable sans-serif for technical content and controls.
+- A monospace font for identifiers, evidence references and technical metadata.
+
+### UI characteristics
+
+Use:
+
+- Ornate Gothic frames selectively.
+- Original chamber glyphs.
+- Candle imagery and subtle flickering.
+- Parchment evidence panels.
+- Antique book motifs.
+- Subtle gold gradients.
+- Carefully controlled shadows.
+- Cinematic lighting.
+- Smooth page transitions.
+- Restrained atmospheric animations.
+
+Do not compromise readability for aesthetics.
+
+The application must be responsive, accessible and usable on smaller screens.
+
+---
+
+# PART 4 — BUILD THE FOLLOWING PAGES
+
+These are the complete frontend pages and experiences we have planned.
+
+Do not implement all of them at once.
+
+This is the complete roadmap, not a single implementation request.
+
+## PAGE 1 — Landing Page
+
+The first impression of the application.
+
+Requirements:
+
+- Cinematic hero section.
+- Original `landing.png` artwork.
+- Actual `logo.png`.
+- Product title and tagline.
+- Short explanation of the problem.
+- Clear calls to action.
+- Enter the Archive.
+- Explore Demo.
+- Learn How It Works.
+- Sign In.
+- Sign Up.
+- Subtle atmospheric animation.
+- Responsive navigation.
+
+The hero should communicate the idea immediately:
+
+An engineer leaves. Their machine identities remain. The archive investigates what was forgotten.
+
+The landing page must be visually impressive without becoming cluttered.
+
+## PAGE 2 — Sign In
+
+Build a dedicated authentication page.
+
+Requirements:
+
+- Gothic visual framing.
+- Email input.
+- Password input.
+- Show/hide password.
+- Remember-me option, if supported.
+- Form validation.
+- Loading state.
+- Error messages.
+- Forgot-password navigation, if supported.
+- Link to Sign Up.
+- Guest/Demo access.
+
+Do not pretend authentication succeeded.
+
+Inspect the existing Auth0 configuration and backend capabilities before implementing authentication.
+
+If real authentication is not connected, clearly identify the demo/guest experience.
+
+Never store plaintext passwords or expose secrets.
+
+## PAGE 3 — Sign Up
+
+Requirements:
+
+- Name.
+- Email.
+- Password.
+- Confirm password.
+- Password validation.
+- Terms acknowledgement.
+- Clear validation errors.
+- Loading and success states.
+- Link to Sign In.
+
+Use actual authentication integration only if supported.
+
+Do not create fake account registration that claims to persist accounts when it does not.
+
+## PAGE 4 — AI Profile Setup / The Keeper's Guide
+
+This is an important feature.
+
+The original `hunter.png` artwork should be used as the visual identity of the AI Profile guide.
+
+The experience should explain how users can provide optional context from their preferred AI assistant.
+
+Workflow:
+
+1. Introduce the Keeper.
+2. Explain what the profile does.
+3. Present a carefully written copyable prompt.
+4. Allow the user to copy it.
+5. Ask the user to paste the response from their AI assistant.
+6. Parse and preview the submitted information.
+7. Allow editing.
+8. Show what will be saved.
+9. Ask for explicit consent.
+10. Save only through a supported persistence mechanism.
+
+Provide appropriate loading, validation and error states.
+
+IMPORTANT:
+
+Do not claim automatic access to a user's ChatGPT history, account or private conversations.
+
+Do not request passwords, API keys or credentials.
+
+Do not invent automatic AI integrations.
+
+The user must remain in control of what information is submitted and saved.
+
+## PAGE 5 — Dashboard
+
+The investigator's main workspace.
+
+Include:
+
+- Welcome area.
+- Archive overview.
+- Identity counts, when actual data is available.
+- Chapter summaries.
+- Recent investigations.
+- Pending reviews.
+- Investigation activity.
+- Quick actions.
+- Continue Demo.
+- Start Investigation.
+- Open Archive.
+
+Use clear visual hierarchy.
+
+Never invent live statistics.
+
+When displaying demo data, label it clearly.
+
+## PAGE 6 — Four-Chamber Archive
+
+The archive is organized into four chapters.
+
+Use the original glyph assets.
+
+**LOST**
+
+Identities with missing ownership or unclear provenance.
+
+**FORGOTTEN**
+
+Identities that appear abandoned or no longer maintained.
+
+**LONELY**
+
+Identities without an identifiable active owner or maintainer.
+
+**INNOCENT**
+
+Identities for which evidence supports a legitimate explanation.
+
+Each chapter must have:
+
+- Its original glyph.
+- Description.
+- Identity count from available data.
+- Chapter-specific visual styling.
+- Navigation to its filtered archive.
+- Empty state.
+
+Do not classify identities as malicious based on missing information.
+
+## PAGE 7 — Searchable Archive
+
+A functional investigation archive.
+
+Requirements:
+
+- Search identities.
+- Search identifiers.
+- Filter by chapter.
+- Filter by claim status.
+- Sort results.
+- View case cards or rows.
+- Pagination or sensible loading for large datasets.
+- Clear filters.
+- Empty state.
+- Error state.
+- Loading skeleton.
+
+Use real backend endpoints where available.
+
+Use clearly labelled fixtures in demo mode.
+
+## PAGE 8 — Case Investigation
+
+This is one of the most important pages.
+
+It should feel like opening an actual investigative case file.
+
+Include:
+
+- Identity name.
+- Identity type.
+- Chapter.
+- Owner status.
+- Purpose.
+- Supporting evidence.
+- Alternative explanations.
+- Unknown information.
+- Source records.
+- Exact supporting quotations.
+- Claim status.
+- Verification reason.
+- Removed claims.
+- Investigation history.
+
+Use the existing vocabulary:
+
+- Verified
+- Supported
+- Conflicting
+- No evidence
+
+Preserve reason codes R1–R5.
+
+Create a clear separation between:
+
+1. AI-generated interpretations.
+2. Evidence extracted from records.
+3. Deterministic verification results.
+4. Human-reviewed conclusions.
+
+Users should be able to open the original source record and inspect the exact evidence quotation.
+
+Provide appropriate tabs or sections for:
+
+- Overview.
+- Evidence.
+- Source Records.
+- Removed Claims.
+- Investigation History.
+
+Never display a model-generated statement as verified evidence without supporting source material.
+
+## PAGE 9 — Upload / New Investigation
+
+Build a functional upload experience.
+
+Requirements:
+
+- Drag and drop.
+- File selection.
+- Accepted format validation.
+- File size validation.
+- Upload progress where supported.
+- Processing state.
+- Error handling.
+- Successful completion state.
+- Clear explanation of what is being uploaded.
+
+Connect to existing backend endpoints only after inspecting their contracts.
+
+Do not invent successful AI processing.
+
+If the actual pipeline is not available, provide an explicitly labelled demo workflow.
+
+## PAGE 10 — Results and Evaluation
+
+Display the investigation results and evaluation information.
+
+Include:
+
+- Investigation summary.
+- Claims extracted.
+- Verified claims.
+- Rejected or removed claims.
+- Conflicting evidence.
+- Missing evidence.
+- Evaluation information when real measurements exist.
+- Model comparison when supported.
+- Explanation of the verification process.
+
+Do not fabricate metrics, accuracy, AUROC, precision, latency or benchmark results.
+
+If evaluation has not been performed, show a meaningful empty state explaining what is required.
+
+## PAGE 11 — Integrations / Prize Categories
+
+THIS PAGE IS EXTREMELY IMPORTANT FOR HACKTOBERFEST JUDGING.
+
+Build a complete, functional integration and prize-category experience.
+
+The six categories are:
+
+### 1. Gemma
+
+Role:
+Open-weight language model for investigation and claim extraction.
+
+Explain:
+- Why Gemma was selected.
+- Its place in the investigation pipeline.
+- How source evidence is provided to it.
+- How it extracts candidate claims.
+- How deterministic verification checks its output.
+- Actual local or hosted implementation status.
+
+### 2. TabPFN
+
+Role:
+Offline identity ranking and tabular prediction.
+
+Explain:
+- Why TabPFN is used.
+- Which tabular features are relevant.
+- How precomputed scores are generated.
+- How scores are consumed by the application.
+- Evaluation against appropriate baselines.
+- Actual implementation status.
+
+### 3. MongoDB Atlas
+
+Role:
+Evidence storage, retrieval and investigation memory.
+
+Explain:
+- Database structure.
+- Evidence collections.
+- Retrieval workflow.
+- How records relate to claims and identities.
+- How investigation context is retrieved.
+- Actual implementation status.
+
+### 4. Auth0 for AI Agents
+
+Role:
+Authorization and controlled sensitive actions.
+
+Explain:
+- Authentication.
+- Agent authorization.
+- Human approval.
+- CIBA / Token Vault capabilities where implemented.
+- Sandbox-only revocation.
+- What the agent is permitted to do.
+- Actual implementation status.
+
+### 5. Render
+
+Role:
+Application and service deployment.
+
+Explain:
+- Frontend hosting.
+- Backend hosting.
+- Environment configuration.
+- Deployment architecture.
+- Health checks.
+- Actual deployment status.
+
+### 6. Entire
+
+Role:
+Agent-work traceability and engineering decision history.
+
+Explain:
+- Agent session tracking.
+- Checkpoints.
+- Engineering decisions.
+- How decisions are traceable to work.
+- Evidence available in the repository.
+- Actual implementation status.
+
+### Prize page interaction requirements
+
+Each category must have:
+
+- Its own detail view.
+- Technology logo or relevant visual.
+- Category description.
+- Role in the architecture.
+- Technical implementation explanation.
+- Workflow diagram or meaningful technical visualization.
+- Actual status.
+- Evidence or relevant repository references.
+- Known limitations.
+- Navigation back to the category overview.
+
+Use functional tabs, accordions, detail routes or another appropriate interaction model.
+
+Do not make all six cards open the same generic modal.
+
+Do not claim a prize integration exists unless the repository proves it.
+
+Use truthful statuses such as:
+
+- Implemented
+- In Progress
+- Planned
+- Unavailable
+
+The page must be impressive to judges while remaining technically honest.
+
+## PAGE 12 — Guided Demo Mode
+
+The existing five-step demo experience is important.
+
+Preserve the original five-step investigation narrative from the attached reference.
+
+It should guide a user through:
+
+1. Entering the archive.
+2. Opening a synthetic identity case.
+3. Inspecting source evidence.
+4. Understanding a rejected or removed claim.
+5. Reviewing a simulated human-approval action.
+
+Provide:
+
+- Previous.
+- Continue.
+- Finish.
+- Exit.
+- Progress indicator.
+- Step-specific explanations.
+- Navigation to relevant pages.
+- Ability to explore and return.
+
+The demo must be functional, not a sequence of screenshots.
+
+Clearly label synthetic evidence and simulated operations.
+
+Do not pretend that a live AI model is executing if the demo is fixture-based.
+
+## PAGE 13 — Free Spirit Experience
+
+This is the optional interactive experience based on the original "Are You a Free Spirit?" checklist.
+
+Use the appropriate original artwork.
+
+Requirements:
+
+- Interactive questionnaire/checklist.
+- Multiple selectable answers.
+- Live result or archetype.
+- Appropriate visual feedback.
+- Reset functionality.
+- Responsive design.
+- Optional playful narrative.
+
+Keep it separate from the security investigation workflow.
+
+Do not collect unnecessary personal data.
+
+## PAGE 14 — About / How It Works / Safety
+
+Explain:
+
+- What Keys of the Departed does.
+- The problem of forgotten machine identities.
+- The investigation pipeline.
+- The role of AI.
+- Deterministic verification.
+- Evidence provenance.
+- Human approval.
+- Security limitations.
+- What the system does not do.
+
+Include the architecture and explain how the system avoids unsafe autonomous revocation.
+
+---
+
+# PART 5 — APPLICATION-WIDE FUNCTIONAL REQUIREMENTS
+
+This must be a real React application, not a static visual prototype.
+
+Use the existing stack and inspect dependencies before adding anything.
+
+### Routing
+
+Use proper application routing.
+
+Every major page should have a sensible URL.
+
+Support:
+
+- Direct navigation.
+- Refreshing on nested routes.
+- Back and forward browser navigation.
+- Unknown routes.
+- Appropriate guest access.
+- Protected routes only where actual authentication exists.
+
+### State
+
+Use appropriate React state management.
+
+Keep shared application state consistent.
+
+Do not duplicate state unnecessarily.
+
+Persist data only where appropriate and supported.
+
+For local demo functionality, clearly separate demo state from production state.
+
+### API integration
+
+Inspect the existing backend and contracts.
+
+Reuse existing API endpoints.
+
+Do not invent endpoints.
+
+Create a clean API service layer.
+
+Handle:
+
+- Network failures.
+- Server errors.
+- Invalid responses.
+- Timeouts.
+- Empty responses.
+- Loading states.
+- Retry actions where appropriate.
+
+Do not expose environment secrets in frontend code.
+
+### Every interaction must work
+
+All visible:
+
+- Buttons.
+- Links.
+- Menus.
+- Tabs.
+- Filters.
+- Search inputs.
+- Forms.
+- Dialogs.
+- Upload controls.
+- Navigation elements.
+- Copy buttons.
+- Demo controls.
+
+must perform their advertised action.
+
+No decorative dead buttons.
+
+No fake success messages.
+
+No placeholder links pointing to `#`.
+
+### Accessibility
+
+Implement:
+
+- Semantic HTML.
+- Keyboard navigation.
+- Visible focus indicators.
+- Accessible form labels.
+- Appropriate ARIA attributes.
+- Dialog focus handling.
+- Reduced-motion support.
+- Readable color contrast.
+
+### Responsive behaviour
+
+Test at:
+
+- Desktop: 1440px.
+- Laptop: 1280px.
+- Tablet: 768px.
+- Mobile: 390px.
+- Small mobile: 360px.
+
+Avoid horizontal overflow.
+
+Ensure the archive, investigation pages, navigation and forms remain usable on mobile.
+
+---
+
+# PART 6 — THE IMPLEMENTATION PROCESS
+
+## STRICT RULE: IMPLEMENT ONE PAGE AT A TIME
+
+This is the most important instruction in this entire handover.
+
+Do not build the entire frontend in one giant implementation.
+
+Do not create every page with generic placeholder cards.
+
+Do not create a static multi-section landing page and call it a completed application.
+
+Work incrementally.
+
+### Implementation order
+
+**Stage 0:** Repository audit and frontend architecture recovery.
+
+**Stage 1:** Shared design system, routing foundation, global layout and Landing Page.
+
+**Stage 2:** Sign In.
+
+**Stage 3:** Sign Up.
+
+**Stage 4:** AI Profile Setup / Keeper Guide.
+
+**Stage 5:** Dashboard.
+
+**Stage 6:** Four-Chamber Archive.
+
+**Stage 7:** Searchable Archive.
+
+**Stage 8:** Case Investigation.
+
+**Stage 9:** Upload / New Investigation.
+
+**Stage 10:** Results and Evaluation.
+
+**Stage 11:** Integrations / Prize Categories.
+
+**Stage 12:** Guided Demo Mode.
+
+**Stage 13:** Free Spirit Experience.
+
+**Stage 14:** About / How It Works / Safety.
+
+**Stage 15:** Full application integration and QA.
+
+### For each stage, follow this exact procedure
+
+1. Inspect the existing implementation.
+2. Identify the current page's responsibilities.
+3. Identify reusable components.
+4. Plan the page's layout and interactions.
+5. Implement the page.
+6. Connect existing APIs when appropriate.
+7. Implement loading, error, empty and success states.
+8. Check all interactive controls.
+9. Check mobile responsiveness.
+10. Run TypeScript checks.
+11. Run relevant tests.
+12. Run production build.
+13. Show the actual browser result.
+14. Report changed files.
+15. Report known limitations.
+16. STOP and wait for my approval.
+
+Do not start the next stage until I explicitly say to continue.
+
+### Permission to improve
+
+You have freedom to improve:
+
+- Component structure.
+- CSS architecture.
+- Navigation.
+- Layout.
+- Typography.
+- Responsive behaviour.
+- Animation.
+- Interaction design.
+- Accessibility.
+- Reusable components.
+- Frontend folder structure.
+
+If something in the reference does not work well in a real React application, improve it intelligently while preserving the established product identity.
+
+If a design decision is unclear, explain the issue and make a sensible proposal rather than silently inventing an unrelated design.
+
+---
+
+# PART 7 — SECURITY AND PRODUCT RULES
+
+These principles must remain intact:
+
+1. Evidence-first investigation.
+2. Exact supporting quotations.
+3. Explicit uncertainty.
+4. Alternative explanations where evidence supports them.
+5. Deterministic verification.
+6. Human approval before sensitive actions.
+7. No production credential revocation.
+8. No unsupported risk scores.
+9. No invented confidence values.
+10. No fabricated benchmark results.
+11. No fabricated integration claims.
+12. No model-generated claims presented as verified facts.
+
+Preserve the existing claim statuses and R1–R5 reason codes.
+
+Any revocation interaction must be clearly sandbox-only and must not execute against production credentials.
+
+---
+
+# PART 8 — FIRST TASK: START NOW
+
+Do not begin by creating all the pages.
+
+Your first response should contain:
+
+1. Repository audit summary.
+2. Existing frontend architecture.
+3. Existing pages and components.
+4. Existing backend endpoints and contracts relevant to the frontend.
+5. Design reference findings.
+6. Asset inventory and actual file paths.
+7. Existing functionality that should be preserved.
+8. Missing functionality.
+9. Any conflicts between the current implementation and this specification.
+10. A concise plan for Stage 1.
+
+After presenting this audit, begin:
+
+## STAGE 1 — DESIGN SYSTEM + APPLICATION FOUNDATION + LANDING PAGE ONLY
+
+Implement the shared design foundation and the complete landing page.
+
+The landing page must be fully interactive and use the original visual assets.
+
+Do not implement any other page yet.
+
+After completing it, run checks, open it in the browser, show me screenshots and report the result.
+
+Then STOP.
+
+Wait for my explicit approval before starting the Sign In page.
+
+**My priority is a cohesive, premium, fully functional product—not the fastest possible generation of many unfinished pages.**
