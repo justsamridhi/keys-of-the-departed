@@ -1,0 +1,763 @@
+Continue the MongoDB Atlas connectivity diagnosis. The previous activity log shows commands being executed but does not include their actual results.
+
+Please:
+1. Print the sanitized output of the Atlas DNS SRV lookup.
+2. Report whether MongoClient connection succeeded or failed, including the exact error message with credentials and connection strings redacted.
+3. Report whether the MongoDB ping succeeded.
+4. List existing collection names only. Do not read, modify, seed, or delete existing documents.
+5. Inspect and report which repository the application actually selects when MongoDB is configured and connected, and what happens when it is unavailable.
+6. Identify whether the failure, if any, is caused by DNS, Atlas network access, authentication, or application configuration.
+
+Do not change Atlas settings, modify existing database data, or implement unrelated features yet. Remove the temporary diagnostic file after testing unless it is intentionally needed and documented.
+
+Return the actual terminal outputs and a concise diagnosis. Do not report success without evidence.
+
+---
+
+The current IP address has now been added to MongoDB Atlas and both IP entries show Active.
+
+Rerun the existing MongoDB Atlas connectivity diagnostic.
+
+Verify:
+1. MongoClient.connect() succeeds.
+2. Execute db.command({ ping: 1 }) and report the result.
+3. List existing collection names only.
+4. Confirm whether the application can select MongoInvestigationsRepository.
+
+Do not read, modify, seed, or delete existing documents.
+Do not change application code or Atlas settings.
+Never print MONGODB_URI, usernames, passwords, or secrets.
+
+Report the actual terminal output and any remaining errors.
+
+---
+
+# PHASE 1 — COMPLETE MONGODB ATLAS BACKEND PERSISTENCE
+
+MongoDB Atlas connectivity has now been verified successfully.
+
+Confirmed:
+- `MongoClient.connect()` succeeds.
+- Database ping returns `{ ok: 1 }`.
+- Database: `keys_departed`.
+- Existing collection list is empty.
+- `MongoInvestigationsRepository` can be instantiated.
+- Temporary diagnostic scripts have been removed.
+
+Now implement and verify the actual backend persistence workflow.
+
+## 1. Inspect before modifying
+
+Inspect:
+- MongoDB connection and application startup.
+- Repository interfaces and implementations.
+- Investigation API routes.
+- Upload parsing and validation.
+- Investigation processing pipeline.
+- Shared Zod contracts.
+- Auth0 JWT and ownership middleware.
+- Existing MongoDB and API tests.
+
+Reuse existing architecture. Avoid unnecessary rewrites.
+
+## 2. Implement real MongoDB persistence
+
+Persist the complete investigation lifecycle:
+
+1. Create investigation.
+2. Upload evidence files.
+3. Validate and parse uploaded evidence.
+4. Store parsed records and upload metadata.
+5. Process investigation.
+6. Store discovered identities and candidate claims.
+7. Store deterministic verification results.
+8. Retrieve investigation and its results.
+9. Restart the backend.
+10. Retrieve the same investigation and results again.
+
+Persist appropriate ownership, timestamps, statuses, and processing metadata.
+
+Ensure collection indexes are created safely and operations handle partial failures.
+
+## 3. Enforce strict ownership and demo isolation
+
+- Assign authenticated investigation ownership using the verified JWT subject (`sub`).
+- Never trust client-supplied `owner_id`.
+- Prevent one user from reading or modifying another user's investigations.
+- Keep synthetic demo investigations separate from real user investigations.
+- Do not silently mix demo fixtures into a real user's workspace.
+- Preserve existing public-demo access rules where explicitly intended.
+- Treat legacy records without ownership metadata safely.
+
+## 4. Fix database-unavailable behavior
+
+This is mandatory.
+
+When MongoDB is unavailable or not configured:
+- Real investigation persistence operations must return HTTP 503.
+- Do not silently fall back to in-memory fixtures for real user data.
+- Do not return success when data was not persisted.
+- Explicit demo mode may use synthetic fixtures, clearly labelled as demo data.
+- Health checks must accurately report database availability.
+
+## 5. Handle edge cases
+
+Test:
+- Missing or invalid MongoDB configuration.
+- Atlas unavailable during startup.
+- Database disconnection during an operation.
+- Connection recovery.
+- Duplicate uploads.
+- Empty and malformed files.
+- Unsupported file formats.
+- Oversized uploads.
+- Invalid investigation IDs.
+- Processing failures.
+- Partial persistence failures.
+- Concurrent updates.
+- Unauthorized requests.
+- Cross-user access attempts.
+- Legacy records without ownership.
+- Server restart and data recovery.
+- Demo-to-real-workspace transitions.
+
+Do not invent successful processing results.
+
+## 6. Tests and verification
+
+Add or update:
+- Repository unit tests.
+- API integration tests.
+- MongoDB persistence tests.
+- Ownership and isolation tests.
+- Database-unavailable tests.
+- Restart/retrieval tests.
+
+Use isolated test collections or a dedicated test database. Never delete or modify unrelated Atlas data.
+
+Run the complete root check:
+
+`npm run check`
+
+Report:
+- Files changed.
+- Database collections and indexes introduced.
+- Actual persistence workflow verified.
+- Tests added and results.
+- Edge cases covered.
+- Any remaining limitations.
+
+Do not claim live Atlas persistence tests passed unless they actually ran against Atlas.
+
+## 7. Strict scope boundaries
+
+Do NOT implement:
+- Gemma or Ollama integration.
+- TabPFN.
+- Vector search.
+- Auth0 approval/revocation workflow.
+- Entire.
+- DevRelay.
+- New partner integrations.
+
+Do not change Atlas settings, expose secrets, commit, push, seed production data, or delete existing data.
+
+Complete this milestone, report the evidence, and STOP for review.
+
+---
+
+# PHASE 1 — POST-IMPLEMENTATION SECURITY AND RELIABILITY AUDIT
+
+MongoDB Atlas persistence has been implemented. The reported automated suite passes (230 tests), and a live Atlas persistence/restart test reportedly succeeded.
+
+Before approving this milestone, conduct an independent code review of the actual changes.
+
+Do not assume the previous implementation report is correct. Inspect the source code and verify each claim.
+
+## 1. Ownership and authorization audit
+
+Inspect every API endpoint and repository method involving:
+- investigations
+- investigation files
+- records
+- findings
+- discovered accounts
+- cases
+
+Verify that access to related data always checks ownership of the parent investigation.
+
+Test:
+- User A accesses User B's investigation.
+- User A accesses User B's files or findings directly.
+- User A uploads to or processes User B's investigation.
+- An unauthenticated user accesses private records.
+- Legacy records without owner_id.
+- Demo records accessed through normal workspace endpoints.
+
+Identify any endpoint that bypasses parent ownership validation.
+
+## 2. Duplicate and concurrent operation audit
+
+Inspect file and record upsert logic and indexes.
+
+Verify:
+- Sequential duplicate uploads.
+- Concurrent duplicate uploads.
+- Same filename with different contents.
+- Different filenames with identical contents.
+- Retry after partial failure.
+
+Do not claim an index prevents duplicates unless it is actually unique and compatible with the data model.
+
+## 3. Database failure and recovery audit
+
+Verify:
+- MongoDB unavailable at startup.
+- MongoDB disconnects after successful startup.
+- Database operation times out.
+- MongoDB recovers after a failure.
+- Writes fail midway through a workflow.
+- Reads fail during a request.
+
+Real persistence operations must not silently use fixture repositories or report false success.
+
+Confirm that HTTP status codes and frontend error states are accurate.
+
+## 4. Persistence correctness audit
+
+Inspect the actual create → upload → process → retrieve workflow.
+
+Check whether:
+- All required investigation data is persisted.
+- Processing results are persisted atomically or have a documented recovery strategy.
+- Status transitions remain consistent after failures.
+- Restart retrieval returns the correct owner-scoped data.
+- Counts and dashboard statistics are derived from persisted data, not stale fixtures.
+
+## 5. Live Atlas test audit
+
+Review the actual live verification procedure and its reported output.
+
+Determine exactly which methods were exercised:
+- Direct repository calls.
+- HTTP API calls.
+- Full frontend-to-backend workflow.
+
+Do not describe repository-level tests as full API or end-to-end tests.
+
+Provide a reproducible integration-test procedure using an explicitly configured dedicated test database or test namespace.
+
+Never delete unrelated Atlas data.
+
+## 6. Code quality
+
+Review:
+- All changed files.
+- Error handling.
+- Index correctness.
+- Query efficiency.
+- Type safety.
+- Unnecessary code duplication.
+- Security-sensitive logging.
+- The 35 reported lint warnings.
+
+Do not suppress warnings indiscriminately.
+
+## 7. Required output
+
+Return:
+1. Findings ranked Critical / High / Medium / Low.
+2. Exact file and function for each finding.
+3. Whether each finding is confirmed or only a potential concern.
+4. Minimal fixes required.
+5. Tests needed to verify each fix.
+6. Whether Phase 1 should be approved.
+
+Do not begin Gemma, TabPFN, Auth0 approval, Entire, DevRelay, or any other integration.
+
+Do not commit or push changes.
+
+If fixes are required, implement only those fixes, rerun `npm run check`, and report the results.
+
+STOP after the audit and wait for approval.
+
+---
+
+Phase 1 security audit reviewed. The reported fixes look appropriate.
+
+Before final approval, perform these two additional verification tasks.
+
+### A. Concurrent duplicate-upload test
+
+Test two simultaneous upload requests against the same investigation using the same filename.
+
+Verify:
+- Exactly one file document exists.
+- No duplicate records are created.
+- Both requests return consistent results.
+- No unhandled duplicate-key error or incorrect success response occurs.
+
+Also test identical filenames in two different investigations and verify isolation.
+
+Run against the actual MongoDB test database where possible, not only the in-memory test double.
+
+### B. Repeat live Atlas persistence verification
+
+The previous live Atlas test occurred before the latest security fixes.
+
+Rerun the workflow against the dedicated test namespace in the configured Atlas database:
+
+1. Connect and ping.
+2. Create a uniquely identified test investigation.
+3. Upload evidence.
+4. Persist parsed records.
+5. Process and persist findings.
+6. Retrieve the investigation and related data.
+7. Verify owner isolation.
+8. Close the MongoDB client.
+9. Reconnect with a new client.
+10. Retrieve and verify the persisted data again.
+11. Clean up only documents belonging to this unique test investigation.
+
+Do not modify unrelated data.
+
+### C. Final validation
+
+Run:
+`npm run check`
+
+Report:
+- Actual concurrent upload test results.
+- Actual live Atlas results after the latest fixes.
+- Post-restart retrieval results.
+- Final test count.
+- Any remaining warnings or limitations.
+
+Do not start another integration or commit/push anything.
+
+STOP and wait for approval.
+
+---
+
+# PHASE 2 — GEMMA 3 + OLLAMA INTEGRATION
+
+Phase 1 MongoDB persistence is approved. Start implementing Gemma 3 integration now.
+
+## Objective
+
+Integrate locally hosted Gemma 3 through Ollama into the existing investigation processing pipeline.
+
+Gemma interprets engineering evidence and proposes structured claims about machine identity ownership, purpose, activity and project association.
+
+Gemma must never independently mark a claim as verified.
+
+## 1. Inspect existing implementation
+
+Inspect:
+- Current investigation processing pipeline.
+- Evidence parsers and normalized record schemas.
+- Claim and finding contracts.
+- Deterministic verification implementation.
+- Existing R1–R5 reason codes.
+- MongoDB persistence of findings.
+- Existing Ollama configuration and environment variables.
+
+Reuse the existing architecture. Do not replace working functionality.
+
+## 2. Ollama integration
+
+Use the existing local Ollama installation.
+
+Model: `gemma3:4b`
+
+Requirements:
+- Configurable Ollama base URL and model name.
+- Configurable request timeout.
+- Structured JSON output validated with Zod.
+- Temperature 0 where supported.
+- Handle model unavailable, timeout, malformed JSON and empty responses.
+- Retry once for recoverable malformed output.
+- Abstain safely if the model remains unavailable.
+- Never silently substitute fabricated AI results.
+
+Do not expose Ollama credentials or internal errors to frontend users.
+
+## 3. Claim extraction
+
+Implement structured extraction for:
+- Machine identity ownership.
+- Identity purpose.
+- Associated repository or project.
+- Last known engineering activity.
+- Relevant personnel or team references.
+- Supporting evidence quotations.
+- Source record identifiers.
+
+Every proposed claim must reference an actual ingested source record.
+
+The model must distinguish explicit evidence from inferred interpretation.
+
+Do not invent personnel, project names, quotations, dates or activities.
+
+## 4. Deterministic verification
+
+After Gemma returns claims, pass them through the existing deterministic verifier.
+
+Preserve all existing statuses:
+- Verified
+- Supported
+- Conflicting
+- No evidence
+
+Preserve R1–R5 without changing their meanings.
+
+Check:
+- Source record exists.
+- Quotation is an exact substring of the source.
+- Claim structure is valid.
+- Personnel/entity references are consistent.
+- Minimum quote length is respected.
+
+Gemma must never override deterministic verification.
+
+## 5. Processing workflow
+
+Implement:
+
+Upload → Parse → Normalize → Gemma extraction → Deterministic verification → Persist → Retrieve → Review.
+
+Persist:
+- Model name.
+- Provider.
+- Processing timestamp.
+- Candidate claims.
+- Verification results.
+- Processing errors or abstentions where appropriate.
+
+Do not store secrets or unnecessary raw model prompts.
+
+## 6. Frontend
+
+Integrate the real processing state into the existing investigation results UI.
+
+Display:
+- AI-proposed interpretation.
+- Actual source quotation.
+- Source record reference.
+- Deterministic verification status.
+- Reason for rejection or conflict.
+- Model/provider information.
+
+Clearly distinguish AI interpretation from verified evidence.
+
+Do not fabricate latency, confidence scores, model execution or results.
+
+Handle model unavailable and processing failure states clearly.
+
+## 7. Evaluation
+
+Create a reproducible frozen evaluation dataset with synthetic, clearly labelled examples.
+
+Compare:
+1. Existing deterministic baseline.
+2. Gemma extraction alone.
+3. Gemma extraction plus deterministic verification.
+
+Measure:
+- Claim precision and recall.
+- Exact quotation match rate.
+- Unsupported claim rate.
+- Entity attribution accuracy.
+- Abstention rate.
+- Processing latency.
+
+Report sample sizes and actual measured values. Do not invent benchmark results.
+
+## 8. Tests
+
+Test:
+- Valid structured output.
+- Malformed model output.
+- Missing source record.
+- Fabricated quotation.
+- Incorrect personnel attribution.
+- Conflicting evidence.
+- Empty evidence.
+- Ollama unavailable.
+- Timeout.
+- Retry behavior.
+- Duplicate processing.
+- Database persistence.
+- Investigation ownership isolation.
+
+Run `npm run check`.
+
+## Scope restrictions
+
+Do not implement TabPFN, vector search, Auth0 approval workflows, Entire or DevRelay yet.
+
+Do not change the existing ownership rules, demo isolation, or security boundaries.
+
+Do not commit or push.
+
+Complete Gemma integration, test it, report actual results and STOP for review.
+
+---
+
+# PHASE 3 — TABPFN INTEGRATION
+
+Gemma 3 + Ollama integration is implemented. Begin TabPFN integration.
+
+## Objective
+
+Integrate TabPFN as a structured-data analysis and prioritization layer for machine identities.
+
+TabPFN should help identify which identities deserve investigation first. It must not determine ownership, declare an identity malicious, or replace deterministic verification.
+
+## 1. Inspect existing architecture
+
+Inspect:
+- Account and machine identity contracts.
+- Existing investigation findings.
+- Available identity activity and ownership features.
+- Gemma processing pipeline.
+- MongoDB persistence.
+- Existing dashboard and results UI.
+- Python/runtime infrastructure.
+
+Do not invent features that are not present in the evidence.
+
+## 2. Feature engineering
+
+Build a documented feature pipeline using available structured evidence, potentially including:
+
+- Days since last observed activity.
+- Owner availability or ownership status.
+- Permission breadth, if actually present.
+- Number of associated repositories or projects.
+- Recent deployment activity.
+- Service-account or deployment-key classification.
+- Evidence completeness.
+- Conflicting ownership references.
+
+Handle missing values explicitly.
+
+Do not treat missing ownership as proof of maliciousness.
+
+## 3. TabPFN integration
+
+Use the supported TabPFN implementation and document its exact version and execution requirements.
+
+Requirements:
+- Isolated Python environment or clearly documented service boundary.
+- Reproducible inference.
+- Input schema validation.
+- Missing-value handling.
+- Timeout and failure handling.
+- Model unavailable state.
+- No fabricated predictions.
+
+Do not introduce an unnecessary cloud dependency.
+
+## 4. Evaluation
+
+Compare three approaches:
+
+1. Simple inactivity-based baseline.
+2. Isolation Forest baseline.
+3. TabPFN.
+
+Use a defensible labelled dataset.
+
+Avoid data leakage. Split training and evaluation data appropriately.
+
+Measure:
+- AUROC.
+- Precision@5 and Precision@10 where sample size allows.
+- Recall.
+- False-positive rate.
+- Ranking stability.
+- Inference latency.
+
+If reliable labels are unavailable, explicitly report that supervised evaluation cannot yet establish predictive performance. Do not fabricate labels or metrics.
+
+## 5. Product integration
+
+Add prioritization results to the investigation workflow.
+
+Show:
+- Ranking or prioritization output.
+- Features contributing to the result.
+- Missing or unavailable inputs.
+- Model name and execution status.
+- Explanation that prioritization is not a security verdict.
+
+Keep Gemma's ownership and purpose interpretation separate from TabPFN prioritization.
+
+## 6. Persistence
+
+Persist:
+- Model and version.
+- Input feature snapshot.
+- Execution timestamp.
+- Prediction/ranking output.
+- Evaluation metadata where applicable.
+
+Preserve existing MongoDB ownership and demo isolation.
+
+## 7. Tests
+
+Test:
+- Valid feature inputs.
+- Missing features.
+- Empty datasets.
+- Invalid values.
+- Model unavailable.
+- Timeout.
+- Reproducibility.
+- No data leakage in evaluation.
+- Persistence and retrieval.
+- Ownership isolation.
+
+Run `npm run check` and all relevant Python tests.
+
+## Scope restrictions
+
+Do not modify Gemma's extraction logic unless required for compatibility.
+
+Do not implement Auth0 approval, Entire, DevRelay, or vector search.
+
+Do not commit or push.
+
+Complete TabPFN integration, report actual benchmark results and limitations, and STOP for review.
+
+---
+
+# PHASE 4 — AUTH0 HUMAN APPROVAL WORKFLOW
+
+Gemma 3 and TabPFN integrations are implemented. Begin the Auth0 approval workflow.
+
+## Objective
+
+Implement a secure, auditable, human-in-the-loop approval workflow for simulated sandbox remediation of machine identities.
+
+This is a sandbox-only capability. Never revoke, rotate, disable or modify production credentials.
+
+## 1. Inspect existing Auth0 integration
+
+Inspect:
+- Auth0 SPA authentication.
+- Backend JWT validation.
+- API audience and scopes.
+- Existing `requirePermission` middleware.
+- Existing `approve:revocations` permission.
+- Investigation ownership rules.
+- TabPFN prioritization results.
+- Gemma verification results.
+
+Reuse existing authentication. Do not create a second authentication system.
+
+## 2. Authorization
+
+Use the existing API permission:
+
+`approve:revocations`
+
+Requirements:
+- Validate JWT signature, issuer and audience.
+- Verify the required permission server-side.
+- Never trust frontend role or permission state.
+- Deny approval when the permission is missing.
+- Preserve investigation ownership isolation.
+- Do not grant approval permission automatically to every authenticated user.
+
+Review existing Auth0 API and SPA configuration. Identify any required dashboard configuration separately; do not invent credentials.
+
+## 3. Approval lifecycle
+
+Implement:
+
+`Proposed → Pending Approval → Approved / Rejected → Sandbox Execution → Completed / Failed`
+
+Every request must include:
+- Investigation ID.
+- Machine identity ID.
+- Proposed sandbox action.
+- Evidence references.
+- Deterministic verification state.
+- Requesting user.
+- Approver.
+- Decision timestamp.
+- Execution status.
+- Audit history.
+
+Only explicitly permitted sandbox actions can execute.
+
+## 4. Human approval UI
+
+Provide:
+- Pending approval queue.
+- Identity and proposed action details.
+- Supporting evidence and source quotations.
+- Gemma interpretation.
+- TabPFN prioritization explanation.
+- Deterministic verification status.
+- Approve and Reject controls.
+- Confirmation before approval.
+- Final execution result.
+
+Never make the approval button available for an unverified or unauthorized request.
+
+## 5. Sandbox execution
+
+Create a clearly isolated sandbox adapter.
+
+It may simulate:
+- Revoking a test deployment key.
+- Disabling a synthetic service account.
+- Recording a simulated remediation event.
+
+It must never call real provider APIs or modify real credentials.
+
+Label all simulated actions clearly in the interface.
+
+## 6. Audit and persistence
+
+Persist:
+- Request details.
+- Approver identity.
+- Approval or rejection.
+- Timestamps.
+- Sandbox action.
+- Execution result.
+- Failure reasons.
+
+Prevent duplicate approvals and concurrent execution.
+
+## 7. Tests
+
+Test:
+- Authorized approver.
+- Missing permission.
+- Invalid token.
+- Cross-user access.
+- Unauthorized investigation.
+- Rejected approval.
+- Duplicate approval.
+- Concurrent approval attempts.
+- Sandbox execution failure.
+- Production-action rejection.
+- Audit history persistence.
+- Database unavailable.
+
+Run `npm run check`.
+
+## Scope restrictions
+
+Do not implement real credential revocation, provider integrations, Entire or DevRelay.
+
+Do not change existing Gemma or TabPFN behavior unnecessarily.
+
+Do not commit or push.
+
+Complete the workflow, report tests and limitations, and STOP for review.
