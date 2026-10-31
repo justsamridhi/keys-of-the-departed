@@ -1,5 +1,6 @@
 import { AccountsQuery, AccountsResponse, ArchiveAccount } from "@keys/contracts";
 import { SYNTHETIC_ACCOUNTS } from "../fixtures/syntheticAccounts.js";
+import { DatabaseUnavailableError } from "./unavailableInvestigationsRepository.js";
 
 /**
  * Repository interface for machine identities.
@@ -96,5 +97,23 @@ export class FixtureAccountsRepository implements AccountsRepository {
   async findAccountById(id: string): Promise<ArchiveAccount | null> {
     const account = this.accounts.find((a) => a.account_id === id);
     return account || null;
+  }
+}
+
+/**
+ * Unavailable repository for production environments without configured MongoDB.
+ * Never silently serves synthetic fixtures for real production data.
+ */
+export class UnavailableAccountsRepository implements AccountsRepository {
+  async findAccounts(_query: AccountsQuery): Promise<AccountsResponse> {
+    throw new DatabaseUnavailableError(
+      "MongoDB Atlas is required for persistent production identity data. Database is currently unavailable or unconfigured.",
+    );
+  }
+
+  async findAccountById(_id: string): Promise<ArchiveAccount | null> {
+    throw new DatabaseUnavailableError(
+      "MongoDB Atlas is required for persistent production identity data. Database is currently unavailable or unconfigured.",
+    );
   }
 }

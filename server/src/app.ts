@@ -1,6 +1,8 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 import { z } from "zod";
 import { ServerConfig } from "./config.js";
 import { computeHealthStatus, DependencyCheckers } from "./health.js";
@@ -30,6 +32,30 @@ import {
 import { isDatabaseUnavailableError } from "./repositories/unavailableInvestigationsRepository.js";
 import { EntireService } from "./services/entireService.js";
 import { DevrelayService } from "./services/devrelayService.js";
+
+/**
+ * Resolves the location of the compiled frontend dist folder across
+ * monorepo root, server directory, or custom CLIENT_DIST environment variable.
+ */
+export function resolveClientDist(configDist?: string): string {
+  if (configDist && fs.existsSync(configDist)) {
+    return path.resolve(configDist);
+  }
+  if (process.env.CLIENT_DIST && fs.existsSync(process.env.CLIENT_DIST)) {
+    return path.resolve(process.env.CLIENT_DIST);
+  }
+  const rootDist = path.resolve(process.cwd(), "client/dist");
+  if (fs.existsSync(rootDist)) return rootDist;
+
+  const parentDist = path.resolve(process.cwd(), "../client/dist");
+  if (fs.existsSync(parentDist)) return parentDist;
+
+  const currentDir = path.dirname(fileURLToPath(import.meta.url));
+  const relativeDist = path.resolve(currentDir, "../../client/dist");
+  if (fs.existsSync(relativeDist)) return relativeDist;
+
+  return rootDist;
+}
 
 export function createApp(
   config: ServerConfig,
@@ -63,13 +89,28 @@ export function createApp(
     });
   }
 
-  // 1. Healthcheck endpoint (SPEC 5.7 & Stage 6 A-4)
-  const handleHealth = async (_req: Request, res: Response) => {
+  // 1. Healthcheck endpoint (SPEC 5.7, Render Health Check & Liveness/Readiness probes)
+  const handleHealth = async (req: Request, res: Response) => {
+    const checkType = req.query.type as string | undefined;
+
+    // Liveness probe: confirms Express process is running and accepting HTTP traffic
+    if (checkType === "liveness" || req.path === "/healthz/live") {
+      return res.status(200).json({
+        status: "ok",
+        type: "liveness",
+        uptime: Math.floor((Date.now() - startTime) / 1000),
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Readiness / comprehensive check: verifies database connectivity if configured
     const { status, httpStatus } = await computeHealthStatus(config, startTime, checkers);
     res.status(httpStatus).json(status);
   };
 
   app.get("/healthz", handleHealth);
+  app.get("/healthz/live", handleHealth);
+  app.get("/healthz/ready", handleHealth);
   app.get("/api/health", handleHealth);
 
   // 2. Machine Identities endpoint (Four-Chamber Archive & Search)
@@ -121,7 +162,13 @@ export function createApp(
         });
       }
 
-      if (callerSub && !isExplicitDemo) {
+      if (isExplicitDemo) {
+        const demoRepo = new FixtureAccountsRepository();
+        const result = await demoRepo.findAccounts(parseResult.data);
+        return res.status(200).json(result);
+      }
+
+      if (callerSub) {
         const result = await investigationsRepo.getDiscoveredAccountsForOwner(
           callerSub,
           parseResult.data,
@@ -151,8 +198,11 @@ export function createApp(
       return res.status(400).json({ error: "Invalid case ID format" });
     }
 
+    const isExplicitDemo = req.query.demo === "true";
+    const repo = isExplicitDemo ? new FixtureCasesRepository() : casesRepo;
+
     try {
-      const caseData = await casesRepo.findCaseById(caseId);
+      const caseData = await repo.findCaseById(caseId);
       if (!caseData) {
         return res.status(404).json({ error: "Case not found" });
       }
@@ -182,13 +232,16 @@ export function createApp(
       return res.status(400).json({ error: "Invalid case ID format" });
     }
 
+    const isExplicitDemo = req.query.demo === "true";
+    const repo = isExplicitDemo ? new FixtureCasesRepository() : casesRepo;
+
     try {
-      const caseData = await casesRepo.findCaseById(caseId);
+      const caseData = await repo.findCaseById(caseId);
       if (!caseData) {
         return res.status(404).json({ error: "Case not found" });
       }
 
-      const records = await casesRepo.findRecordsByCaseId(caseId);
+      const records = await repo.findRecordsByCaseId(caseId);
       return res.status(200).json(records);
     } catch (err: unknown) {
       if (isDatabaseUnavailableError(err)) {
@@ -1047,17 +1100,24 @@ export function createApp(
     }
   });
 
-  // Serve static client assets in production if built
-  if (config.NODE_ENV === "production") {
-    const clientDist = path.resolve(process.cwd(), "client/dist");
-    app.use(express.static(clientDist));
+  // Serve static client assets in production if built (or when SERVE_CLIENT=true)
+  const shouldServeClient = config.NODE_ENV === "production" || process.env.SERVE_CLIENT === "true";
+  if (shouldServeClient) {
+    const clientDist = resolveClientDist(config.CLIENT_DIST);
+    if (fs.existsSync(clientDist)) {
+      app.use(express.static(clientDist));
+    }
+
     app.get("*", (req: Request, res: Response, next: NextFunction) => {
-      if (req.path.startsWith("/api") || req.path === "/healthz") {
+      // Preserve all /api and /healthz routes so they never swallow API errors or health checks
+      if (req.path.startsWith("/api") || req.path.startsWith("/healthz")) {
         return next();
       }
-      res.sendFile(path.join(clientDist, "index.html"), (err) => {
-        if (err) next();
-      });
+      const indexPath = path.join(clientDist, "index.html");
+      if (fs.existsSync(indexPath)) {
+        return res.sendFile(indexPath);
+      }
+      next();
     });
   }
 

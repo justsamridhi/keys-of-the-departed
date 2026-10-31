@@ -6,8 +6,13 @@ import { ensureIndexes } from "./db/collections.js";
 import {
   AccountsRepository,
   FixtureAccountsRepository,
+  UnavailableAccountsRepository,
 } from "./repositories/accountsRepository.js";
-import { CasesRepository, FixtureCasesRepository } from "./repositories/casesRepository.js";
+import {
+  CasesRepository,
+  FixtureCasesRepository,
+  UnavailableCasesRepository,
+} from "./repositories/casesRepository.js";
 import { InvestigationsRepository } from "./repositories/investigationsRepository.js";
 import { MongoAccountsRepository } from "./repositories/mongoAccountsRepository.js";
 import { MongoCasesRepository } from "./repositories/mongoCasesRepository.js";
@@ -24,23 +29,41 @@ async function startServer() {
   const config = loadConfig();
   const connectionManager = MongoConnectionManager.getInstance();
 
-  const gemmaService = new OllamaGemmaService({
-    baseUrl: config.OLLAMA_BASE_URL,
-    model: config.OLLAMA_MODEL,
-  });
+  const gemmaService = config.OLLAMA_BASE_URL
+    ? new OllamaGemmaService({
+        baseUrl: config.OLLAMA_BASE_URL,
+        model: config.OLLAMA_MODEL,
+      })
+    : undefined;
 
   const tabpfnService = new TabPfnService();
 
-  let accountsRepo: AccountsRepository = new FixtureAccountsRepository();
-  let casesRepo: CasesRepository = new FixtureCasesRepository();
-  let investigationsRepo: InvestigationsRepository = new UnavailableInvestigationsRepository();
+  // In production, strictly disallow fixture fallback for real production data
+  let accountsRepo: AccountsRepository;
+  let casesRepo: CasesRepository;
+  let investigationsRepo: InvestigationsRepository;
+
+  if (config.NODE_ENV === "production") {
+    accountsRepo = new UnavailableAccountsRepository();
+    casesRepo = new UnavailableCasesRepository();
+    investigationsRepo = new UnavailableInvestigationsRepository();
+  } else {
+    accountsRepo = new FixtureAccountsRepository();
+    casesRepo = new FixtureCasesRepository();
+    investigationsRepo = new UnavailableInvestigationsRepository();
+  }
+
   const checkers: DependencyCheckers = {
-    checkModel: async () => {
-      const avail = await gemmaService.checkAvailability();
-      return avail.available ? "ok" : "unavailable";
-    },
     checkScores: async () => "ok",
   };
+
+  // Only register model health checker if an Ollama instance URL is explicitly configured
+  if (config.OLLAMA_BASE_URL && gemmaService) {
+    checkers.checkModel = async () => {
+      const avail = await gemmaService.checkAvailability();
+      return avail.available ? "ok" : "unavailable";
+    };
+  }
 
   if (config.MONGODB_URI) {
     try {
@@ -67,11 +90,15 @@ async function startServer() {
         `[keys-of-the-departed] MongoDB connection failed. Running in degraded mode: persistent mutations will return HTTP 503. (${msg})`,
       );
       checkers.checkDb = async () => "unavailable";
+      if (config.NODE_ENV === "production") {
+        accountsRepo = new UnavailableAccountsRepository();
+        casesRepo = new UnavailableCasesRepository();
+      }
       investigationsRepo = new UnavailableInvestigationsRepository();
     }
   } else {
     console.log(
-      "[keys-of-the-departed] MONGODB_URI not configured. Running in demo mode: persistent mutations will return HTTP 503.",
+      `[keys-of-the-departed] MONGODB_URI not configured. Running in ${config.NODE_ENV === "production" ? "unconfigured database" : "demo"} mode: persistent mutations will return HTTP 503.`,
     );
     checkers.checkDb = async () => "not_configured";
     investigationsRepo = new UnavailableInvestigationsRepository();

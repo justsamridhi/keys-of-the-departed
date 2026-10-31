@@ -1,5 +1,6 @@
 import { Case, EvidenceRecord } from "@keys/contracts";
 import { SYNTHETIC_CASES, SYNTHETIC_RECORDS } from "../fixtures/syntheticCases.js";
+import { DatabaseUnavailableError } from "./unavailableInvestigationsRepository.js";
 
 export interface CasesRepository {
   findCaseById(id: string): Promise<Case | null>;
@@ -44,5 +45,29 @@ export class FixtureCasesRepository implements CasesRepository {
       }
     }
     return result;
+  }
+}
+
+/**
+ * Unavailable repository for production environments without configured MongoDB.
+ * Never silently serves synthetic fixtures for real production data.
+ */
+export class UnavailableCasesRepository implements CasesRepository {
+  async findCaseById(_id: string): Promise<Case | null> {
+    throw new DatabaseUnavailableError(
+      "MongoDB Atlas is required for persistent production case data. Database is currently unavailable or unconfigured.",
+    );
+  }
+
+  async findRecordById(_id: string): Promise<EvidenceRecord | null> {
+    throw new DatabaseUnavailableError(
+      "MongoDB Atlas is required for persistent production record data. Database is currently unavailable or unconfigured.",
+    );
+  }
+
+  async findRecordsByCaseId(_caseId: string): Promise<EvidenceRecord[]> {
+    throw new DatabaseUnavailableError(
+      "MongoDB Atlas is required for persistent production record data. Database is currently unavailable or unconfigured.",
+    );
   }
 }
