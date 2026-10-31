@@ -1,0 +1,14 @@
+Inspect my existing client/.env.local, server/.env, and all environment-variable references in the project.
+
+I have already configured some variables locally. Do not overwrite, delete, or modify any environment files.
+
+Return a table showing:
+1. Which variables are already configured (show only SET or NOT SET, never their values).
+2. Which variables are required for Render.
+3. Which variables are frontend versus backend.
+4. Which integrations require separate hosted infrastructure.
+5. Which variables should remain unset.
+
+Also verify whether the production backend fails safely if MONGODB_URI is missing, rather than falling back to in-memory fixtures.
+
+Do not modify any files or print secrets.
