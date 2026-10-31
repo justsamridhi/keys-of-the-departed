@@ -1,0 +1,669 @@
+Explain what this problem is and help me fix it: Argument of type '{ name: string; }' is not assignable to parameter of type '{ name: string; description: string; }'.
+  Property 'description' is missing in type '{ name: string; }' but required in type '{ name: string; description: string; }'. @[e:\keys-of-the-departed\tests\db\mongodb.test.ts:L280-L282]
+
+---
+
+# KEYS OF THE DEPARTED — FRONTEND UX REFINEMENT
+## Visual Identity Restoration, Navigation Repair & Information Architecture
+
+**Repository:** `E:\keys-of-the-departed`
+
+**Role:** Act as a senior product designer, frontend architect and experienced React engineer.
+
+**Task type:** Targeted UX correction and visual refinement. This is NOT a redesign from scratch.
+
+The current frontend has become repetitive, excessively card-based and visually disconnected from the original concept. The objective is to restore its identity, simplify the experience and make navigation intuitive.
+
+Do not begin coding immediately. First inspect the existing implementation, original assets, Git changes and component architecture. Then implement the corrections.
+
+---
+
+## 0. CRITICAL: PROTECT EXISTING WORK
+
+Before making changes:
+
+1. Inspect `git status` and `git diff`.
+2. Identify currently modified, newly created and untracked files.
+3. Preserve all existing work, especially recent MongoDB implementation and test fixes.
+4. Do not revert, overwrite, reset, stash or clean unrelated changes.
+5. Do not modify backend, database, contracts, API routes or repository implementations.
+6. Do not change dependencies unless genuinely necessary.
+
+The MongoDB implementation is a separate workstream. This task is exclusively frontend-focused.
+
+---
+
+## 1. RESTORE THE ORIGINAL VISUAL IDENTITY
+
+Inspect the original assets and previous implementations.
+
+Important assets include:
+
+- `assets/hunter.png`
+- `assets/goldenbook.png`
+- `assets/landing.png`
+- `assets/logo.png`
+- `assets/glyph-lost.png`
+- `assets/glyph-forgotten.png`
+- `assets/glyph-lonely.png`
+- `assets/glyph-innocent.png`
+- Existing candle, rose, parchment, frame and seal assets.
+
+Inspect the original theme reference HTML if useful.
+
+### Landing hero
+
+The Hunter character and Golden Book are essential parts of the original visual identity. They must not disappear.
+
+Restore:
+- Hunter as a prominent, intentional visual element.
+- Golden Book with its original interaction wherever available.
+- Original landing background with visible architectural and atmospheric detail.
+- Proper layering, lighting, contrast and depth.
+- A balanced relationship between text, character and book.
+
+Do not simply place the Hunter and book as unrelated images.
+
+Study their original placement and intended interactions. Preserve transparency and aspect ratios.
+
+### Typography and composition
+
+Correct the current cramped left-side composition.
+
+- Establish a clear headline, supporting text and CTA hierarchy.
+- Use Cinzel/Cinzel Decorative for display typography.
+- Use Cormorant Garamond for narrative copy.
+- Use Inter for functional UI and JetBrains Mono for technical metadata.
+- Increase readability of body text.
+- Correct inconsistent font sizes and spacing.
+- Avoid unnecessarily small uppercase labels.
+
+The result should feel like a carefully designed Gothic investigation experience, not a generic SaaS landing page.
+
+---
+
+## 2. FIX GLOBAL NAVIGATION
+
+This is a functional defect, not merely a visual issue.
+
+The brand emblem and "KEYS OF THE DEPARTED" must be clickable from every page and navigate to `#/`.
+
+The navigation should communicate clear user destinations:
+
+- Home
+- Dashboard
+- Archive
+- Integrations
+- Safety
+
+Keep Demo Tour and authentication actions distinct from primary navigation.
+
+Requirements:
+- Working links on desktop and mobile.
+- Clear active-route indication.
+- Working browser back and forward navigation.
+- Correct handling of hash routes and query parameters.
+- Closing navigation menus after selection.
+- No broken routes or inaccessible return paths.
+- Consistent header behavior across all pages.
+
+Do not add more navigation items just to fill space.
+
+---
+
+## 3. RESTRUCTURE THE LANDING PAGE
+
+The landing page must communicate the product once, clearly.
+
+### Keep
+
+- Original visual hero.
+- Main headline: "THE ENGINEER IS GONE. THE KEYS REMAIN."
+- Short, understandable explanation of the problem.
+- One primary CTA to explore the demo archive.
+- A secondary guided tour action.
+- Four chamber illustrations.
+- Optional Keeper's Ritual / Free Spirit entry point.
+
+### Remove
+
+- Repeated "The Engineer Left. Their Access Didn't." messaging.
+- Discover / Investigate / Govern card section.
+- Redundant Investigate / Verify / Decide section.
+- Four evidence-status cards.
+- Repeated product explanations.
+- Excessive architecture and implementation descriptions.
+- Generic card grids that do not serve a user task.
+
+Do not replace removed sections with new generic sections.
+
+### Landing page narrative
+
+The page should follow a simple progression:
+
+1. Introduce the problem through the hero.
+2. Give the visitor a direct way to explore the archive.
+3. Introduce the four chambers visually.
+4. Offer the optional Keeper's Ritual.
+5. End with purposeful navigation or a concise closing section.
+
+Avoid repeating the same slogan in the footer and every section.
+
+---
+
+## 4. FOUR CHAMBERS — ORIGINAL GLYPHS ONLY
+
+This section has a specific design requirement.
+
+Use:
+- `glyph-lost.png`
+- `glyph-forgotten.png`
+- `glyph-lonely.png`
+- `glyph-innocent.png`
+
+Display the four illustrations directly against the page background.
+
+**Do not place them inside cards.**
+
+Use:
+- Four evenly spaced illustrations.
+- Small, elegant labels.
+- Consistent image dimensions without distortion.
+- Subtle hover/focus interaction.
+- Short descriptions revealed on interaction.
+- Click navigation to the correct Archive filter.
+
+On mobile, allow a clean responsive arrangement.
+
+Do not add large descriptions, borders, background panels or unnecessary decorative containers.
+
+---
+
+## 5. RESTORE KEEPER'S RITUAL / FREE SPIRIT
+
+The existing FreeSpiritPage and its original interactions must remain available.
+
+Add a subtle, intentional entry point from the landing page.
+
+Requirements:
+- Optional experience.
+- Not mandatory onboarding.
+- Not an authentication requirement.
+- Not a security assessment.
+- Preserve the existing candle interaction and personality-selection experience.
+- Provide a clear way to return to the main application.
+
+Do not rebuild this feature unnecessarily.
+
+---
+
+## 6. SIMPLIFY THE INTEGRATIONS PAGE
+
+The current page contains too much internal development information.
+
+Retain factual technical descriptions of:
+- Google Gemma / local Ollama
+- TabPFN
+- MongoDB Atlas
+- Auth0
+- DevRelay / Entire
+- Render
+
+However:
+
+- Remove repeated "Partially Implemented" badges.
+- Remove roadmap-style development status explanations.
+- Remove excessive paragraphs.
+- Remove redundant technical panels.
+- Avoid showing internal implementation progress to ordinary users.
+
+Present each technology with:
+1. Its name.
+2. A concise explanation of its intended role.
+3. A short, factually accurate description of its current role where relevant.
+
+Never imply that an integration is operational if it is not.
+
+The page should be understandable within a short scan.
+
+---
+
+## 7. PRESERVE THE REST OF THE APPLICATION
+
+Do not unnecessarily redesign:
+
+- Dashboard.
+- Archive.
+- Case Investigation.
+- New Investigation.
+- Safety.
+- Authentication logic.
+- Guided Tour.
+
+Preserve:
+- Existing API calls.
+- Shared Zod contracts.
+- Search, filtering and pagination.
+- Investigation creation and upload workflows.
+- Evidence provenance.
+- Accepted and quarantined claims.
+- R1–R5 classifications.
+- Human approval boundaries.
+- Synthetic-data disclosures.
+
+Fix only defects directly caused by the frontend changes.
+
+---
+
+## 8. VISUAL DESIGN RULES
+
+Preserve the established design language:
+
+- Near-black backgrounds.
+- Antique gold.
+- Parchment and warm cream.
+- Muted crimson.
+- Gothic architecture and original illustrations.
+
+Avoid:
+- Excessive card layouts.
+- Repetitive headings.
+- Repeated slogans.
+- Tiny body text.
+- Excessive uppercase labels.
+- Overloaded sections.
+- Large empty areas.
+- Unnecessary borders around every element.
+- Generic SaaS dashboard styling.
+
+Use whitespace intentionally. Make the interface feel atmospheric but readable.
+
+The application should feel interactive, not like a long static marketing page.
+
+---
+
+## 9. FUNCTIONAL ACCEPTANCE TESTS
+
+Verify these actual user journeys:
+
+1. Open the landing page and confirm Hunter, Golden Book and background are visible.
+2. Click the logo from Dashboard and return to Home.
+3. Click the logo from Archive and return to Home.
+4. Click the logo from Integrations and return to Home.
+5. Click the logo from Safety and return to Home.
+6. Click each chamber glyph and verify the corresponding Archive filter.
+7. Open Keeper's Ritual and return to the main application.
+8. Open and close Guided Tour.
+9. Open and close Sign In / Sign Up modals.
+10. Test browser back and forward navigation.
+11. Verify desktop and mobile navigation.
+
+Do not report a journey as verified simply because its route exists. Test the actual interaction.
+
+---
+
+## 10. FINAL VERIFICATION AND REPORT
+
+Run:
+
+`npm run check`
+
+Also perform browser-based visual and interaction verification.
+
+Provide screenshots of:
+- Full landing hero.
+- Four chambers section.
+- Keeper's Ritual entry point.
+- Simplified integrations page.
+- Header/navigation on desktop and mobile.
+
+Report:
+1. Files modified.
+2. Assets restored.
+3. Navigation defects fixed.
+4. Sections removed or simplified.
+5. Existing functionality preserved.
+6. Actual test results.
+7. Remaining defects, if any.
+
+Do not fabricate screenshots or test results.
+
+Do not commit or push changes.
+
+**STOP after this correction task. Do not start another redesign or backend implementation.**
+
+---
+
+# KEYS OF THE DEPARTED — COMPREHENSIVE ENGINEERING & HACKTOBERFEST STATUS AUDIT
+
+**Repository:** `E:\keys-of-the-departed`
+
+**Role:** Act as a senior software architect, full-stack engineering lead, security reviewer and hackathon technical evaluator.
+
+We need a comprehensive, evidence-based assessment of the current project.
+
+Multiple development tasks have been running in overlapping sequences:
+- Frontend consolidation and UX correction.
+- Backend API development.
+- MongoDB Atlas integration.
+- Auth0 authentication.
+- Google Gemma / Ollama integration.
+- TabPFN.
+- GitHub sandbox integration.
+- Entire and DevRelay.
+- Render deployment.
+
+We need to establish the actual current state before proceeding.
+
+## CRITICAL INSTRUCTIONS
+
+This is an INSPECTION-ONLY audit.
+
+1. Do not modify, create or delete files.
+2. Do not install dependencies.
+3. Do not reset, revert, stash, commit or push.
+4. Do not run database migrations or seed scripts.
+5. Do not modify MongoDB Atlas data.
+6. Do not change environment variables.
+7. Never print secrets, credentials, API tokens or database connection strings.
+8. Do not claim an integration works just because its package, environment variable, documentation or UI exists.
+9. Distinguish implemented, partially implemented, simulated, configured-but-unused and planned functionality.
+10. If evidence is unavailable, explicitly say "Not verified."
+
+Inspect the entire repository, relevant Git history, current working tree, documentation, source code, tests and configuration.
+
+---
+
+# PART A — REPOSITORY AND DEVELOPMENT STATE
+
+Inspect:
+- `git status --short`
+- `git diff --stat`
+- `git diff`
+- Relevant recent Git history.
+- Project workspace structure.
+- `docs/CONTEXT.md`
+- `docs/SPEC.md`
+- `docs/TASKS.md`
+- `docs/DECISIONS.md`
+- README and other technical documentation.
+
+Identify:
+1. Current branch and uncommitted changes.
+2. Files modified by the latest frontend work.
+3. Files modified by MongoDB implementation.
+4. Whether any overlapping work caused conflicts or lost changes.
+5. Current project architecture and package structure.
+6. Any unfinished or abandoned implementation.
+
+Do not expose secrets when inspecting environment files.
+
+# PART B — FRONTEND AUDIT
+
+Inspect every implemented page, component, route and interaction.
+
+Cover:
+- Landing page and original visual identity.
+- Hunter and Golden Book restoration.
+- Header and navigation.
+- Dashboard.
+- Archive and four chambers.
+- Case Investigation.
+- New Investigation and uploads.
+- Results and evaluation.
+- Integrations.
+- Safety.
+- Keeper's Ritual / Free Spirit.
+- Guided Demo Tour.
+- Sign In / Sign Up and Auth0 modal.
+
+For each page, report:
+- Implemented functionality.
+- Broken or incomplete functionality.
+- UX defects.
+- Responsive/accessibility issues.
+- Actual browser verification performed.
+
+Specifically verify:
+- Can a user return to the landing page from every route?
+- Do browser back/forward controls work?
+- Are all buttons and navigation links functional?
+- Are original visual assets preserved and used?
+- Is the landing page repetitive or excessively card-based?
+- Is the Keeper's Ritual accessible?
+
+Do not treat the existence of a component as proof of a working user journey.
+
+# PART C — BACKEND AND API AUDIT
+
+Inspect:
+- Express application.
+- Routes and controllers.
+- Services.
+- Repository interfaces and implementations.
+- Shared Zod contracts.
+- File ingestion and processing pipeline.
+- Evidence verification.
+- Error handling.
+- CORS and security middleware.
+- Health checks.
+
+Produce a route inventory with:
+- HTTP method.
+- Endpoint.
+- Purpose.
+- Authentication requirement.
+- Request/response contract.
+- Actual implementation status.
+
+Identify API mismatches between frontend, backend and shared contracts.
+
+Check the canonical definitions of R1–R5 and report any inconsistencies.
+
+# PART D — DATABASE / MONGODB AUDIT
+
+Inspect the entire MongoDB implementation.
+
+Determine whether:
+- The MongoDB driver is installed.
+- A real connection manager exists.
+- The application connects to Atlas at startup.
+- A real ping is performed.
+- Health checks accurately reflect database availability.
+- Collections and indexes exist in code.
+- MongoAccountsRepository exists and works.
+- MongoCasesRepository exists and works.
+- MongoInvestigationsRepository exists and works.
+- CRUD operations are implemented.
+- Uploaded evidence persists.
+- Data survives server restart.
+- Fixture repositories remain available for testing.
+- A safe explicit seed script exists.
+
+Do not connect to, modify or seed the user's live database during this audit.
+
+If the MongoDB implementation is incomplete, identify the exact remaining work.
+
+# PART E — AUTHENTICATION AND SECURITY
+
+Inspect Auth0 configuration and implementation.
+
+Verify:
+- SPA application configuration requirements.
+- Frontend Auth0 SDK integration.
+- Authorization Code Flow with PKCE.
+- Backend JWT signature validation.
+- Issuer and audience validation.
+- Scope enforcement.
+- Protected write endpoints.
+- CORS restrictions.
+- Secret handling.
+- Rate limiting.
+- Human approval boundaries.
+
+Clearly distinguish dashboard configuration from actual application integration.
+
+Never expose Client Secrets.
+
+# PART F — AI AND PARTNER TECHNOLOGY AUDIT
+
+Assess every partner technology separately.
+
+## 1. Google Gemma / Ollama
+- Is Ollama installed?
+- Is `gemma3:4b` available locally?
+- Does the backend actually call Ollama?
+- Is structured candidate extraction implemented?
+- Is the output validated against Zod schemas?
+- Are candidate claims passed to deterministic verification?
+- Are model failures and insufficient evidence handled safely?
+
+Distinguish real inference from regex, fixtures and mock outputs.
+
+Do not substitute Gemini API integration for local Ollama without explicit approval.
+
+## 2. TabPFN
+- Is a Python feature extraction pipeline implemented?
+- Does a real TabPFN model run?
+- Is there a reproducible dataset and evaluation procedure?
+- Are scores computed or hardcoded?
+- Is the integration consistent with the architectural decisions?
+
+## 3. MongoDB Atlas
+Report actual persistence functionality, not just configuration.
+
+## 4. Auth0 / Auth0 for AI Agents
+Report actual authentication, authorization and any agent-related capabilities separately.
+
+Do not claim CIBA or Token Vault integration merely because a modal or payload exists.
+
+## 5. GitHub
+- Is an API client implemented?
+- Is a sandbox repository configured?
+- Are actual GitHub operations performed?
+- Are permissions least-privilege?
+- Is human approval enforced?
+- Can production credentials be affected?
+
+## 6. Entire
+- Is session tracking active?
+- Are session traces and checkpoints recorded?
+- Are there reproducible artifacts?
+
+## 7. DevRelay
+- Is it used for actual agent workflows?
+- Are task/session traces available?
+- Is its role distinct from Entire?
+
+## 8. Render
+- Is `render.yaml` valid?
+- Are frontend and backend deployments actually live?
+- Are health checks operational?
+- Are production environment variables configured?
+
+Do not infer deployment success from configuration files.
+
+# PART G — HACKTOBERFEST PRIZE CATEGORY READINESS
+
+Create a dedicated assessment for every partner/prize category listed in the project documentation.
+
+For each, report:
+
+1. Partner/category.
+2. Intended use in Keys of the Departed.
+3. Actual implementation.
+4. Evidence in the repository.
+5. Missing technical requirements.
+6. Demonstration readiness.
+7. Honest status.
+
+Use these statuses:
+
+- IMPLEMENTED — working functionality verified.
+- PARTIALLY IMPLEMENTED — real integration exists but is incomplete.
+- CONFIGURED ONLY — credentials/settings exist but no working integration.
+- SIMULATED — demonstration or mock implementation only.
+- PLANNED — design or documentation only.
+- NOT VERIFIED — insufficient evidence.
+
+Do not invent eligibility or claim prize qualification. Identify any category requirements that cannot be verified from repository materials.
+
+# PART H — TESTING AND QUALITY
+
+Inspect and, where safe, run existing non-destructive checks:
+
+- Formatting.
+- Linting.
+- TypeScript.
+- Unit tests.
+- Integration tests.
+- Production builds.
+
+Report exact:
+- Test files and counts.
+- Passed and failed tests.
+- Build status.
+- Lint warnings.
+- Known flaky or unverified tests.
+
+Do not run destructive database tests against Atlas.
+
+# PART I — CONSOLIDATED TASK TRACKER
+
+Create a report in the response, not a new file.
+
+Organize all outstanding work into:
+
+1. Critical defects.
+2. Frontend UX corrections.
+3. Backend implementation.
+4. MongoDB persistence.
+5. Authentication and security.
+6. AI/Gemma integration.
+7. TabPFN integration.
+8. GitHub sandbox workflow.
+9. Entire/DevRelay provenance.
+10. Deployment and demonstration.
+11. Hacktoberfest submission and prize readiness.
+
+For every task include:
+- Priority: Critical / High / Medium / Low.
+- Dependencies.
+- Exact files or modules affected.
+- Acceptance criteria.
+- Verification method.
+- Whether another task is blocking it.
+
+Identify duplicated, obsolete or conflicting tasks in `docs/TASKS.md`.
+
+# PART J — FINAL EXECUTIVE REPORT
+
+Return a structured report with:
+
+1. Overall project status.
+2. Current architecture.
+3. Frontend readiness.
+4. Backend readiness.
+5. Database readiness.
+6. Authentication/security readiness.
+7. AI integration readiness.
+8. Partner/prize category matrix.
+9. Test/build status.
+10. Work preserved and work potentially lost due to overlapping tasks.
+11. Critical risks.
+12. Prioritized implementation roadmap.
+13. The single best next task to execute.
+
+Include a concise percentage estimate only if you can explain its calculation. Do not invent completion percentages.
+
+The report must distinguish code that exists from functionality that has been tested and verified.
+
+**STOP after the audit. Do not begin implementation or create new tasks automatically.**
+
+---
+
+pls complete the project accordingly now fix the bugs complete  what we started aslo the sign in sign up oage should occur as a pop up  when a user is trying to use o=it right if you were  to win this hackthon how would ypuc proceed and complte the tasks and resolve the error and complte the project we are vibe coding the project and since you have the ehole report now complte the project  as your own pace and at last give me the result  what you need  and make sure whose prize categoirs are implimenetd well....
+
+---
+
+comit and push
