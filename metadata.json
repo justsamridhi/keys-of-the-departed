@@ -3,7 +3,7 @@
   "checkpoint_id": "01M69H7E26F5VH12Q13HSVSRH1",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 40,
+  "checkpoints_count": 47,
   "files_touched": [
     ".gitignore",
     ".prettierignore",
@@ -16,6 +16,7 @@
     "client/src/components/AuthModal.tsx",
     "client/src/components/Footer.tsx",
     "client/src/components/FourChambersPreview.tsx",
+    "client/src/components/GuidedTourModal.tsx",
     "client/src/components/TopBar.tsx",
     "client/src/demoData.ts",
     "client/src/main.tsx",
@@ -138,6 +139,12 @@
       "transcript": "/5/full.jsonl",
       "content_hash": "/5/content_hash.txt",
       "prompt": "/5/prompt.txt"
+    },
+    {
+      "metadata": "/6/metadata.json",
+      "transcript": "/6/full.jsonl",
+      "content_hash": "/6/content_hash.txt",
+      "prompt": "/6/prompt.txt"
     }
   ]
 }

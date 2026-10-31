@@ -1,0 +1,37 @@
+{
+  "cli_version": "0.12.0",
+  "checkpoint_id": "01M69H7E26F5VH12Q13HSVSRH1",
+  "session_id": "ae48545f-e7e8-434d-9e8a-86f1f4f8dbe4",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-31T17:48:38.0652428Z",
+  "branch": "main",
+  "checkpoints_count": 7,
+  "save_step_count": 6,
+  "files_touched": [
+    "client/src/components/Footer.tsx",
+    "client/src/components/GuidedTourModal.tsx",
+    "client/src/components/TopBar.tsx",
+    "client/src/demoData.ts",
+    "client/src/pages/ArchivePage.tsx",
+    "client/src/pages/AuthPage.tsx",
+    "client/src/pages/CasePage.tsx",
+    "client/src/pages/DashboardPage.tsx",
+    "client/src/pages/FreeSpiritPage.tsx",
+    "client/src/pages/IntegrationsPage.tsx",
+    "client/src/pages/LandingPage.tsx",
+    "client/src/pages/ResultsPage.tsx",
+    "client/src/pages/SetupPage.tsx",
+    "client/src/pages/UploadPage.tsx",
+    "client/src/theme.css",
+    "client/vite.config.ts",
+    "server/src/app.ts"
+  ],
+  "agent": "Antigravity",
+  "model": "claude-sonnet-4-6",
+  "turn_id": "0376959bc465",
+  "checkpoint_transcript_start": 230,
+  "transcript_lines_at_start": 230,
+  "session_metrics": {
+    "turn_count": 15
+  }
+}
