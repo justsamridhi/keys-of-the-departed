@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build contracts
+        run: npm run build --workspace=contracts
+
       - name: Run verification check (format, lint, typecheck, test, build)
         run: npm run check
 

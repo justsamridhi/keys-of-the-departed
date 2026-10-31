@@ -14,6 +14,7 @@ export default defineConfig({
   publicDir: path.resolve(__dirname, "../assets"),
   resolve: {
     alias: {
+      "@keys/contracts": path.resolve(__dirname, "../contracts/src/index.ts"),
       "@contracts": path.resolve(__dirname, "../contracts/src"),
       "@assets": path.resolve(__dirname, "../assets"),
     },
