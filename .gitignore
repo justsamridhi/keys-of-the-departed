@@ -27,3 +27,5 @@ data/generated/*
 *.log
 .DS_Store
 Thumbs.db
+powershell.cmd
+*.tsbuildinfo

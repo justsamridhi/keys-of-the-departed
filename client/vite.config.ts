@@ -11,9 +11,11 @@ export default defineConfig({
       "/healthz": "http://localhost:3001",
     },
   },
+  publicDir: path.resolve(__dirname, "../assets"),
   resolve: {
     alias: {
       "@contracts": path.resolve(__dirname, "../contracts/src"),
+      "@assets": path.resolve(__dirname, "../assets"),
     },
   },
 });

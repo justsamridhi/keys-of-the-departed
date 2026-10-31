@@ -1,12 +1,83 @@
 import dotenv from "dotenv";
 import { loadConfig } from "./config.js";
 import { createApp } from "./app.js";
+import { MongoConnectionManager } from "./db/connection.js";
+import { ensureIndexes } from "./db/collections.js";
+import {
+  AccountsRepository,
+  FixtureAccountsRepository,
+} from "./repositories/accountsRepository.js";
+import { CasesRepository, FixtureCasesRepository } from "./repositories/casesRepository.js";
+import { InvestigationsRepository } from "./repositories/investigationsRepository.js";
+import { MongoAccountsRepository } from "./repositories/mongoAccountsRepository.js";
+import { MongoCasesRepository } from "./repositories/mongoCasesRepository.js";
+import { MongoInvestigationsRepository } from "./repositories/mongoInvestigationsRepository.js";
+import { UnavailableInvestigationsRepository } from "./repositories/unavailableInvestigationsRepository.js";
+import { DependencyCheckers } from "./health.js";
+
+import { OllamaGemmaService } from "./services/ollamaGemmaService.js";
+import { TabPfnService } from "./services/tabpfnService.js";
 
 dotenv.config();
 
-try {
+async function startServer() {
   const config = loadConfig();
-  const app = createApp(config);
+  const connectionManager = MongoConnectionManager.getInstance();
+
+  const gemmaService = new OllamaGemmaService({
+    baseUrl: config.OLLAMA_BASE_URL,
+    model: config.OLLAMA_MODEL,
+  });
+
+  const tabpfnService = new TabPfnService();
+
+  let accountsRepo: AccountsRepository = new FixtureAccountsRepository();
+  let casesRepo: CasesRepository = new FixtureCasesRepository();
+  let investigationsRepo: InvestigationsRepository = new UnavailableInvestigationsRepository();
+  const checkers: DependencyCheckers = {
+    checkModel: async () => {
+      const avail = await gemmaService.checkAvailability();
+      return avail.available ? "ok" : "unavailable";
+    },
+    checkScores: async () => "ok",
+  };
+
+  if (config.MONGODB_URI) {
+    try {
+      console.log("[keys-of-the-departed] Connecting to MongoDB Atlas...");
+      const db = await connectionManager.connect(config);
+      if (db) {
+        await ensureIndexes(db);
+        accountsRepo = new MongoAccountsRepository(db);
+        casesRepo = new MongoCasesRepository(db);
+        investigationsRepo = new MongoInvestigationsRepository(db, gemmaService, tabpfnService);
+
+        checkers.checkDb = async () => {
+          const isAlive = await connectionManager.ping();
+          return isAlive ? "ok" : "unavailable";
+        };
+
+        console.log(
+          `[keys-of-the-departed] Connected to MongoDB database: ${config.MONGODB_DB_NAME}`,
+        );
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Connection failed";
+      console.warn(
+        `[keys-of-the-departed] MongoDB connection failed. Running in degraded mode: persistent mutations will return HTTP 503. (${msg})`,
+      );
+      checkers.checkDb = async () => "unavailable";
+      investigationsRepo = new UnavailableInvestigationsRepository();
+    }
+  } else {
+    console.log(
+      "[keys-of-the-departed] MONGODB_URI not configured. Running in demo mode: persistent mutations will return HTTP 503.",
+    );
+    checkers.checkDb = async () => "not_configured";
+    investigationsRepo = new UnavailableInvestigationsRepository();
+  }
+
+  const app = createApp(config, checkers, accountsRepo, casesRepo, investigationsRepo);
 
   const server = app.listen(config.PORT, () => {
     console.log(
@@ -25,11 +96,33 @@ try {
       process.exit(1);
     }
   });
-} catch (err: unknown) {
+
+  // Graceful shutdown handling
+  const shutdown = async (signal: string) => {
+    console.log(`\n[keys-of-the-departed] Received ${signal}. Initiating graceful shutdown...`);
+    server.close(async () => {
+      console.log("[keys-of-the-departed] HTTP server closed.");
+      await connectionManager.disconnect();
+      console.log("[keys-of-the-departed] Database connections closed. Process terminating.");
+      process.exit(0);
+    });
+
+    // Force exit after 5s if connections hang
+    setTimeout(() => {
+      console.error("[keys-of-the-departed] Forcefully terminating after timeout.");
+      process.exit(1);
+    }, 5000).unref();
+  };
+
+  process.on("SIGINT", () => shutdown("SIGINT"));
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+}
+
+startServer().catch((err: unknown) => {
   if (err instanceof Error) {
-    console.error(err.message);
+    console.error("Fatal startup error:", err.message);
   } else {
-    console.error("Unknown error starting server");
+    console.error("Unknown fatal error starting server");
   }
   process.exit(1);
-}
+});

@@ -10,6 +10,7 @@
     "@keys/contracts": "*",
     "@keys/server": "*",
     "@types/supertest": "^6.0.2",
+    "jose": "^4.15.9",
     "supertest": "^7.0.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.6",

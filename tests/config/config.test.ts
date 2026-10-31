@@ -20,11 +20,16 @@ describe("Area 2: Configuration and Fail-Fast Environment", () => {
     expect(() => {
       loadConfig({
         AUTH0_DOMAIN: "dev.auth0.com",
-        // Missing CLIENT_ID and CLIENT_SECRET
+        // Missing AUTH0_AUDIENCE
       });
-    }).toThrowError(
-      /Auth0 configuration error: missing required variables: AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET/,
-    );
+    }).toThrowError(/Auth0 configuration error: missing required variables: AUTH0_AUDIENCE/);
+
+    expect(() => {
+      loadConfig({
+        AUTH0_AUDIENCE: "https://api.keys-of-the-departed.org",
+        // Missing AUTH0_DOMAIN
+      });
+    }).toThrowError(/Auth0 configuration error: missing required variables: AUTH0_DOMAIN/);
   });
 
   it("ENV-04: Port fallback and valid number parsing", () => {
@@ -40,11 +45,10 @@ describe("Area 2: Configuration and Fail-Fast Environment", () => {
     try {
       loadConfig({
         AUTH0_DOMAIN: "dummy.domain",
-        AUTH0_CLIENT_ID: "my-secret-id-value",
       });
     } catch (err: any) {
-      expect(err.message).toContain("AUTH0_CLIENT_SECRET");
-      expect(err.message).not.toContain("my-secret-id-value");
+      expect(err.message).toContain("AUTH0_AUDIENCE");
+      expect(err.message).not.toContain("dummy.domain");
     }
   });
 });

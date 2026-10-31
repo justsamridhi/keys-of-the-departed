@@ -1,0 +1,611 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root {
+  /* Altar Gothic Palette */
+  --ink: #0d0d11;
+  --ink2: #141318;
+  --stone: #1c1a1f;
+  --stone2: #26222b;
+  --gold: #c5a059;
+  --gold2: #f0d59a;
+  --gold-dim: #77552e;
+  --crimson: #8b1e2d;
+  --crimson2: #a52c30;
+  --wine: #4a121a;
+  --paper: #e8d5b5;
+  --paper2: #cdb78e;
+  --cream: #f7ebd2;
+  --muted: #a99b82;
+  --green: #7e9272;
+  --blue: #758a9a;
+  --line: rgba(197, 160, 89, 0.35);
+  --line-strong: rgba(197, 160, 89, 0.65);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.75);
+  --glow-gold: 0 0 24px rgba(197, 160, 89, 0.35);
+
+  /* Font Stacks */
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --display: "Cinzel", Georgia, serif;
+  --display-decorative: "Cinzel Decorative", Georgia, serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--ink);
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  background-image:
+    radial-gradient(ellipse at 50% -10%, rgba(139, 30, 45, 0.22), transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(197, 160, 89, 0.12), transparent 50%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.4), transparent 20%, transparent 80%, rgba(0, 0, 0, 0.4));
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Typography Helpers */
+.display {
+  font-family: var(--display);
+}
+.display-decorative {
+  font-family: var(--display-decorative);
+}
+.serif {
+  font-family: var(--serif);
+}
+.mono {
+  font-family: var(--mono);
+}
+.gold {
+  color: var(--gold2);
+}
+.crimson {
+  color: var(--crimson2);
+}
+.muted {
+  color: var(--muted);
+}
+.cream {
+  color: var(--cream);
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Accessibility Focus Ring */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--gold2);
+  outline-offset: 3px;
+}
+
+/* Interactive Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid var(--gold-dim);
+  background: linear-gradient(180deg, #8b1e2d, #521019);
+  color: #f7ebd2;
+  padding: 12px 22px;
+  border-radius: 3px;
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold2);
+  filter: brightness(1.2);
+  box-shadow: 0 8px 25px rgba(197, 160, 89, 0.35);
+  color: #ffffff;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn.secondary {
+  background: rgba(28, 26, 31, 0.9);
+  border-color: #9c7b48;
+  color: #e8d5b5;
+}
+
+.btn.secondary:hover {
+  border-color: var(--gold2);
+  background: rgba(38, 34, 43, 0.95);
+  color: #fff;
+}
+
+.btn.ghost {
+  background: transparent;
+  border-color: rgba(197, 160, 89, 0.35);
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.btn.ghost:hover {
+  color: var(--cream);
+  border-color: var(--gold);
+}
+
+.btn.small {
+  padding: 8px 14px;
+  font-size: 10px;
+}
+
+/* Panels & Containers */
+.panel {
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, rgba(30, 26, 33, 0.94), rgba(16, 14, 18, 0.98));
+  box-shadow: var(--shadow);
+  position: relative;
+  border-radius: 4px;
+  padding: 24px;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(197, 160, 89, 0.16);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+.panel.paper {
+  background: linear-gradient(145deg, #e8d5b5, #c8ad7e);
+  color: #23180f;
+  border-color: #8c6837;
+}
+
+.panel.paper::before {
+  border-color: rgba(100, 70, 35, 0.28);
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 24px 0;
+}
+
+/* Tag / Badge */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #8c6b39;
+  padding: 4px 10px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f7ebd2;
+  background: #211710;
+  border-radius: 2px;
+}
+
+.tag.red {
+  border-color: #8e3536;
+  color: #f0b9ad;
+  background: #3a1114;
+}
+
+.tag.green {
+  border-color: #5c7656;
+  color: #c3d4b8;
+  background: #19251a;
+}
+
+.tag.gold {
+  border-color: #c5a059;
+  color: #f0d59a;
+  background: #2b1f11;
+}
+
+/* Keyframe animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes candleFlicker {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(240, 213, 154, 0.4));
+    opacity: 0.95;
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(240, 213, 154, 0.75));
+    opacity: 1;
+  }
+}
+
+.candle-glow {
+  animation: candleFlicker 3.5s infinite ease-in-out;
+}
+
+/* Floating animation for Hunter */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 7s ease-in-out infinite;
+}
+
+/* Hero Visual Identity Art & Interactive Elements */
+.hero-art {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 520px;
+  width: 100%;
+}
+
+.hero-duo-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  gap: clamp(20px, 3.5vw, 56px);
+}
+
+/* 1. Central Interactive Golden Book - Minimized & Focused */
+.book-interactive-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  z-index: 10;
+  margin-bottom: 8px;
+}
+
+.hero-book {
+  width: clamp(170px, 16vw, 220px);
+  max-height: 145px;
+  object-fit: contain;
+  opacity: 0.98;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 0 20px rgba(197, 160, 89, 0.45));
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.book-interactive-wrapper:hover .hero-book,
+.book-interactive-wrapper:focus-visible .hero-book {
+  transform: translateY(-6px) scale(1.04) rotate(-1deg);
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.98))
+    drop-shadow(0 0 30px rgba(240, 213, 154, 0.8));
+}
+
+.book-interactive-wrapper:focus-visible {
+  outline: 2px solid var(--gold2);
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+.book-hover-label {
+  margin-top: 8px;
+  font-family: var(--display);
+  font-size: 10px;
+  color: var(--gold2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(13, 13, 17, 0.92);
+  border: 1px solid rgba(197, 160, 89, 0.45);
+  padding: 4px 11px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+}
+
+.book-interactive-wrapper:hover .book-hover-label,
+.book-interactive-wrapper:focus-visible .book-hover-label {
+  border-color: var(--gold2);
+  background: rgba(35, 20, 26, 0.95);
+  box-shadow: 0 0 16px rgba(197, 160, 89, 0.5);
+}
+
+/* Emerging Words Animation from the Golden Book - Contained Container */
+.emerging-words-container {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(85%, 180px);
+  height: 65px;
+  overflow: hidden; /* Clips overflow strictly within this container! */
+  pointer-events: none;
+  z-index: 14;
+}
+
+@keyframes emergeWordContained {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 55px) scale(0.85);
+  }
+  20% {
+    opacity: 0.95;
+  }
+  75% {
+    opacity: 0.85;
+    transform: translate(calc(-50% + var(--dx, 6px)), 18px) scale(1.01);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx, 8px)), 2px) scale(1.02);
+  }
+}
+
+.emerging-word {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  font-family: var(--display);
+  font-size: 9.5px;
+  color: var(--gold2);
+  letter-spacing: 0.12em;
+  text-shadow:
+    0 0 8px rgba(197, 160, 89, 0.85),
+    0 0 14px rgba(240, 213, 154, 0.45);
+  pointer-events: none;
+  animation: emergeWordContained 5.2s ease-out infinite;
+  white-space: nowrap;
+}
+
+/* 2. Interactive Hunter - Narrator Positioned to the Right of the Book */
+.hunter-interactive-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  z-index: 20;
+  margin-bottom: 6px;
+}
+
+.hunter-interactive-wrapper:hover .hunter-art,
+.hunter-interactive-wrapper:focus-visible .hunter-art {
+  filter: drop-shadow(0 18px 50px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 0 32px rgba(240, 213, 154, 0.65)) drop-shadow(0 0 50px rgba(139, 30, 45, 0.35));
+  transform: translateY(-6px) scale(1.02);
+}
+
+.hunter-interactive-wrapper:focus-visible {
+  outline: 2px solid var(--gold2);
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+.hunter-art {
+  width: clamp(180px, 18vw, 230px);
+  max-height: 440px;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 40px rgba(0, 0, 0, 0.85))
+    drop-shadow(0 0 20px rgba(197, 160, 89, 0.25));
+  animation: float 7s ease-in-out infinite;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  opacity: 0.95;
+}
+
+/* Hunter Dialogue Panel - Positioned Above the Book with Zero Overlap */
+.hunter-dialogue-panel {
+  position: absolute;
+  top: 15px;
+  right: calc(100% + 14px);
+  width: min(85vw, 310px);
+  max-height: 200px;
+  background: rgba(18, 15, 22, 0.98);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 10px 14px;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.95),
+    0 0 25px rgba(197, 160, 89, 0.35);
+  backdrop-filter: blur(16px);
+  z-index: 25;
+  animation: fadeIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.hunter-dialogue-panel::after {
+  content: "";
+  position: absolute;
+  top: 24px;
+  right: -6px;
+  width: 11px;
+  height: 11px;
+  background: rgba(18, 15, 22, 0.98);
+  border-right: 1px solid var(--gold);
+  border-top: 1px solid var(--gold);
+  transform: rotate(45deg);
+}
+
+.hunter-dialogue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.hunter-sound-btn {
+  background: rgba(197, 160, 89, 0.15);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  color: var(--gold2);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 2px 6px;
+  font-family: var(--mono);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.hunter-dialogue-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 4px;
+  font-family: var(--serif);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #f7ebd2;
+  white-space: pre-line;
+  word-break: break-word;
+  font-style: italic;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
+}
+
+.hunter-dialogue-body::-webkit-scrollbar {
+  width: 4px;
+}
+.hunter-dialogue-body::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 2px;
+}
+
+.hunter-dialogue-footer {
+  margin-top: 6px;
+  border-top: 1px dashed rgba(197, 160, 89, 0.25);
+  padding-top: 5px;
+  font-size: 9.5px;
+  font-family: var(--mono);
+  color: var(--gold2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .hero-section {
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 36px 20px 48px !important;
+    min-height: auto !important;
+  }
+  .hero-left {
+    max-width: 620px !important;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cta-row {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-art {
+    min-height: auto;
+    margin-top: 28px;
+    width: 100%;
+    justify-content: center;
+  }
+  .hero-duo-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    min-height: auto;
+  }
+  .hunter-art {
+    max-height: 280px;
+    width: min(70vw, 200px);
+  }
+  .hero-book {
+    width: min(70vw, 190px);
+    max-height: 130px;
+  }
+  .hunter-dialogue-panel {
+    position: relative;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-width: 360px;
+    margin: 10px auto 0;
+  }
+  .hunter-dialogue-panel::after {
+    display: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .emerging-word {
+    animation: none !important;
+    display: none !important;
+  }
+}

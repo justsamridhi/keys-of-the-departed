@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+contracts/dist/
+server/dist/
+client/dist/
+tests/dist/
+assets/
+data/
+.entire/
+.agents/
+powershell.cmd

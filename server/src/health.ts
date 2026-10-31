@@ -12,12 +12,16 @@ export async function computeHealthStatus(
   startTime: number,
   checkers: DependencyCheckers = {},
 ): Promise<{ status: HealthStatus; httpStatus: number }> {
-  // If external dependencies are not configured, they are "not_configured"
-  let dbStatus: HealthComponentStatus = config.MONGODB_URI ? "ok" : "not_configured";
-  if (config.MONGODB_URI && checkers.checkDb) {
-    try {
-      dbStatus = await checkers.checkDb();
-    } catch {
+  let dbStatus: HealthComponentStatus = "not_configured";
+  if (config.MONGODB_URI) {
+    if (checkers.checkDb) {
+      try {
+        dbStatus = await checkers.checkDb();
+      } catch {
+        dbStatus = "unavailable";
+      }
+    } else {
+      // Configured URI must never report healthy unless a real ping succeeds
       dbStatus = "unavailable";
     }
   }
