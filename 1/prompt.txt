@@ -1,0 +1,3073 @@
+# KEYS OF THE DEPARTED — STAGE 2: SIGN IN + ENGINEERING QUALITY + COMPETITION-WIDE INTEGRATION AUDIT
+
+You are working on **Keys of the Departed**, an evidence-first AI investigation platform for forgotten machine identities.
+
+Repository: `E:\keys-of-the-departed`
+
+GitHub: `https://github.com/justsamridhi/keys-of-the-departed.git`
+
+Your task is to implement Stage 2 — the Sign In experience — to production-quality standards while also performing a project-wide engineering, edge-case, DevRelay, Entire, and prize-category readiness audit.
+
+Think and work simultaneously as:
+- A senior full-stack engineer.
+- A principal product designer.
+- A security-conscious application architect.
+- An expert prompt engineer.
+- An experienced AI product engineer.
+- A competition judge evaluating technical depth, originality, integration quality, and demo readiness.
+- An expert in agent-assisted development and DevRelay/Entire workflows.
+
+Do not merely generate code that looks convincing. Inspect the existing repository, understand its architecture, verify what actually works, and implement only what can be supported by the current codebase and available integrations.
+
+---
+
+## 1. NON-NEGOTIABLE DEVELOPMENT RULES
+
+1. Read and understand:
+   - `docs/CONTEXT.md`
+   - `docs/SPEC.md`
+   - `docs/TASKS.md`
+   - `docs/DECISIONS.md`
+   - Existing source code, contracts, tests, environment configuration, and asset pipeline.
+
+2. Inspect before modifying. Reuse existing components, utilities, contracts, and styles wherever appropriate.
+
+3. Implement **only the Sign In page in this stage**. Do not start Sign Up, AI Profile Setup, Dashboard, Archive, or other pages.
+
+4. Preserve the existing architecture. Do not replace the routing system, rewrite the app, or introduce unnecessary dependencies.
+
+5. Preserve the established Gothic archive design system:
+   - Near-black `#0d0d11`
+   - Antique gold `#c5a059`
+   - Deep crimson `#8b1e2d`
+   - Warm parchment and cream
+   - Cinzel / Cinzel Decorative
+   - Cormorant Garamond
+   - Inter-style interface typography
+   - JetBrains Mono for technical identifiers
+
+6. Use the actual supplied assets where appropriate:
+   - `/logo.png`
+   - `/windowframe.png`
+   - `/parchment-texture.jpg`
+   - Existing project assets as appropriate.
+
+   Do not invent replacement assets, use random stock images, distort image proportions, or change the established visual identity.
+
+7. Do not create fake authentication, fake API responses, fake AI operations, or misleading success messages.
+
+8. Do not remove existing functionality or weaken existing tests to make the implementation pass.
+
+9. Never commit, push, reset, delete, or overwrite important project files without my explicit approval.
+
+10. Work in small, verifiable steps. Do not proceed to the next page until I approve this stage.
+
+---
+
+## 2. FIRST: INSPECT AUTHENTICATION AND EXISTING ARCHITECTURE
+
+Before coding:
+
+- Inspect `App.tsx`, `TopBar.tsx`, `AuthPage.tsx`, `theme.css`, `LandingPage.tsx`, and all related authentication code.
+- Inspect existing Auth0 configuration, dependencies, environment variables, callback handling, session handling, and backend authentication routes.
+- Identify whether authentication is genuinely configured and functional.
+- Identify which authentication features are implemented, partially implemented, planned, or unavailable.
+- Verify the existing guest/demo entry point and how it reaches the guided demo.
+
+Do not assume Auth0 is operational simply because configuration files or dependencies exist.
+
+**Authentication integrity requirements:**
+- If an actual authentication flow exists, integrate with it using the existing supported implementation.
+- If authentication is unavailable or incomplete, communicate that clearly and provide a working demo/guest entry point.
+- Never invent an authentication endpoint.
+- Never expose secrets or credentials in frontend code.
+- Never store plaintext passwords.
+- Never claim a user is authenticated without a successful authentication result.
+- Handle expired sessions and authentication callback errors honestly.
+
+Document the actual authentication status in your completion report.
+
+---
+
+## 3. IMPLEMENT THE SIGN IN PAGE
+
+Build a polished, responsive Sign In page consistent with the existing Gothic archive.
+
+### Interface
+
+Include:
+- Project logo and name.
+- Appropriate Gothic architectural framing.
+- Email input.
+- Password input.
+- Show/hide password control.
+- Sign In button.
+- Sign Up navigation link.
+- Guest/Demo entry point.
+- Forgot Password only if a genuine recovery flow exists.
+- Return-to-archive navigation.
+- Clear loading, success, error, and unavailable-authentication states.
+
+The design should feel like entering an ancient archive, not a generic SaaS authentication template.
+
+Use restraint. Maintain readable typography, strong contrast, appropriate spacing, and responsive composition.
+
+### Functional behavior
+
+Implement:
+- Controlled inputs.
+- Email validation.
+- Password validation appropriate to the actual authentication provider.
+- Keyboard submission using Enter.
+- Correct focus order.
+- Accessible labels and error messages.
+- Disabled state while a request is processing.
+- Duplicate-submission prevention.
+- Clear recovery from failed authentication.
+- Preservation of appropriate input values after errors.
+- Correct navigation after successful authentication.
+- Safe handling of return URLs.
+- Correct browser back/forward behavior.
+
+Do not add arbitrary validation rules that conflict with the actual identity provider.
+
+---
+
+## 4. EDGE-CASE ENGINEERING — REQUIRED
+
+Think like a senior QA engineer and systematically test realistic and adversarial cases.
+
+### Input edge cases
+- Empty email.
+- Empty password.
+- Invalid email format.
+- Leading/trailing whitespace.
+- Extremely long email.
+- Extremely long password.
+- Special characters.
+- Unicode characters.
+- Pasted credentials.
+- Browser autofill.
+- Password visibility toggle.
+- Repeated toggling.
+- Inputs containing potentially malicious HTML/script text.
+
+### Authentication edge cases
+- Incorrect password.
+- Unknown account.
+- Provider rejects credentials.
+- Authentication service unavailable.
+- Network timeout.
+- Connection lost during submission.
+- Server returns unexpected response.
+- Invalid callback parameters.
+- Expired session.
+- User cancels authentication.
+- Multiple clicks on Sign In.
+- User presses Enter repeatedly.
+- Authentication response arrives after navigation.
+- Refresh during callback.
+- Direct navigation to the Sign In route.
+- Attempted return to an external or unsafe URL.
+
+### UI and accessibility edge cases
+- 360px mobile width.
+- 390px mobile width.
+- 768px tablet.
+- 1280px desktop.
+- 1440px desktop.
+- Very long error messages.
+- Slow network.
+- Keyboard-only navigation.
+- Visible focus indicators.
+- Screen-reader-friendly labels.
+- Reduced-motion preference.
+- Browser zoom.
+- Text scaling.
+- Dark Gothic background contrast.
+
+### Security checks
+- No secrets in client bundles.
+- No credentials in localStorage.
+- No plaintext password logging.
+- No unsafe HTML injection.
+- No open redirect.
+- No authentication bypass through demo mode.
+- No false claims of authorization.
+- No leakage of sensitive provider error details.
+
+For every failure, provide an understandable user-facing message without exposing sensitive internal information.
+
+---
+
+## 5. PROJECT-WIDE PRIZE CATEGORY AUDIT — VERY IMPORTANT
+
+This is not merely a normal web-development assignment. The project must be developed with competition judging in mind.
+
+Inspect the existing implementation, repository, documentation, dependencies, configuration, and available partner technologies.
+
+Create or update a project-wide integration matrix covering:
+
+| Integration | Intended role | Actual implementation | Evidence | Remaining work |
+|---|---|---|---|---|
+| Google Gemma | AI investigation and structured claim extraction | Verify | Verify | Identify |
+| TabPFN | Evidence-informed identity analysis/ranking where justified | Verify | Verify | Identify |
+| MongoDB Atlas | Persistent evidence and investigation data | Verify | Verify | Identify |
+| Auth0 for AI Agents | Identity, authorization, and human approval boundaries | Verify | Verify | Identify |
+| Render | Deployment and backend hosting | Verify | Verify | Identify |
+| Entire | Agent-session traceability and development provenance | Verify | Verify | Identify |
+| DevRelay | Agent workflow and development coordination | Verify | Verify | Identify |
+
+For each integration:
+
+1. Inspect existing code and configuration.
+2. Verify whether the technology is genuinely connected.
+3. Identify the exact workflow in which it contributes.
+4. Identify missing implementation.
+5. Determine whether the integration belongs in the current page, another page, the backend, or the development workflow.
+6. Identify its technical limitations and dependencies.
+7. Define verifiable acceptance criteria.
+8. Record evidence such as source files, actual API calls, configuration, tests, logs, or deployment proof.
+
+Use the following status labels consistently:
+
+- Implemented and verified.
+- Implemented but not verified.
+- Partially implemented.
+- Planned.
+- Unavailable or blocked.
+- Not applicable.
+
+**Do not award ourselves credit for a dependency being installed, an environment variable existing, or a README mentioning a technology.**
+
+### Integration quality expectations
+
+**Gemma**
+- Establish a meaningful role in the evidence-investigation pipeline.
+- Consider structured extraction of identity claims and explanations.
+- Preserve source citations and exact evidence.
+- Separate model-generated interpretation from deterministic verification.
+- Do not invent local inference if the model is actually hosted remotely.
+
+**TabPFN**
+- Establish whether a real, defensible tabular prediction or ranking task exists.
+- Identify required features, labels, training/evaluation constraints, and inference workflow.
+- Do not fabricate scores or benchmarks.
+- Do not use it merely as a decorative integration.
+
+**MongoDB Atlas**
+- Verify actual database connectivity and persistence.
+- Identify which entities are persisted.
+- Verify schema, indexes, error handling, and data validation.
+- Do not confuse local fixture data with database records.
+
+**Auth0 for AI Agents**
+- Establish a real identity and authorization use case.
+- Verify actual SDK/configuration and supported functionality.
+- Preserve human approval for sensitive actions.
+- Never simulate an authorization result and describe it as a real Auth0 operation.
+
+**Render**
+- Verify deployment configuration and actual deployment state.
+- Identify frontend/backend services and required environment variables.
+- Check health endpoints and production build behavior.
+- Do not claim deployment success based only on `render.yaml`.
+
+**Entire**
+- Investigate the actual installed/available Entire tooling, repository integration, CLI commands, checkpoints, and session-capture workflow.
+- Determine whether the current development work is captured and whether the project has verifiable session/checkpoint provenance.
+- Verify actual capabilities through available commands and documentation.
+- Do not assume a previous checkpoint still exists.
+- Do not fabricate a checkpoint, session, or submission.
+- Do not install or modify project tooling without explaining the change.
+
+**DevRelay**
+- Inspect the actual DevRelay installation, supported commands, agent configuration, session persistence, and integration with the current development environment.
+- Verify whether the current Antigravity workflow is supported.
+- Determine how to preserve sessions, recover work, and maintain reproducibility.
+- Check whether DevRelay and Entire complement each other or overlap.
+- Do not assume a feature works merely because a command or directory exists.
+- Do not expose private session data or share sessions externally.
+
+### Important
+
+The goal is to implement all relevant prize categories effectively throughout the application, not to force every integration into every page.
+
+For example:
+- Auth0 belongs in identity and authorization workflows.
+- Gemma belongs in the investigation workflow.
+- TabPFN belongs only where a defensible analysis task exists.
+- MongoDB belongs in persistence and evidence retrieval.
+- Render belongs in deployment.
+- Entire and DevRelay belong in the development/provenance workflow.
+
+If an integration is not technically justified, explain why rather than adding superficial code.
+
+---
+
+## 6. COMPETITION-WINNING PRODUCT STANDARDS
+
+Maintain these standards throughout the project:
+
+### Evidence integrity
+- Exact source quotations.
+- Traceable source records.
+- Explicit alternative explanations.
+- No unsupported conclusions.
+- No false certainty.
+- No fabricated confidence or risk scores.
+- Clear distinction between AI interpretation and verified evidence.
+
+### Safety
+- Missing ownership does not imply malicious activity.
+- Preserve statuses: Verified, Supported, Conflicting, No evidence.
+- Preserve reason codes R1–R5.
+- Never revoke production credentials.
+- Sensitive sandbox actions require explicit human approval.
+- Demo fixtures must be visibly synthetic.
+- Simulated actions must never be represented as real production actions.
+
+### Product quality
+- Every visible button must do something meaningful.
+- No dead links.
+- No placeholder controls disguised as implemented features.
+- No fake statistics.
+- No fabricated benchmarks.
+- Proper loading, error, empty, and success states.
+- Accessible and responsive behavior.
+- Consistent navigation.
+- Proper browser history and deep links.
+
+### Demo quality
+Preserve the existing five-step Guided Demo Mode and its narrative.
+
+Do not break:
+- Entry into the archive.
+- Synthetic case inspection.
+- Evidence/source-record inspection.
+- Rejected-claim explanation.
+- Human approval boundary.
+
+Preserve the existing “Are You a Free Spirit?” checklist as a separate optional experience.
+
+---
+
+## 7. TESTING AND QUALITY GATES
+
+After implementation:
+
+Run the complete project validation:
+
+- `npm run format:check`
+- `npm run lint`
+- `npm run typecheck`
+- `npm run test`
+- `npm run build`
+- `npm run check`
+
+Use the actual scripts defined by the repository; do not silently skip a missing command.
+
+Also:
+- Test the Sign In route directly.
+- Test navigation from the landing page.
+- Test demo entry.
+- Test browser refresh.
+- Test back/forward.
+- Test all authentication states.
+- Test responsive viewports.
+- Check browser console errors.
+- Check network requests.
+- Check that existing pages remain intact.
+- Check that the five-step guided demo still works.
+- Check that the existing test suite has not been weakened.
+
+For failures, identify root causes and fix them without hiding or suppressing the failure.
+
+Do not claim browser testing or screenshot verification if you could not actually perform it.
+
+---
+
+## 8. REQUIRED COMPLETION REPORT
+
+When Stage 2 is complete, report:
+
+1. Files inspected.
+2. Files created or modified.
+3. Sign In features implemented.
+4. Actual authentication status.
+5. Edge cases tested and results.
+6. Responsive viewports tested.
+7. Accessibility and security checks.
+8. Format/lint/typecheck/test/build results.
+9. Whether the landing page and guided demo remain functional.
+10. DevRelay audit findings.
+11. Entire audit findings.
+12. Prize-category integration matrix with verified evidence.
+13. Remaining blockers and limitations.
+14. Exact local preview URL.
+15. Any changes requiring my approval.
+
+Distinguish implemented features from planned features.
+
+Provide the browser preview so I can inspect the page myself.
+
+## 9. STOP CONDITION
+
+**STOP after completing Sign In and the project-wide audit.**
+
+Do not start Sign Up or any other page.
+
+Do not commit or push.
+
+Do not perform destructive cleanup.
+
+Wait for my explicit approval before Stage 3.
+
+The standard is not simply “the page works.” The standard is a secure, polished, technically honest, competition-ready implementation with every edge case considered and every partner integration contributing genuine value.
+
+---
+
+# STAGE 2 — FINAL REVIEW AND CORRECTIONS
+
+The Sign In implementation report is promising. Before I approve Stage 2, perform the following final corrections and verification.
+
+### 1. Sign Up navigation
+The Sign Up page is not implemented yet. Do not leave a link that navigates users into an unfinished route without explanation.
+
+Implement an honest, accessible Stage 3 coming-soon state or clearly disabled registration navigation. Do not implement the Sign Up page in this stage.
+
+### 2. Browser verification
+The previous browser automation could not initialize because of the external browser-driver download failure.
+
+Do not claim visual verification based only on HTTP 200.
+
+Use any browser already installed and available in the environment. If browser automation remains unavailable, report this honestly and provide the exact manual verification steps.
+
+Verify:
+- 1440px desktop.
+- 1280px desktop.
+- 768px tablet.
+- 390px mobile.
+- 360px mobile.
+- Sign In validation.
+- Password visibility toggle.
+- Loading and unavailable-authentication states.
+- Guest/demo entry.
+- Landing page navigation.
+- Browser back and forward.
+- No horizontal overflow or console errors.
+
+### 3. Authentication validation
+Review the email and password validation logic. Avoid imposing unnecessary authentication requirements that could conflict with the eventual Auth0 provider configuration.
+
+Keep the current unavailable-authentication state honest. Do not implement fake login.
+
+### 4. Integration audit accuracy
+Correct the project-wide integration matrix:
+
+- MongoDB: configuration prepared; persistent database integration not implemented until actual driver, database operations, and tests exist.
+- Render: deployment configuration present; live deployment unverified.
+- Gemma: planned until actual inference and output validation work.
+- TabPFN: planned until actual offline analysis and evaluation work.
+- Auth0: planned until actual identity and authorization flows work.
+- Entire: distinguish verified CLI/session tracking from any unverified submission or checkpoint claims.
+- DevRelay: distinguish verified CLI authentication from deferred project submission/session workflows.
+
+Do not inflate integration statuses.
+
+### 5. Final regression testing
+Run:
+- npm run format:check
+- npm run lint
+- npm run typecheck
+- npm test
+- npm run build
+- npm run check
+
+Confirm the original landing page and five-step guided demo remain functional.
+
+Do not weaken existing tests.
+
+### 6. Final report
+Return:
+- Exact modified files.
+- Corrections made.
+- Actual browser verification performed.
+- Test results.
+- Any remaining limitations.
+- Updated integration matrix.
+- Local preview URL.
+
+Do not commit, push, reset, or start Stage 3.
+
+STOP and wait for approval.
+
+---
+
+# KEYS OF THE DEPARTED — VISUAL REFINEMENT STAGE
+## Shared Navigation + Landing Page + Sign In Experience
+
+Repository: `E:\keys-of-the-departed`
+
+You are continuing the existing Keys of the Departed project. The current landing page and Sign In page have been implemented and visually reviewed.
+
+The existing Gothic Día de los Muertos-inspired design direction is GOOD. Preserve it.
+
+Your job is to refine the existing experience, remove unnecessary interface clutter, and introduce a small number of meaningful interactions.
+
+Think like a senior frontend engineer, interaction designer, product designer, accessibility specialist, and expert prompt engineer.
+
+Do not redesign the project from scratch.
+
+---
+
+## 1. NON-NEGOTIABLE DESIGN DIRECTION
+
+Preserve the existing:
+- Near-black archive atmosphere.
+- Antique gold borders and accents.
+- Deep crimson highlights.
+- Warm parchment typography.
+- Gothic architectural artwork.
+- Existing supplied PNG assets.
+- Cinzel/Cinzel Decorative display typography.
+- Cormorant Garamond narrative typography.
+- JetBrains Mono technical labels.
+- Existing visual hierarchy and composition.
+
+Do not:
+- Replace the supplied artwork.
+- Introduce generic SaaS styling.
+- Use emojis as substitutes for artwork.
+- Add random animations everywhere.
+- Add excessive glow, particles, or decoration.
+- Change the established color palette.
+- Create a new theme system.
+- Rewrite the application architecture.
+
+Inspect the original HTML reference and existing assets before making visual decisions.
+
+---
+
+## 2. HEADER — SIMPLIFY IT
+
+The current header contains five color swatches labelled:
+- Gold
+- Stone
+- Crimson
+- Midnight
+- Parchment
+
+Remove these visible swatches and their labels from the header.
+
+Do not remove or break the underlying design tokens or CSS variables.
+
+The header should feel like a premium Gothic archive navigation bar, not a developer theme-control panel.
+
+### Navigation
+
+The current header displays too many navigation items simultaneously.
+
+Create a cleaner hierarchy:
+
+**Primary navigation:**
+- Archive
+- Chambers
+- Integrations
+- Safety
+
+**Secondary actions:**
+- Demo Tour
+- Sign In
+- Sign Up
+
+The Investigator, Intake, AI Profile, and Free Spirit experiences should remain accessible through relevant page actions, archive workflows, or secondary navigation where appropriate.
+
+Do not simply delete these features or their routes.
+
+On smaller screens, use an accessible navigation drawer/menu.
+
+Requirements:
+- Responsive behavior.
+- No horizontal overflow.
+- Keyboard navigation.
+- Clear active-page indication.
+- Visible focus states.
+- Working links.
+- Correct browser history.
+- No dead navigation items.
+
+Keep the logo and project identity visually prominent.
+
+---
+
+## 3. FOOTER — REMOVE REPETITION
+
+The footer currently repeats the tagline and includes:
+
+`HACKTOBERFEST 2026 · CHALLENGE WEEK 4`
+
+Remove that Hacktoberfest promotional line.
+
+It is not part of the product experience.
+
+Use one concise brand description instead of repeatedly displaying:
+
+`The engineer left. Their access didn't.`
+
+Keep the tagline in the hero where it has the strongest impact.
+
+The footer should contain:
+- Project identity.
+- A concise description of the product.
+- Archive chapter links.
+- Trust and disclosure information.
+- A working link to verification rules.
+
+Keep the footer elegant, minimal, and consistent with the existing design.
+
+Do not remove important safety disclosures.
+
+---
+
+## 4. LANDING PAGE — PRESERVE THE COMPOSITION, IMPROVE THE ATMOSPHERE
+
+The current landing page is visually strong. Preserve the existing character artwork, layout, and cinematic Gothic composition.
+
+### A. Background visibility
+
+The background is currently too dark in some areas.
+
+Improve its visibility carefully:
+- Increase background image visibility.
+- Adjust overlay opacity and gradients.
+- Preserve readable foreground text.
+- Keep the dark Gothic atmosphere.
+- Ensure the hunter character remains visually distinct.
+- Preserve the original image aspect ratio and positioning.
+
+Do not simply remove all overlays. The text must remain readable.
+
+### B. Hero typography
+
+The headline:
+
+`THE ENGINEER LEFT.`
+
+and
+
+`Their access didn't.`
+
+should feel more Gothic, mysterious, and cinematic.
+
+Improve typography through:
+- Appropriate Cinzel Decorative/Cinzel display usage.
+- Better weight and letter spacing.
+- More deliberate line-height.
+- Elegant contrast between the main headline and italic subtitle.
+- Responsive sizing.
+
+Do not make the text unreadable or excessively decorative.
+
+The tagline should remain in the hero. Avoid repeating it in every section.
+
+### C. Supporting content
+
+Keep the product explanation concise.
+
+Avoid repeatedly describing the product as an open-weight AI investigation narrative in every section.
+
+Explain the product once clearly, then let the page's visual storytelling carry the experience.
+
+### D. Synthetic metrics
+
+Preserve the metrics only if they remain clearly identified as synthetic demo data.
+
+Do not present synthetic numbers as real platform-wide operational statistics.
+
+---
+
+## 5. HUNTER CHARACTER — ADD A MEANINGFUL INTERACTION
+
+The Gothic hunter girl on the landing page is one of the strongest visual assets. Preserve her artwork and composition.
+
+Introduce a subtle interaction when the user hovers over or focuses on the character.
+
+Concept: **The Keeper of Forgotten Identities.**
+
+When the user hovers over the character:
+- Apply a restrained visual response, such as a slight candlelit glow or gentle movement.
+- Reveal a small, elegant message panel near the character.
+- Display a typewriter-style message.
+- The message should explain the character's role in the archive.
+
+Suggested initial message:
+
+`I am the Keeper of Forgotten Identities.`
+
+Then:
+
+`Every key has a history. Every claim must have evidence.`
+
+Optionally reveal a small action:
+
+`Discover the archive →`
+
+This should lead to the archive entry point.
+
+Technical requirements:
+- Implement the typewriter effect using React state/effects.
+- Clean up timers on unmount.
+- Do not restart the animation continuously on every render.
+- Support mouse hover and keyboard focus.
+- Support touch devices with an explicit tap interaction.
+- Respect `prefers-reduced-motion`.
+- Do not block the hero CTA.
+- Avoid layout shifts.
+- Ensure the character remains visible and visually dominant.
+
+Do not implement an external AI/chatbot integration for this interaction. This is a deterministic frontend interaction only.
+
+Do not claim the character is powered by Gemma or another AI model.
+
+---
+
+## 6. GOLDEN BOOK — MAKE IT INTERACTIVE
+
+The golden book artwork should become an intentional interactive element.
+
+When the user hovers:
+- Introduce a subtle golden illumination.
+- Slightly lift or tilt the book.
+- Show a short invitation, such as:
+
+`A different kind of archive awaits...`
+
+On click:
+- Navigate to the Free Spirit experience.
+
+If the Free Spirit page is not yet fully implemented, use its existing route and preserve a clear, user-facing temporary state. Do not invent a finished experience.
+
+Requirements:
+- Accessible link or button.
+- Keyboard activation.
+- Visible focus.
+- Touch support.
+- Reduced-motion support.
+- No dead click handler.
+- Preserve the original book asset and aspect ratio.
+
+Do not make the entire hero background clickable.
+
+---
+
+## 7. SIGN IN PAGE — SIMPLIFY THE EXPERIENCE
+
+The current Sign In page is too cluttered.
+
+It contains too much technical and development-related language.
+
+Remove user-facing messages such as:
+- `External enterprise identity binding is scheduled for Task 9`
+- `Auth0 Tenant: Unconfigured`
+- `New Investigator Enrollment`
+- `Locked · Stage 3 Roadmap`
+- `Registration Locked (Unlocks in Stage 3)`
+- Any references to task numbers, development stages, roadmap approval, or internal implementation plans.
+
+These are internal project notes. They must not appear in the product UI.
+
+### Desired Sign In experience
+
+Keep the page minimal and elegant.
+
+Include:
+- Project logo.
+- Heading: `Enter the Archive`
+- One concise supporting sentence.
+- Email field.
+- Password field.
+- Show/hide password control.
+- Sign In button.
+- A clean Sign Up link.
+- A simple Guest/Demo entry option.
+- Return-to-landing link.
+
+Remove:
+- Large technical status panels.
+- Development roadmap notices.
+- Repeated product descriptions.
+- Excessive decorative boxes.
+- Unnecessary technical metadata.
+
+The page should feel like a premium, calm, simple sign-in experience inside the Gothic archive.
+
+### Authentication integrity
+
+Do not implement fake authentication.
+
+Inspect the existing authentication implementation.
+
+If Auth0 is still unconfigured:
+- Keep the honest unavailable-authentication behavior.
+- Show a concise, understandable message only when the user attempts to sign in.
+- Do not display internal configuration names or task numbers.
+- Keep Guest/Demo entry functional.
+- Never claim a successful login.
+- Never store plaintext passwords.
+- Do not invent endpoints.
+
+### Validation
+
+Preserve:
+- Appropriate email validation.
+- Password required validation.
+- Accessible inline errors.
+- Password visibility.
+- Duplicate-submission prevention.
+- Keyboard submission.
+- Loading feedback.
+- Network/provider error handling.
+
+Do not introduce unnecessary password complexity requirements.
+
+---
+
+## 8. SIGN UP — PREPARE THE DESIGN, DO NOT IMPLEMENT IT YET
+
+The Sign Up page will be the next approved stage.
+
+For this refinement stage:
+- Ensure Sign Up navigation remains clear.
+- Do not display development roadmap language.
+- Do not navigate users into an unfinished page without an honest user-facing explanation.
+- Do not implement registration or fake account creation yet.
+
+Stop before implementing the actual Sign Up page.
+
+---
+
+## 9. GLOBAL UX, ACCESSIBILITY, AND EDGE CASES
+
+Check:
+- 1440px desktop.
+- 1280px desktop.
+- 768px tablet.
+- 390px mobile.
+- 360px mobile.
+
+Test:
+- Navigation drawer opening and closing.
+- Keyboard navigation.
+- Escape key behavior where applicable.
+- Browser back/forward.
+- Hunter hover, focus, and touch behavior.
+- Typewriter animation cleanup.
+- Golden book interaction.
+- Free Spirit route behavior.
+- Sign In validation.
+- Password toggle.
+- Guest/demo entry.
+- Reduced motion.
+- No horizontal overflow.
+- No broken image paths.
+- No console errors.
+- No layout shifts caused by animation.
+
+Do not claim browser testing unless it was actually performed.
+
+---
+
+## 10. REGRESSION AND QUALITY GATES
+
+Run:
+- `npm run format:check`
+- `npm run lint`
+- `npm run typecheck`
+- `npm test`
+- `npm run build`
+- `npm run check`
+
+Preserve all existing tests and functionality.
+
+The following must remain intact:
+- Landing page.
+- Sign In.
+- Five-step guided demo.
+- Existing safety disclosures.
+- Existing archive chapter navigation.
+- Existing assets.
+
+Do not implement the four-chamber page in this stage.
+
+---
+
+## 11. COMPLETION REPORT AND STOP CONDITION
+
+Report:
+1. Files inspected.
+2. Files changed.
+3. Header changes.
+4. Footer changes.
+5. Landing visual improvements.
+6. Hunter interaction implementation.
+7. Golden book interaction implementation.
+8. Sign In simplification.
+9. Authentication status.
+10. Edge cases tested.
+11. Responsive testing.
+12. Full quality-gate results.
+13. Remaining limitations.
+
+Provide the local preview URL.
+
+Do not commit or push.
+
+Do not implement Sign Up, Four Chambers, or other unfinished pages.
+
+STOP and wait for explicit approval.
+
+---
+
+# KEYS OF THE DEPARTED — STAGE 3
+## LANDING REFINEMENT + FREE SPIRIT EXPERIENCE + SIGN UP + AUTH0 READINESS
+
+Repository: `E:\keys-of-the-departed`
+
+You are continuing an existing React/TypeScript application. This is not a greenfield project.
+
+The established product identity, architecture, design system, assets, routes, and working features must be preserved.
+
+Your responsibilities:
+- Senior frontend engineer
+- Full-stack authentication engineer
+- Product designer
+- Interaction designer
+- Accessibility engineer
+- QA engineer
+
+Work carefully. Do not replace existing functionality just to simplify implementation.
+
+---
+
+# PART A — MANDATORY PROJECT AUDIT
+
+Before editing, inspect:
+
+- `docs/CONTEXT.md`
+- `docs/SPEC.md`
+- `docs/TASKS.md`
+- `docs/DECISIONS.md`
+- `client/src/App.tsx`
+- `client/src/theme.css`
+- `client/src/pages/LandingPage.tsx`
+- `client/src/pages/FreeSpiritPage.tsx`
+- `client/src/pages/AuthPage.tsx`
+- `client/src/components/TopBar.tsx`
+- `client/src/components/Footer.tsx`
+- `client/src/components/GuidedTourModal.tsx`
+- Existing assets and their actual dimensions.
+- Existing authentication configuration and tests.
+- Existing routes and shared components.
+
+Do not assume that the asset names, formats, or paths match older notes. Verify the actual files.
+
+Before editing, provide a short inventory of:
+1. Current page behavior.
+2. Current asset usage.
+3. Unused available assets.
+4. Current Auth0 readiness.
+5. Existing routes and tests.
+
+Then proceed with the work below.
+
+# PART B — LANDING PAGE: LESS TEXT, MORE ATMOSPHERE
+
+## Current problem
+
+The landing page contains too much explanatory text.
+
+The hero currently repeats the product explanation across multiple paragraphs, buttons, and supporting statements.
+
+It feels text-heavy even though the visual artwork is strong.
+
+The goal is to create a cinematic, mysterious first impression without sacrificing readability or product clarity.
+
+## New headline direction
+
+Use this headline direction:
+
+THE ENGINEER IS GONE.
+
+The keys remain.
+
+The first line should use the existing Cinzel display typography.
+
+The second line should use the existing Cormorant Garamond italic typography in antique gold.
+
+You may refine punctuation, spacing, and line breaks, but do not turn the headline into generic Halloween copy.
+
+Keep the underlying product idea intact.
+
+## Remove unnecessary text
+
+The hero should contain:
+
+1. Small archive eyebrow.
+2. Main headline.
+3. One short atmospheric supporting paragraph.
+4. One short product clarification sentence.
+5. Two primary actions:
+   - Enter the Archive
+   - Explore the Demo
+6. A small safety/trust statement.
+
+Suggested supporting copy:
+
+"Forgotten deploy keys. Silent service accounts. Machine identities with no one left to answer for them."
+
+Suggested product clarification:
+
+"Trace their history through engineering records. Every conclusion must have evidence."
+
+Remove redundant paragraphs and repeated explanations.
+
+Do not put every product capability in the hero.
+
+Detailed methodology belongs on the Safety / How It Works page.
+
+Keep the synthetic benchmark disclosure. Make it visually secondary and unambiguous.
+
+## Preserve the original design
+
+Do not change:
+- The near-black, antique-gold, crimson, and parchment palette.
+- Cinzel and Cormorant Garamond typography.
+- The existing Gothic/Día de los Muertos atmosphere.
+- The original landing background.
+- The existing character artwork.
+- The established logo.
+- Existing responsive behavior.
+
+The page should feel spacious and intentional.
+
+The background architecture should remain visible.
+
+The body text must remain readable. Make the writing shorter and more evocative; do not make the font tiny or illegible.
+
+Avoid:
+- Generic SaaS hero sections.
+- Excessive text.
+- Multiple competing CTAs.
+- New stock images.
+- Emoji replacing original artwork.
+- Unnecessary cards and boxes.
+
+# PART C — ASSET AUDIT AND PURPOSEFUL ASSET INTEGRATION
+
+The project contains original artwork in the `assets/` directory.
+
+Inspect every image and its actual filename before using it.
+
+Important assets include:
+
+- `rose.png`
+- `rose-crimson-gold.png`
+- `heart.png`
+- `heart-bleeding-gothic.png`
+- `candleon.png`
+- `candleoff.png`
+- `frame.png`
+- `gothic-side-portal.png`
+- `windowframe.png`
+- `goldenbook.png`
+- `seal-broken.png`
+- `seal-verified.png`
+- `glyph-lost.png`
+- `glyph-forgotten.png`
+- `glyph-lonely.png`
+- `glyph-innocent.png`
+- `parchment-texture.jpg`
+- Existing logo and landing artwork.
+
+Verify the exact paths and file extensions.
+
+Do not assume every asset is unused. Search existing code first.
+
+Create a small asset-usage plan before adding new references.
+
+Suggested placement:
+
+- Roses: archive chapter accents and restrained decorative transitions.
+- Bleeding heart: Free Spirit experience and emotional storytelling.
+- Candle on/off: interactive ritual and lighting states.
+- Gothic frames: archetype reveal and selected investigation presentation.
+- Broken/verified seals: evidence and verification states where semantically appropriate.
+- Portal/window frame: selected archive or investigation sections.
+- Golden Book: preserve its existing landing-page interaction.
+
+Rules:
+
+1. Use the actual original PNGs.
+2. Preserve transparency.
+3. Preserve aspect ratios.
+4. Do not stretch or distort.
+5. Do not replace originals with stock images or generated substitutes.
+6. Do not force every asset into the landing page.
+7. Do not use decorative assets where they obscure content.
+8. Do not duplicate large images unnecessarily.
+9. Reuse existing public asset paths if the Vite configuration supports them.
+
+At the end, provide an asset usage matrix listing each asset, the page where it is used, and its purpose.
+
+# PART D — REDESIGN FREE SPIRIT
+
+## Current problem
+
+The current Free Spirit page is a static checklist with a result card.
+
+It is not sufficiently interactive, memorable, or entertaining.
+
+Reimagine it as:
+
+THE KEEPER'S RITUAL
+
+This is an optional, playful experience within the archive.
+
+It is not part of the security investigation engine.
+
+## Interaction concept
+
+Build a short, atmospheric, multi-step ritual.
+
+### Opening scene
+
+Show:
+- Dark archive background.
+- Gothic framing.
+- Unlit candle using `candleoff.png`.
+- Short invitation.
+- Button: "Begin the Ritual".
+
+The experience should feel like entering a hidden room in the archive.
+
+### Candle interaction
+
+The user activates the candle.
+
+Switch from `candleoff.png` to `candleon.png`.
+
+Add a restrained glow and transition.
+
+Respect reduced-motion preferences.
+
+The interaction must work with mouse, touch, Enter, and Space.
+
+### Five interactive choices
+
+Present the existing five personality statements one at a time.
+
+Preserve their underlying meanings:
+
+1. Exploring new ideas and hidden corners.
+2. Noticing small discrepancies, timestamps, and commit signatures.
+3. Following an independent investigative path.
+4. Caring about human stories and memories behind abandoned systems.
+5. Being comfortable with uncertainty while waiting for verifiable evidence.
+
+Do not show all five as a plain static checklist.
+
+Make the interaction feel like discovering five fragments of an old archive.
+
+Possible interaction:
+- One statement appears at a time.
+- The user chooses whether it resonates.
+- A visual indicator records the choice.
+- A progress indicator tracks the ritual.
+- Previous/Next navigation is available.
+- The user can revise earlier choices.
+
+### Visual progression
+
+Use the existing original assets purposefully:
+- Candle on/off.
+- Rose.
+- Bleeding heart.
+- Parchment texture.
+- Gothic frame/window.
+- Existing archive ornaments.
+
+Do not clutter the screen.
+
+Each image should have a meaningful role.
+
+### Final reveal
+
+Create an engaging reveal animation, with reduced-motion fallback.
+
+Display the selected archetype in a beautiful parchment or Gothic frame.
+
+Preserve these existing archetype names unless the current source implementation defines additional names:
+
+- Quiet Observer
+- Curious Wanderer
+- Keeper of Small Wonders
+- Unbound Archivist
+- Free Spirit
+
+Preserve or carefully refine the existing result descriptions.
+
+The result must be deterministic and based on the user's choices.
+
+If no statements are selected, provide a sensible neutral result or ask the user to make a choice. Do not fabricate a personalized assessment.
+
+Include:
+- Reveal my archetype.
+- Restart the ritual.
+- Return to the archive.
+- Optional share/copy result only if implemented safely.
+
+Keep the result local.
+
+Do not call an external AI service.
+
+Do not send personality selections to the backend.
+
+Do not influence security classification, risk scores, investigation results, or authorization.
+
+Include a small disclosure:
+
+"This is a playful archive interlude. It does not affect machine-identity assessments."
+
+## Free Spirit quality requirements
+
+- Responsive on desktop and mobile.
+- No horizontal overflow.
+- Accessible buttons and focus states.
+- Keyboard support.
+- Reduced-motion support.
+- No dead buttons.
+- No excessive animation.
+- No external API requirement.
+- Preserve deterministic behavior.
+
+# PART E — SIGN UP PAGE
+
+Implement the registration experience.
+
+Suggested heading:
+
+Join the Archive
+
+Suggested supporting text:
+
+"Create your investigator identity to preserve evidence, examine forgotten machine identities, and maintain a traceable investigation history."
+
+Form:
+1. Email address.
+2. Password.
+3. Confirm password.
+4. Password visibility toggle.
+5. Create Account.
+6. Link to Sign In.
+7. Guest/Demo access.
+8. Return to landing.
+
+Use the existing Sign In design language.
+
+The registration page must be visually related to Sign In, not an unrelated template.
+
+Use original Gothic assets sparingly.
+
+Do not add unnecessary profile fields.
+
+## Validation
+
+Implement:
+- Required email.
+- Email format.
+- Length limits.
+- Leading/trailing whitespace handling.
+- Password requirements consistent with Auth0 policy.
+- Confirm password matching.
+- Accessible inline errors.
+- Loading state.
+- Disabled state while submitting.
+- Duplicate submission prevention.
+- Provider/network error handling.
+- Duplicate-account handling without exposing sensitive account information.
+
+Do not create an arbitrary password policy that conflicts with the identity provider.
+
+Support password managers and browser autofill.
+
+# PART F — REAL AUTH0 INTEGRATION
+
+Inspect the current Auth0 setup.
+
+Do not assume the tenant is configured.
+
+Determine whether the application is using:
+- Auth0 Universal Login.
+- Auth0 React SDK.
+- An existing backend JWT validation flow.
+- Existing callback/logout routes.
+- Existing audience and issuer configuration.
+
+Prefer Auth0 Universal Login for the SPA registration flow if compatible with the existing architecture.
+
+Do not implement a custom password-handling backend.
+
+If Auth0 is configured:
+- Use the official supported SDK and signup flow.
+- Implement correct redirect/callback handling.
+- Handle email verification.
+- Handle login and logout.
+- Handle provider errors.
+- Preserve secure session handling.
+- Validate JWTs on protected backend routes if applicable.
+- Never trust frontend-only authentication checks.
+
+If Auth0 is not configured:
+- Implement the registration UI and validation.
+- Show an honest unavailable state when registration is submitted.
+- Keep Guest/Demo access functional.
+- Do not fabricate a successful account creation.
+- Do not create fake tokens.
+- Do not store plaintext passwords.
+- Do not invent API endpoints.
+
+## Environment configuration
+
+Inspect the existing environment conventions.
+
+If variables are missing, add a documented `.env.example` with placeholders only.
+
+Never place actual secrets in `.env.example`.
+
+Never expose a client secret in a `VITE_` variable.
+
+Document which values are:
+- Browser-safe public configuration.
+- Server-only configuration.
+- Optional.
+- Required for local authentication.
+
+Do not overwrite an existing `.env` or `.env.local`.
+
+Do not print environment variable values in logs or completion reports.
+
+# PART G — REGRESSION PROTECTION
+
+Preserve:
+- Landing navigation.
+- Sign In.
+- Demo entry.
+- Five-step guided demo.
+- Existing archive routes.
+- Existing Footer links.
+- Existing safety disclosures.
+- Free Spirit's deterministic behavior.
+- Existing tests.
+
+Do not implement Dashboard or AI Profile Setup in this task.
+
+Do not begin the integration showcase redesign yet.
+
+# PART H — TESTING
+
+Add tests for:
+- Sign Up form validation.
+- Password confirmation.
+- Registration loading/error states.
+- Auth0 unavailable state.
+- Auth0 configured flow, where testable.
+- Sign In/Sign Up navigation.
+- Guest Demo entry.
+- Free Spirit choice progression.
+- Previous/Next behavior.
+- Deterministic archetype results.
+- Reset behavior.
+- Keyboard interaction.
+- Reduced motion.
+- Responsive layouts.
+
+Run:
+
+`npm run format:check`
+
+`npm run lint`
+
+`npm run typecheck`
+
+`npm test`
+
+`npm run build`
+
+`npm run check`
+
+Do not claim browser or visual testing unless it was actually performed.
+
+Inspect at:
+- 1440px
+- 1280px
+- 768px
+- 390px
+- 360px
+
+# PART I — COMPLETION REPORT
+
+Provide:
+1. Files inspected.
+2. Files modified/created.
+3. Landing page changes.
+4. Before/after text reduction.
+5. Free Spirit interaction details.
+6. Asset usage matrix.
+7. Sign Up behavior.
+8. Auth0 integration status.
+9. Environment variable names required.
+10. Tests and quality gates.
+11. Responsive verification.
+12. Remaining limitations.
+13. Local preview URLs.
+
+# STOP CONDITION
+
+Complete only the three requested areas:
+- Landing page refinement.
+- Free Spirit redesign.
+- Sign Up and Auth0 readiness.
+
+Work on one page at a time.
+
+After completing and testing each page, inspect its browser preview before moving to the next.
+
+Do not commit, push, reset, or delete files.
+
+Do not change the established visual identity.
+
+Do not start Dashboard, AI Profile Setup, or partner integration showcase implementation.
+
+Stop after the completion report and wait for explicit approval.
+
+---
+
+# KEYS OF THE DEPARTED — FULL-STACK COMPLETION PLAN
+
+We are changing the development strategy.
+
+The application is NOT frontend-complete. Do not proceed with backend-only implementation.
+
+Our strategy is coordinated frontend + backend development, page by page.
+
+### Existing project
+`E:\keys-of-the-departed`
+
+Preserve the existing React/Vite frontend, Express/TypeScript backend, contracts, design system, synthetic fixtures and completed pages.
+
+### Step 1 — Inspect current progress
+Briefly inspect:
+- All existing routes and pages.
+- Existing components and user workflows.
+- Existing backend routes and services.
+- Shared contracts and test coverage.
+- Existing integrations and partner dependencies.
+
+Do not rewrite working components.
+
+### Step 2 — Produce a concise page completion matrix
+
+For each page, identify:
+- Current implementation status.
+- Missing frontend functionality.
+- Required backend endpoints.
+- Required data models/contracts.
+- Required partner integration, if applicable.
+- Acceptance tests.
+
+Include:
+Landing, Sign In, Sign Up, AI Profile Setup, Dashboard, Four-Chamber Archive, Searchable Archive, New Investigation, Results, Case Investigation, Revocation Workflow, Integrations, Safety/About and Guided Demo.
+
+### Step 3 — Establish integration architecture
+
+Use shared TypeScript contracts between React and Express.
+
+Define API request/response schemas, loading/error/empty states and authentication requirements before connecting each page.
+
+Plan Auth0 using React SPA + PKCE and Express JWT verification. The existing Auth0 Regular Web Application configuration must be reviewed; do not silently change it.
+
+### Step 4 — Preserve partner priorities
+
+Account for:
+- Auth0 and Auth0 for AI Agents.
+- Google Gemma.
+- MongoDB Atlas.
+- TabPFN.
+- Entire.
+- DevRelay.
+- Render.
+
+Show actual implementation status and which page/workflow each partner supports. Do not fabricate integrations or install unnecessary packages.
+
+### Step 5 — Recommend the execution sequence
+
+Prioritize a complete, usable developer product.
+
+For each phase, specify:
+- Frontend work.
+- Backend work.
+- Integration work.
+- Tests.
+- Browser preview and acceptance criteria.
+
+### Restrictions
+- This pass is planning only.
+- Do not modify files or install packages.
+- Do not change Auth0 settings.
+- Do not commit or push.
+- Do not repeat the previous long architecture audit.
+- Keep the report concise and actionable.
+
+Finish by recommending the FIRST page/workflow to implement next.
+
+---
+
+# PHASE 1 — FOUR-CHAMBER ARCHIVE & SEARCH
+## Coordinated React + Express Implementation
+
+Act as a senior full-stack engineer. Implement Phase 1 of Keys of the Departed using the existing architecture.
+
+**Project:** `E:\keys-of-the-departed`
+
+### OBJECTIVE
+
+Turn the existing Four-Chamber Archive from a hardcoded frontend experience into a fully working, API-driven workflow.
+
+Work on both frontend and backend together.
+
+### 1. Inspect before changing
+
+Read:
+- `docs/CONTEXT.md`
+- `docs/SPEC.md`
+- `docs/DECISIONS.md`
+- `contracts/`
+- `client/src/pages/ArchivePage.tsx`
+- `server/src/`
+- Existing fixtures and API tests.
+
+Reuse existing contracts, fixtures, components and design tokens. Do not duplicate schemas or rewrite working infrastructure.
+
+### 2. Backend implementation
+
+Implement:
+
+`GET /api/accounts`
+
+Support:
+- `chapter`: LOST, FORGOTTEN, LONELY, INNOCENT
+- `status`: verified, supported, conflicting, no_evidence
+- `search`: account identifier, owner, purpose and available metadata
+- `page` and `limit` for pagination.
+
+Requirements:
+- Validate and sanitize all query parameters.
+- Use existing `AccountSchema` and shared contracts.
+- Return a consistent typed response.
+- Support combined filters.
+- Handle invalid filters and out-of-range pages safely.
+- Keep filtering deterministic.
+- Avoid exposing internal paths, secrets or stack traces.
+
+Use the existing synthetic fixtures through a repository/service abstraction. Clearly label this dataset as synthetic demo data.
+
+**Do not introduce MongoDB merely to complete this phase.** Design the repository boundary so MongoDB Atlas can replace the fixture repository later without changing the frontend API contract.
+
+### 3. Frontend implementation
+
+Complete `ArchivePage.tsx`.
+
+Implement:
+- API-driven account loading.
+- Four chamber navigation and filtering.
+- Search with approximately 300 ms debounce.
+- Combined chamber, status and search filters.
+- Pagination.
+- Loading skeletons.
+- Empty states.
+- Clear error and retry states.
+- Reset filters.
+- Responsive layouts.
+
+Preserve the existing Gothic archive design, original artwork, typography, color palette and visual hierarchy.
+
+Do not introduce generic SaaS dashboard styling.
+
+### 4. User experience
+
+Make the experience understandable to a developer without requiring documentation.
+
+- Clearly distinguish machine identity, owner, purpose and evidence status.
+- Keep identifiers readable.
+- Make active filters visible.
+- Ensure the user can clear filters easily.
+- Show the synthetic-data disclosure.
+- Make account cards navigate to the correct existing case route.
+- Preserve the distinction between missing ownership and malicious activity.
+
+### 5. Technical requirements
+
+- Use shared contracts from `@keys/contracts`.
+- No duplicated frontend/backend types.
+- No `any` shortcuts.
+- No fake API delays or `setInterval` simulations.
+- No fabricated metrics or confidence scores.
+- Handle request cancellation or stale search responses.
+- Avoid unnecessary dependencies.
+- Preserve compatibility with existing routes and the guided demo.
+
+### 6. Tests
+
+Add backend and frontend tests for:
+- All four chamber filters.
+- All four evidence statuses.
+- Combined filters.
+- Search matching and case handling.
+- Invalid query parameters.
+- Pagination boundaries.
+- Empty search results.
+- API error and loading states.
+- Navigation from an account to its case.
+- Regression of existing demo functionality.
+
+### 7. Verification
+
+Run:
+
+`npm run check`
+
+Verify:
+- Frontend on `http://localhost:3000`
+- Backend on `http://localhost:3001`
+- Archive loads from the API.
+- Filters and search work together.
+- Mobile and desktop layouts remain usable.
+
+### 8. Scope restrictions
+
+Only implement Phase 1.
+
+Do not:
+- Build Dashboard or Profile Setup yet.
+- Implement MongoDB yet.
+- Implement Auth0 yet.
+- Integrate Gemma or TabPFN yet.
+- Modify unrelated pages.
+- Change Auth0 dashboard settings.
+- Commit, push, reset or delete existing work.
+
+### 9. Completion report
+
+Report:
+1. Exact files changed.
+2. API endpoint and response contract.
+3. Repository/data source used.
+4. Frontend functionality completed.
+5. Tests added and results.
+6. Browser preview results.
+7. Remaining limitations.
+
+Stop after Phase 1 and wait for explicit approval.
+
+---
+
+# PHASE 2 — CASE INVESTIGATION & EVIDENCE PROVENANCE
+
+Act as a senior full-stack engineer. Continue from the completed Phase 1 implementation.
+
+**Goal:** Turn the Case Investigation page into a fully functional evidence-first investigation workflow.
+
+### Existing working foundation
+- React 18 + Vite + TypeScript.
+- Express + TypeScript.
+- Shared Zod contracts.
+- `GET /api/accounts` working.
+- 40 synthetic machine identities.
+- `AccountsRepository` abstraction.
+- 89 tests passing.
+- Existing `CasePage.tsx`, `GET /api/cases/:id` and `GET /api/records/:id` walking skeletons.
+
+### 1. Backend
+
+Inspect existing case and evidence fixtures before implementation.
+
+Implement or complete:
+- `GET /api/cases/:id`
+- `GET /api/records/:id`
+- Case-to-record relationships for the synthetic dataset.
+- Strict response validation using `@keys/contracts`.
+- Correct 404 handling for unknown cases and records.
+- Consistent error envelopes.
+- Evidence provenance and source metadata.
+
+Do not invent evidence or quotations. If a source record is missing, represent it honestly.
+
+### 2. Frontend
+
+Complete `CasePage.tsx`:
+
+- Load the selected case from the API.
+- Load associated evidence records.
+- Display identity metadata, purpose and ownership.
+- Display claims and exact supporting quotations.
+- Add evidence tabs and source navigation.
+- Highlight exact source quotations safely.
+- Display contradictions and missing evidence.
+- Preserve reason codes R1–R5.
+- Clearly distinguish AI interpretations from deterministic verification and human conclusions.
+- Provide useful loading, error, empty and retry states.
+- Support navigation back to the Archive.
+
+Preserve the existing Gothic visual system and original assets.
+
+### 3. Evidence integrity
+
+Maintain:
+- `Verified`
+- `Supported`
+- `Conflicting`
+- `No evidence`
+
+Never infer malicious intent from missing ownership.
+
+Never fabricate confidence scores, source quotations, verification results or risk levels.
+
+Use the existing exact quote-highlighting utility wherever appropriate.
+
+### 4. Tests
+
+Test:
+- Valid and unknown case IDs.
+- Valid and unknown record IDs.
+- Case-record relationships.
+- Exact quote highlighting.
+- Unicode normalization where supported by existing contracts.
+- Conflicting evidence.
+- Missing evidence.
+- R1–R5 rendering.
+- API errors and frontend loading states.
+- Archive-to-case navigation.
+
+### 5. Quality and scope
+
+Run `npm run check`.
+
+Verify the complete workflow in the browser:
+Archive → Account → Case Dossier → Evidence Record → Back to Archive.
+
+Do not:
+- Implement MongoDB yet.
+- Implement Auth0 yet.
+- Add Gemma or TabPFN to the verification path.
+- Build Dashboard or Profile Setup.
+- Rewrite the existing contracts unnecessarily.
+- Change unrelated pages.
+- Commit, push, reset or delete files.
+
+### 6. Report
+
+Provide exact files changed, endpoints, evidence workflow, tests, browser verification, limitations and remaining work.
+
+Stop after Phase 2 and wait for approval.
+
+---
+
+# PHASE 3 — DASHBOARD + NEW INVESTIGATION + FILE UPLOAD
+
+**Project:** Keys of the Departed  
+**Repository:** `E:\keys-of-the-departed`  
+**Role:** Act as a senior full-stack engineer, security engineer and product architect.
+
+Your task is to implement Phase 3 of Keys of the Departed: a functional Dashboard and a complete New Investigation / Upload workflow.
+
+This is an existing application. Do not start a new project or rebuild the architecture.
+
+The objective is to make the product usable from a real user's perspective:
+
+A user enters the application → reaches the Dashboard → creates an investigation → uploads engineering records → processes available evidence → reviews investigation findings and their sources.
+
+Work on the frontend and backend together, following this workflow.
+
+---
+
+## 1. PROJECT CONTEXT — INSPECT BEFORE CODING
+
+First inspect:
+
+- `docs/CONTEXT.md`
+- `docs/SPEC.md`
+- `docs/TASKS.md`
+- `docs/DECISIONS.md`
+- Root `package.json`
+- `contracts/src`
+- `server/src`
+- `client/src`
+- Existing API routes and tests.
+
+Understand the existing architecture:
+
+- React + Vite + TypeScript frontend.
+- Node.js + Express + TypeScript backend.
+- Shared Zod contracts.
+- Existing repository abstractions.
+- Existing synthetic fixtures.
+- Existing Archive, Case Investigation, Landing, Sign Up and other pages.
+
+Preserve Phase 1 and Phase 2 functionality.
+
+Before coding, identify:
+1. Existing Dashboard and Upload components.
+2. Existing investigation and case data structures.
+3. Existing account-to-case and case-to-record relationships.
+4. Which ingestion and processing functionality is already implemented.
+5. What is genuinely missing.
+
+Do not duplicate existing functionality.
+
+## 2. DASHBOARD — THE APPLICATION HOME
+
+Build a functional Dashboard that becomes the central workspace after entering the application.
+
+### A. Overview
+
+Display useful information derived from actual available data:
+
+- Total machine identities.
+- Distribution across LOST, FORGOTTEN, LONELY and INNOCENT.
+- Evidence-status distribution.
+- Recent investigations.
+- Identities requiring further evidence review, where supported.
+
+Do not invent metrics or calculate unsupported risk scores.
+
+Clearly label synthetic demonstration data.
+
+### B. Primary action
+
+Make `NEW INVESTIGATION` the most prominent action.
+
+Users should immediately understand how to start an investigation.
+
+Include:
+- Create New Investigation.
+- View Archive.
+- View Recent Investigations.
+
+### C. Recent investigations
+
+Display available investigation records with:
+- Investigation name.
+- Creation date.
+- Processing status.
+- Number of associated identities or records, where available.
+- Link to inspect the investigation.
+
+Provide meaningful empty states when there are no investigations.
+
+### D. Navigation
+
+Preserve the existing top navigation.
+
+Include:
+- Dashboard.
+- Archive.
+- Integrations.
+- Safety.
+
+IMPORTANT:
+- No permanent sidebar.
+- No excessive dashboard cards.
+- No unnecessary charts.
+- No invented statistics.
+- Maintain the existing Gothic Día de los Muertos visual identity.
+
+## 3. NEW INVESTIGATION WORKFLOW
+
+Implement a complete, usable investigation creation experience.
+
+### STEP 1 — Create investigation
+
+Allow users to enter:
+
+- Investigation name (required).
+- Description (optional).
+
+Validate the inputs with shared Zod contracts.
+
+Create a real investigation resource through the backend.
+
+Return a unique investigation ID.
+
+### STEP 2 — Upload source records
+
+Build a professional upload interface.
+
+Requirements:
+
+- Drag-and-drop upload.
+- Browse files using the file picker.
+- Display selected filenames and file sizes.
+- Show supported formats.
+- Validate file type and size on both frontend and backend.
+- Show upload progress.
+- Show accepted and rejected files.
+- Allow removal of selected files before submission.
+- Provide clear validation and upload errors.
+- Prevent accidental duplicate submissions.
+
+Do not advertise formats that the backend cannot actually process.
+
+Inspect the existing project and select appropriate formats for the actual evidence ingestion implementation.
+
+Prefer structured engineering records and text-based evidence initially rather than pretending to support arbitrary files.
+
+### STEP 3 — Ingest and process evidence
+
+Implement the real supported ingestion pipeline.
+
+The backend should:
+
+1. Receive and validate uploaded files.
+2. Safely read their content.
+3. Extract supported source records.
+4. Preserve original source text and relevant metadata.
+5. Associate records with the investigation.
+6. Validate extracted records against shared contracts.
+7. Return processing results and errors.
+
+Security requirements:
+
+- Restrict file sizes.
+- Validate file extensions and actual content where practical.
+- Generate safe server-side filenames.
+- Prevent path traversal.
+- Never execute uploaded files.
+- Never expose uploaded files through unrestricted public URLs.
+- Clean up temporary files appropriately.
+- Do not trust client-provided MIME types.
+
+If a file fails processing, explain why instead of silently accepting it.
+
+### STEP 4 — Investigation processing and findings
+
+Connect the ingestion workflow to the existing account, case and evidence architecture.
+
+Where the existing deterministic pipeline supports it:
+
+- Associate machine identities with evidence.
+- Extract candidate ownership and purpose claims.
+- Perform deterministic evidence verification.
+- Preserve exact source quotations.
+- Identify conflicting or missing evidence.
+- Associate findings with the correct machine identity and case.
+
+Preserve the existing evidence statuses:
+
+- Verified.
+- Supported.
+- Conflicting.
+- No evidence.
+
+Preserve R1–R5 reason codes.
+
+IMPORTANT AI BOUNDARIES:
+
+Gemma 3 4B is intended for unstructured evidence interpretation, but do not claim it is integrated or invoked unless actual inference is implemented and verified.
+
+If Gemma integration is not ready:
+- Keep model extraction clearly marked as unavailable or pending.
+- Implement the supported ingestion and deterministic processing functionality.
+- Do not manufacture AI-generated claims.
+
+Likewise, do not claim TabPFN inference.
+
+Never fabricate:
+- Owners.
+- Quotes.
+- Evidence.
+- Confidence scores.
+- Risk scores.
+- Verification outcomes.
+
+The absence of evidence must not be presented as proof of malicious activity.
+
+### STEP 5 — Results
+
+After processing, show a clear investigation results page.
+
+Display actual available results:
+
+- Investigation details.
+- Uploaded files and processing outcomes.
+- Machine identities discovered or associated.
+- Chamber classifications, where supported.
+- Evidence statuses.
+- Accepted claims.
+- Removed claims and reason codes.
+- Source evidence references.
+
+Provide links to the existing Case Investigation pages.
+
+Users must be able to inspect the original evidence and trace findings back to their sources.
+
+If no identities or claims were discovered, show an honest empty state.
+
+Do not generate a fabricated successful result simply to make the workflow look complete.
+
+---
+
+## 4. BACKEND AND CONTRACTS
+
+Implement the necessary endpoints and repository interfaces.
+
+First inspect existing contracts and route conventions. Reuse them where possible.
+
+Potential operations include:
+
+- Create investigation.
+- List investigations.
+- Retrieve investigation.
+- Upload source files.
+- Retrieve processing status.
+- Retrieve investigation findings.
+
+Use shared Zod request and response schemas.
+
+Requirements:
+
+- Consistent error response structure.
+- Correct HTTP status codes.
+- Input validation.
+- Proper investigation-to-file relationships.
+- Proper investigation-to-evidence relationships.
+- Safe file handling.
+- Repository abstraction compatible with future MongoDB Atlas persistence.
+
+For now, do not claim persistent MongoDB storage unless it is genuinely implemented.
+
+Do not introduce unnecessary dependencies.
+
+---
+
+## 5. FRONTEND DESIGN
+
+Preserve the existing design system and original artwork.
+
+Existing visual direction:
+
+- Near-black backgrounds.
+- Antique gold.
+- Parchment.
+- Restrained crimson.
+- Cinzel / Cormorant Garamond / existing technical typography.
+- Original Gothic Día de los Muertos assets.
+
+The Dashboard and Upload experience should be:
+
+- Spacious.
+- Clear.
+- Professional.
+- Responsive.
+- Accessible.
+- Easy to understand.
+
+Avoid:
+- Permanent side panels.
+- Excessive colored badges.
+- Overloaded cards.
+- Unnecessary animations.
+- Decorative controls that do nothing.
+- Excessive poetic language in operational workflows.
+
+Keep the atmospheric theme, but make technical operations straightforward.
+
+---
+
+## 6. TESTING
+
+Add tests for:
+
+**Investigation**
+- Successful creation.
+- Missing investigation name.
+- Invalid input.
+- Unknown investigation ID.
+- Listing and retrieval.
+
+**Uploads**
+- Valid file.
+- Unsupported extension.
+- Invalid file content.
+- Oversized file.
+- Empty file.
+- Multiple files.
+- Duplicate submission.
+- Failed ingestion.
+- Temporary file cleanup.
+
+**Evidence**
+- Investigation-to-record relationships.
+- Source content preservation.
+- Correct case relationships.
+- Exact source quotation.
+- Evidence-status preservation.
+- R1–R5 handling.
+- Missing and conflicting evidence.
+
+**Frontend**
+- Dashboard loading.
+- Dashboard empty states.
+- Investigation creation.
+- Upload validation.
+- Upload progress.
+- Processing states.
+- Results rendering.
+- Navigation to case dossiers.
+
+Run the complete project quality pipeline:
+
+`npm run check`
+
+Fix any errors introduced by your changes.
+
+---
+
+## 7. BROWSER VERIFICATION
+
+Run the frontend and backend and verify this complete journey:
+
+1. Open the application.
+2. Navigate to Dashboard.
+3. Click New Investigation.
+4. Enter an investigation name.
+5. Create the investigation.
+6. Upload a supported source file.
+7. Observe validation and upload progress.
+8. Process the uploaded evidence.
+9. Inspect the actual processing result.
+10. Open a discovered or associated case.
+11. Inspect its source evidence.
+12. Return to the Dashboard.
+13. Confirm that the investigation appears in recent investigations.
+
+Test error and empty states too.
+
+An HTTP 200 response alone does not establish that a page works. Verify the actual rendered interface and interactions.
+
+If browser automation is unavailable, perform manual browser verification and explicitly document what could not be tested.
+
+---
+
+## 8. STRICT SCOPE BOUNDARIES
+
+Do not:
+
+- Rebuild the application architecture.
+- Redesign the landing page.
+- Redesign the four chambers.
+- Redesign the Archive cards in this phase.
+- Remove existing functionality.
+- Change the four-chamber classification model.
+- Collapse the existing evidence statuses.
+- Introduce invented security risk scores.
+- Implement automatic production credential revocation.
+- Claim live Gemma, TabPFN, Auth0 CIBA or MongoDB integration without actual working implementations.
+- Add fake partner integrations.
+- Modify unrelated pages unnecessarily.
+- Commit or push to GitHub.
+
+Do not begin Phase 4.
+
+## 9. COMPLETION REPORT
+
+When Phase 3 is finished, provide:
+
+1. Files created and modified.
+2. Dashboard features implemented.
+3. Investigation creation workflow.
+4. Supported upload formats and file-size limits.
+5. Actual ingestion and processing behavior.
+6. API endpoints implemented.
+7. Database/storage behavior and current limitations.
+8. AI functionality genuinely implemented versus pending.
+9. Test results.
+10. Browser verification results.
+11. Known bugs and security limitations.
+12. Remaining work.
+
+Be precise. Distinguish implemented functionality from planned functionality.
+
+**Stop after Phase 3 and wait for approval.**
+
+---
+
+# KEYS OF THE DEPARTED — COMPLETE FRONTEND CONSOLIDATION
+
+**Project:** Keys of the Departed  
+**Repository:** `E:\keys-of-the-departed`  
+**Role:** Senior frontend engineer, UI/UX architect and product designer.
+
+## PRIMARY OBJECTIVE
+
+Complete and polish the entire frontend of Keys of the Departed.
+
+This is a coordinated frontend refinement task across all existing pages and workflows.
+
+The objective is to transform the current implementation into a cohesive, professional, mature security investigation application while preserving its distinctive Día de los Muertos / Gothic archive identity.
+
+The frontend must communicate a clear product:
+
+**Keys of the Departed discovers, investigates and documents forgotten machine identities and unmanaged credentials using traceable engineering evidence.**
+
+A user should understand what the application does, where to start, how to upload records, how to inspect findings and how to navigate the investigation workflow.
+
+Do not rebuild the project or discard completed work.
+
+---
+
+# 1. INSPECT THE COMPLETE APPLICATION FIRST
+
+Read:
+- `docs/CONTEXT.md`
+- `docs/SPEC.md`
+- `docs/TASKS.md`
+- `docs/DECISIONS.md`
+
+Inspect all existing frontend components, pages, routes, styles, assets and tests.
+
+Existing pages/components include:
+
+- LandingPage
+- AuthPage
+- SignUpPage
+- SetupPage
+- DashboardPage
+- ArchivePage
+- CasePage
+- UploadPage
+- NewInvestigationPage
+- ResultsPage
+- IntegrationsPage
+- FreeSpiritPage
+- TopBar
+- Footer
+- GuidedTourModal
+
+Inspect the actual current implementation rather than assuming all these components are still routed or used.
+
+Before making changes, map the existing routes and identify duplicate, disconnected or incomplete experiences.
+
+Preserve the existing backend API contracts and functionality.
+
+# 2. GLOBAL DESIGN SYSTEM
+
+Retain the established visual identity.
+
+### Color palette
+- Near-black: `#0d0d11`
+- Antique gold: `#c5a059`
+- Deep crimson: `#8b1e2d`
+- Warm parchment: `#e8d5b5`
+- Warm cream: `#f7ebd2`
+- Muted charcoal and burgundy.
+
+### Typography
+- Cinzel / Cinzel Decorative for display headings.
+- Cormorant Garamond for narrative text.
+- Inter or existing readable sans-serif for interface controls.
+- JetBrains Mono for technical identifiers and metadata.
+
+### Original assets
+
+Use the existing original artwork in `assets/`, particularly:
+
+- `glyph-lost.png`
+- `glyph-forgotten.png`
+- `glyph-lonely.png`
+- `glyph-innocent.png`
+- `logo.png`
+- `landing.png`
+- `goldenbook.png`
+- `hunter.png`
+- `candleon.png`
+- `candleoff.png`
+- `seal-verified.png`
+- `seal-broken.png`
+- `parchment-texture.jpg`
+- Existing Gothic frames, roses and moon illustrations.
+
+Inspect the actual images and use the correct assets.
+
+Do not replace them with stock images or generated substitutes.
+
+Preserve transparent backgrounds and original aspect ratios.
+
+### Global UI rules
+- No permanent sidebar.
+- Use a consistent top navigation.
+- Maintain responsive desktop, tablet and mobile layouts.
+- Use restrained animations.
+- Support keyboard navigation and reduced motion.
+- Avoid excessive colorful badges, decorative borders and unnecessary cards.
+- Ensure readable contrast.
+- Use consistent spacing and component hierarchy.
+
+The application should feel like a serious security product with a distinctive visual identity, not a Halloween-themed dashboard or a generic SaaS template.
+
+---
+
+# 3. LANDING PAGE
+
+Refine the existing landing page.
+
+### Hero section
+
+Retain the headline:
+
+**THE ENGINEER IS GONE.  
+THE KEYS REMAIN.**
+
+Use a straightforward explanation:
+
+"Discover forgotten machine identities, unmanaged deploy keys and orphaned service accounts through traceable engineering evidence."
+
+Emphasize:
+- Machine identity discovery.
+- Evidence-backed investigation.
+- Deterministic verification.
+- Human-reviewed remediation.
+
+Move technical implementation details such as NFKC substring matching and R1–R5 into the Safety / Technical Architecture section.
+
+Do not overload the first screen with abstract technical terminology.
+
+### CTA hierarchy
+
+Use one primary CTA:
+
+`EXPLORE THE DEMO ARCHIVE`
+
+Use one secondary text link:
+
+`First time here? Take the guided tour.`
+
+Avoid three or more equally prominent competing buttons.
+
+The CTA must navigate to a genuinely working route.
+
+### Landing page sections
+
+Keep the page concise and coherent:
+
+1. Hero.
+2. What the application does.
+3. Investigate → Verify → Decide.
+4. Four chambers preview.
+5. Evidence-first methodology.
+6. Safety principles.
+7. Final CTA.
+
+The Investigate → Verify → Decide section must accurately describe implemented functionality.
+
+Do not imply that a feature works if it is still simulated or pending.
+
+---
+
+# 4. DASHBOARD — CENTRAL APPLICATION WORKSPACE
+
+Dashboard must be the main application home.
+
+Refine the existing DashboardPage.
+
+### Main sections
+
+**A. Overview**
+- Machine identity count.
+- Four-chamber distribution.
+- Evidence-status distribution.
+- Recent investigations.
+- Review-required identities where supported.
+
+All values must come from existing APIs.
+
+Clearly label synthetic demonstration data.
+
+**B. Main action**
+
+Prominent:
+
+`+ NEW INVESTIGATION`
+
+It must open the existing functional investigation creation workflow.
+
+**C. Recent investigations**
+
+Display:
+- Investigation name.
+- Identifier.
+- Date.
+- Status.
+- File count.
+- Findings count where available.
+
+Allow users to open an investigation.
+
+**D. Quick navigation**
+
+- Browse Archive.
+- New Investigation.
+- Guided Demo.
+
+Avoid unnecessary dashboard widgets.
+
+Do not invent statistics or risk scores.
+
+---
+
+# 5. FOUR CHAMBERS — LANDING AND ARCHIVE PRESENTATION
+
+This is a major visual change.
+
+We are retaining the four-chamber model, but changing its presentation.
+
+Use the original four PNG assets:
+
+- LOST → `glyph-lost.png`
+- FORGOTTEN → `glyph-forgotten.png`
+- LONELY → `glyph-lonely.png`
+- INNOCENT → `glyph-innocent.png`
+
+### Default presentation
+
+Show four clean illustrations with minimal labels:
+
+LOST
+
+FORGOTTEN
+
+LONELY
+
+INNOCENT
+
+Under each, display a small:
+
+`Explore Chamber Cases →`
+
+Do not place long descriptions, numerous tags or multiple badges beneath every image.
+
+### Hover / focus interaction
+
+When the user hovers or keyboard-focuses an illustration, reveal a concise explanation.
+
+Use the actual chamber definitions established in the existing specification and fixtures.
+
+The interaction must also work on touch devices through tapping.
+
+### Navigation
+
+Clicking a chamber must navigate to the Archive with the correct chamber filter selected.
+
+Do not change the chamber classification logic or invent new classification rules.
+
+---
+
+# 6. ARCHIVE — CLEAN MACHINE IDENTITY REGISTRY
+
+The current Archive cards are too text-heavy.
+
+Redesign the presentation using progressive disclosure.
+
+### Default view
+
+Prefer a compact list/table or clean identity-row presentation.
+
+Display only essential information:
+
+- Machine identity name / identifier.
+- Owner or primary attribution.
+- Chamber.
+- Evidence status.
+- Open dossier action.
+
+Show only a small number of operational attributes.
+
+Avoid displaying full commit quotations, extensive tag lists, and detailed source metadata on every card.
+
+### Expanded details
+
+When the user expands or opens an identity, reveal:
+
+- Purpose.
+- Identity type.
+- Environment.
+- Additional tags.
+- Primary evidence quotation.
+- Source citations.
+- Evidence status explanation.
+
+### Filters
+
+Preserve existing functional filtering and search.
+
+Keep:
+- Four chamber filters.
+- Evidence-status filters.
+- Search.
+- Pagination.
+- Clear/reset filters.
+
+Add useful preset filters only when supported by actual data.
+
+Do not invent age, inactivity or risk metrics.
+
+### Status terminology
+
+Preserve the underlying evidence statuses:
+
+- Verified.
+- Supported.
+- Conflicting.
+- No evidence.
+
+Do not collapse distinct evidence states into a single category.
+
+Use restrained visual treatment:
+- Green only where appropriate for verified status.
+- Amber for supported / review-required information.
+- Crimson for actual conflicts.
+- Neutral gray for missing evidence.
+
+Do not classify missing ownership evidence as proof of malicious activity.
+
+---
+
+# 7. CASE INVESTIGATION PAGE
+
+Preserve the existing Phase 2 API-driven functionality.
+
+Refine its visual hierarchy without removing technical depth.
+
+### Overview
+
+Show:
+- Machine identity.
+- Owner status.
+- Purpose status.
+- Chamber classification.
+- Evidence summary.
+
+### Tabs
+
+Retain:
+- Overview.
+- Accepted Claims.
+- Source Evidence Records.
+- Removed Claims / R1–R5.
+
+### Evidence display
+
+Preserve:
+- Exact quotation highlighting.
+- Source metadata.
+- Record identifiers.
+- Provenance.
+- Contradiction explanations.
+- R1–R5 reason codes.
+
+Use expandable evidence sections to avoid overwhelming the default screen.
+
+Clearly distinguish:
+1. AI candidate interpretation.
+2. Deterministic verification.
+3. Human/governance decision.
+
+### Revocation interaction
+
+Replace browser-native `alert()` or `confirm()` dialogs with a consistent in-app confirmation/result modal.
+
+It must clearly state that the current revocation workflow is a sandbox simulation and no production credential is changed.
+
+Do not claim that Auth0 CIBA was invoked if it was not.
+
+---
+
+# 8. NEW INVESTIGATION AND UPLOAD EXPERIENCE
+
+Preserve the functional Phase 3 implementation.
+
+Do not replace it with a decorative upload screen.
+
+Refine the existing workflow:
+
+1. Create investigation.
+2. Upload evidence files.
+3. Validate and display accepted/rejected files.
+4. Ingest and process.
+5. Review findings.
+6. Open case dossiers.
+
+Improve:
+- Progress indicators.
+- Error handling.
+- Empty states.
+- File list readability.
+- Processing state clarity.
+- Results hierarchy.
+
+Keep supported file types and file-size restrictions consistent with backend validation.
+
+Do not introduce unsupported formats.
+
+Do not fabricate successful processing results.
+
+Do not claim live Gemma inference.
+
+The current deterministic ingestion pipeline must remain functional.
+
+---
+
+# 9. AUTHENTICATION — MODAL-BASED EXPERIENCE
+
+We prefer sign-in and sign-up as modal experiences rather than separate full-page destinations.
+
+Inspect the existing Auth0 configuration and frontend authentication code before implementation.
+
+Implement:
+- Sign-in modal.
+- Sign-up modal.
+- Password visibility control where applicable.
+- Validation.
+- Loading and error states.
+- Close and return behavior.
+- Accessible keyboard and focus handling.
+
+The modal must integrate with the actual authentication configuration when available.
+
+If Auth0 SPA configuration is not ready:
+- Build the modal presentation and integration boundary.
+- Clearly show the authentication configuration state.
+- Do not fabricate a user session.
+- Preserve the demo entry path.
+
+Do not put client secrets in frontend environment variables.
+
+Do not change Auth0 application settings without explicit authorization.
+
+---
+
+# 10. KEEPER'S RITUAL — OPTIONAL, NON-BLOCKING
+
+The Keeper's Ritual must never prevent access to the Dashboard or Archive.
+
+Remove it from any mandatory onboarding or entry flow.
+
+Preserve the existing ritual as an optional experience accessible through an appropriate secondary destination.
+
+Retain its visual interactions and original candle artwork.
+
+It must not:
+- Determine security permissions.
+- Affect evidence verification.
+- Change risk classification.
+- Trigger a fake security scan.
+
+Do not force users to complete the ritual before using the application.
+
+---
+
+# 11. INTEGRATIONS PAGE
+
+The current Integrations section needs meaningful content.
+
+Create a polished technical integration overview.
+
+Include:
+
+**Google Gemma**
+- Intended role: unstructured engineering context extraction and candidate claim interpretation.
+- Explain what is implemented versus pending.
+
+**TabPFN**
+- Intended role: tabular pattern analysis.
+- Explain the actual current implementation state.
+
+**MongoDB Atlas**
+- Intended role: persistent investigations, identities and evidence storage.
+- Reflect actual current storage state.
+
+**Auth0**
+- Intended role: authentication and authorization.
+- Reflect actual configuration and implementation state.
+
+**Entire / DevRelay**
+- Explain genuine development workflow provenance capabilities only.
+- Do not claim unverified integration.
+
+**Render**
+- Explain deployment status accurately.
+
+Each integration must have an explicit status:
+
+- Implemented.
+- Partially implemented.
+- Planned.
+- Not configured.
+
+No logo-only integration cards.
+
+No fabricated API connections or successful synchronization indicators.
+
+---
+
+# 12. SAFETY AND TECHNICAL ARCHITECTURE PAGE
+
+Implement a substantive Safety page.
+
+Explain in clear language:
+
+### Evidence-first methodology
+Every security conclusion must be traceable to source evidence.
+
+### AI boundaries
+AI output is candidate interpretation, not ground truth.
+
+### Deterministic verification
+Explain exact quotation matching and source validation accurately.
+
+### Evidence statuses
+Explain Verified, Supported, Conflicting and No evidence.
+
+### Reason codes
+Explain R1–R5.
+
+### Missing ownership
+Absence of registered ownership means missing provenance, not proof of malicious intent.
+
+### Human approval
+Sensitive remediation requires human review.
+
+### Sandbox boundaries
+The current revocation demonstration does not modify production credentials.
+
+Include a clear technical architecture section explaining:
+
+- Frontend.
+- Backend.
+- Shared contracts.
+- Repository layer.
+- Evidence ingestion.
+- Verification pipeline.
+- AI integration status.
+- Current persistence limitations.
+
+All descriptions must reflect actual code.
+
+Do not claim production readiness.
+
+Make the existing `Review verification rules` button navigate to the appropriate content.
+
+---
+
+# 13. GLOBAL INTERACTION AND RESPONSIVENESS AUDIT
+
+Review every visible button, link, menu, modal, tab, card and form.
+
+Every control must have a real action.
+
+Fix:
+- Broken routes.
+- Dead buttons.
+- Inconsistent navigation.
+- Missing hover/focus states.
+- Modal dismissal problems.
+- Overflow.
+- Responsive layout issues.
+- Inconsistent spacing.
+- Duplicate CTAs.
+- Unclear empty/loading/error states.
+
+Ensure:
+- Desktop layout works.
+- Tablet layout works.
+- Mobile layout works.
+- Keyboard navigation works.
+- Reduced motion is respected.
+
+Do not add new features merely to make the application look larger.
+
+---
+
+# 14. TESTING AND ACCEPTANCE CRITERIA
+
+Preserve existing tests and add tests for changed frontend behavior.
+
+Run:
+
+`npm run check`
+
+Fix introduced:
+- Formatting errors.
+- Lint errors.
+- TypeScript errors.
+- Test failures.
+- Build failures.
+
+Perform browser verification of:
+
+1. Landing → Demo Archive.
+2. Landing → Guided Tour.
+3. Dashboard → New Investigation.
+4. Dashboard → Archive.
+5. Archive → Chamber filter.
+6. Archive → Identity dossier.
+7. Case → Accepted Claims → Source Evidence.
+8. Case → Removed Claims.
+9. Investigation → Upload → Results → Case dossier.
+10. Sign-in modal and sign-up modal.
+11. Optional Keeper's Ritual.
+12. Integrations page.
+13. Safety page.
+
+Verify actual visual rendering, not just HTTP status codes.
+
+If browser automation is unavailable, perform manual verification and state exactly what remains unverified.
+
+---
+
+# 15. STRICT PRESERVATION RULES
+
+Do not:
+
+- Rebuild the backend.
+- Change existing API contracts unnecessarily.
+- Delete completed functionality.
+- Remove the four chambers.
+- Remove R1–R5.
+- Collapse evidence statuses.
+- Invent risk scores.
+- Invent AI capabilities.
+- Claim real Auth0 CIBA integration without implementation.
+- Claim MongoDB persistence when currently using fixtures.
+- Claim live Gemma or TabPFN inference without implementation.
+- Replace original artwork.
+- Introduce a permanent sidebar.
+- Commit or push changes.
+
+Keep the existing project architecture and design identity.
+
+---
+
+# 16. FINAL COMPLETION REPORT
+
+When finished, report:
+
+1. Pages and components changed.
+2. UX changes implemented.
+3. Routes verified.
+4. Modal behavior verified.
+5. Original assets reused.
+6. Existing functionality preserved.
+7. Integrations and Safety content implemented.
+8. Tests and build results.
+9. Browser verification results.
+10. Remaining bugs and limitations.
+
+**This is the complete frontend consolidation task. Work across the existing frontend as one coordinated effort. Do not split it into new numbered development phases or begin backend/database implementation. Stop when the frontend is complete and ready for final review.**
+
+---
+
+# KEYS OF THE DEPARTED — BACKEND READINESS AUDIT
+
+The frontend consolidation has been completed. We are preparing for backend, database and integration implementation.
+
+Repository: `E:\keys-of-the-departed`
+
+This is an INSPECTION-ONLY task. Do not modify files, install packages, migrate data, create database collections or change environment variables.
+
+## 1. Environment configuration
+- Locate existing `.env`, `.env.example`, `.gitignore` and client environment files.
+- Identify where `MONGODB_URI` is configured without displaying its value.
+- Check whether `.env` files are ignored by Git and whether any are accidentally tracked.
+- Determine the correct location for Auth0 SPA public configuration.
+- Never print secrets, tokens, connection strings or credentials.
+
+## 2. MongoDB
+- Inspect dependencies and database initialization code.
+- Determine whether MongoDB connects at server startup.
+- Determine whether the connection is actually used by repositories.
+- Identify which repositories still use in-memory fixtures.
+- Identify existing database schemas/models and missing persistence operations.
+- Do not modify the database.
+
+## 3. Auth0
+- Inspect current authentication implementation.
+- Identify whether the frontend uses an Auth0 SDK.
+- Identify whether Express validates JWT signatures, issuer, audience and scopes.
+- Identify what remains to implement for SPA PKCE authentication.
+- Do not expose or request the Client Secret.
+
+## 4. Gemma / Ollama
+- Inspect whether an Ollama client or HTTP integration exists.
+- Check whether `gemma3:4b` is installed locally, if this can be verified safely.
+- Distinguish real model inference from deterministic fixtures and mock responses.
+- Do not introduce Gemini API dependencies.
+
+## 5. API contracts and verification
+- Enumerate the actual implemented routes and HTTP methods.
+- Compare them against shared Zod contracts and frontend API calls.
+- Identify inconsistencies, especially investigation upload and evidence endpoints.
+- Verify that R1–R5 have one canonical definition across the application.
+
+## 6. GitHub, TabPFN, Entire and DevRelay
+- Inspect existing integrations and distinguish implemented functionality from planned functionality.
+- Do not claim integration based on configuration, documentation or package installation alone.
+
+## 7. Final report
+
+Return:
+1. What is genuinely implemented.
+2. What is configured but unused.
+3. What is simulated or fixture-backed.
+4. What is missing.
+5. Any security issues.
+6. Recommended implementation order.
+
+Do not modify any files. Do not expose secrets. Do not start backend implementation.
+
+---
+
+# TASK: MONGODB ATLAS — REAL DATABASE INTEGRATION
+
+Repository: `E:\keys-of-the-departed`
+
+We have completed the backend readiness audit. Implement real MongoDB persistence using the existing MongoDB URI in `server/.env`.
+
+Act as a senior backend engineer. Preserve the existing architecture, repository interfaces, shared Zod contracts and API behavior.
+
+## 1. MongoDB dependency and connection
+
+- Install the official `mongodb` Node.js driver in the server workspace.
+- Create `server/src/db/connection.ts`.
+- Implement a reusable MongoDB connection manager.
+- Read `MONGODB_URI` exclusively from server configuration.
+- Support graceful startup, connection failure handling and graceful shutdown.
+- Avoid exposing credentials in logs or error responses.
+- Do not create duplicate connections.
+
+## 2. Database health
+
+Fix the existing false-positive health check.
+
+Currently, the presence of MONGODB_URI is treated as proof that MongoDB is healthy. This is incorrect.
+
+Implement a real MongoDB ping.
+
+Health must distinguish:
+- connected
+- not_configured
+- disconnected
+
+A configured URI must never produce a healthy database status unless a real ping succeeds.
+
+Do not make the entire application falsely report healthy when MongoDB is unavailable.
+
+## 3. Collections and indexes
+
+Inspect `docs/SPEC.md`, existing contracts and current repository interfaces before designing schemas.
+
+Implement appropriate collections for:
+- accounts
+- cases
+- records
+- investigations
+
+Use stable IDs and appropriate indexes for lookups and filtering.
+
+Do not introduce unnecessary schema duplication.
+
+Preserve evidence provenance, exact quotations, accepted claims, quarantined claims and R1–R5 classifications.
+
+## 4. MongoDB repositories
+
+Implement:
+- MongoAccountsRepository
+- MongoCasesRepository
+- MongoInvestigationsRepository
+
+They must implement the existing repository interfaces.
+
+Preserve existing filtering, search, pagination, API response shapes and error behavior.
+
+Uploaded investigations, source records and processed findings must survive server restarts.
+
+Keep fixture repositories available for automated tests and explicit demo/development use.
+
+## 5. Synthetic data safety
+
+Do NOT automatically insert synthetic fixtures into MongoDB on every startup.
+
+If initial demo data is needed, implement a separate explicit seed script that:
+- is safe to run repeatedly;
+- uses deterministic IDs;
+- never overwrites existing user-created data;
+- clearly identifies synthetic records;
+- requires an explicit command.
+
+Do not execute the seed script automatically.
+
+## 6. Security and correctness
+
+- Validate database input using existing Zod contracts.
+- Prevent accidental exposure of database internals.
+- Use safe query construction.
+- Preserve upload size limits and existing path traversal protections.
+- Review existing CORS configuration and replace unrestricted production behavior with explicit configurable allowed origins, without breaking localhost development.
+- Resolve the R5 definition inconsistency using the canonical specification and shared contracts. Do not silently change the meaning of other reason codes.
+
+## 7. Testing
+
+Add automated tests covering:
+- connection success and failure;
+- actual database ping behavior;
+- repository CRUD;
+- filtering and pagination;
+- persistence after repository/server recreation;
+- duplicate IDs;
+- missing records;
+- fixture mode.
+
+Use a MongoDB test strategy that does not require production Atlas data.
+
+Do not make tests dependent on the user's live database.
+
+## 8. Completion requirements
+
+Run:
+
+`npm run check`
+
+Report:
+1. Files created and modified.
+2. Actual MongoDB connection verification.
+3. Collections and indexes implemented.
+4. Repository operations implemented.
+5. API compatibility.
+6. Tests and results.
+7. Any remaining limitations.
+
+Do not claim persistence works unless it has been tested against a real MongoDB instance or a clearly identified MongoDB test environment.
+
+Do not implement Auth0, Gemma, GitHub, TabPFN or revocation functionality in this task.
+
+Do not commit, push, delete or overwrite unrelated project files.
