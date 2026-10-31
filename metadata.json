@@ -3,12 +3,13 @@
   "checkpoint_id": "01M69H7E26F5VH12Q13HSVSRH1",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 15,
+  "checkpoints_count": 17,
   "files_touched": [
     ".gitignore",
     ".prettierignore",
     "README.md",
     "client/.env.example",
+    "client/package.json",
     "client/src/App.tsx",
     "client/src/components/AuthModal.tsx",
     "client/src/components/Footer.tsx",
@@ -36,6 +37,8 @@
     "contracts/tsconfig.tsbuildinfo",
     "eslint.config.js",
     "package-lock.json",
+    "package.json",
+    "server/.env.example",
     "server/package.json",
     "server/src/app.ts",
     "server/src/config.ts",
@@ -53,12 +56,18 @@
     "server/src/repositories/mongoAccountsRepository.ts",
     "server/src/repositories/mongoCasesRepository.ts",
     "server/src/repositories/mongoInvestigationsRepository.ts",
+    "server/src/services/devrelayService.ts",
+    "server/src/services/entireService.ts",
     "server/tsconfig.tsbuildinfo",
     "tests/api/accounts.test.ts",
     "tests/api/cases.test.ts",
+    "tests/api/devrelay.test.ts",
     "tests/api/investigations.test.ts",
+    "tests/api/provenance.test.ts",
+    "tests/config/config.test.ts",
     "tests/db/mongodb.test.ts",
     "tests/db/testMongoDb.ts",
+    "tests/package.json",
     "tests/tsconfig.json",
     "tests/ui/archive.test.ts",
     "tests/ui/auth.test.ts",
@@ -84,6 +93,12 @@
       "transcript": "/2/full.jsonl",
       "content_hash": "/2/content_hash.txt",
       "prompt": "/2/prompt.txt"
+    },
+    {
+      "metadata": "/3/metadata.json",
+      "transcript": "/3/full.jsonl",
+      "content_hash": "/3/content_hash.txt",
+      "prompt": "/3/prompt.txt"
     }
   ]
 }

@@ -1,0 +1,206 @@
+# PHASE 5 — ENTIRE INTEGRATION
+
+Phase 4 (Auth0 human approval and sandbox remediation) is complete. The full project check passed with 269 tests.
+
+Start integrating Entire into Keys of the Departed.
+
+### 1. Research first
+- Inspect the current official Entire documentation and supported CLI.
+- Check installation requirements and compatibility with this repository.
+- Identify the actual provenance capabilities available.
+- Do not assume unsupported features or invent APIs.
+
+### 2. Set up Entire
+- Integrate Entire into this existing Git repository using its documented setup.
+- Preserve all existing Git history, branches, commits and uncommitted changes.
+- Do not reset, reinitialize or rewrite Git history.
+- Do not commit or push without my approval.
+
+### 3. Verify actual functionality
+Demonstrate which of the following Entire genuinely supports:
+- Development checkpoints.
+- AI coding session provenance.
+- Code-change attribution.
+- Development timeline.
+- Test and verification evidence.
+- Traceability between agent sessions and code changes.
+
+Use actual repository data. Do not fabricate sessions, timestamps, attribution or test results.
+
+### 4. Product integration
+If Entire provides a supported API or CLI for retrieving provenance, assess whether a useful development provenance view can be added to the application.
+
+Do not build a fake dashboard or manually invent provenance data.
+
+### 5. Reliability and security
+- Keep tokens and credentials out of Git.
+- Handle unavailable services and missing provenance.
+- Document setup and configuration.
+- Preserve existing project functionality.
+
+### 6. Testing
+Run relevant integration tests and `npm run check`.
+
+Report:
+- Exact Entire version and installation method.
+- Features actually working.
+- Evidence of successful integration.
+- Files changed.
+- Tests and results.
+- Remaining limitations.
+
+### Scope
+Do not modify MongoDB, Gemma, TabPFN or Auth0 behavior.
+Do not start DevRelay yet.
+Do not commit or push.
+
+Complete Phase 5 and STOP for review.
+
+---
+
+# Phase 6 — DevRelay Integration for Keys of the Departed
+
+Act as a senior full-stack engineer integrating DevRelay into the existing Keys of the Departed monorepo.
+
+## Context
+
+The project already has:
+1. MongoDB Atlas — persistent investigation data.
+2. Gemma 3 via Ollama — local AI claim extraction.
+3. TabPFN — identity prioritization.
+4. Auth0 — authentication and human approval workflow.
+5. Entire CLI — development checkpoints, AI session provenance, and code-change attribution.
+
+DevRelay is the next planned integration.
+
+Repository: `E:\keys-of-the-departed`
+
+## 1. Research before implementation
+
+- Inspect the installed DevRelay CLI version and its actual capabilities.
+- Consult current official DevRelay documentation and supported command help.
+- Identify which capabilities are genuinely usable in this repository and environment.
+- Determine whether DevRelay exposes session management, agent routing, session recovery, provenance, or other relevant functionality.
+- Do not assume compatibility with Entire or any particular coding agent without testing it.
+- Distinguish implemented capabilities from unavailable, experimental, or cloud-dependent features.
+
+## 2. Integration objective
+
+Integrate DevRelay in a way that complements Entire rather than duplicating it.
+
+Entire already handles development checkpoints and code-change provenance. DevRelay should provide a distinct, useful capability related to agent/session workflow, if its documented functionality supports one.
+
+Potential areas to evaluate:
+- Agent/session discovery.
+- Session continuity and recovery.
+- Agent execution metadata.
+- Development workflow traceability.
+- Relevant session information that can be safely surfaced in the application.
+
+Choose only capabilities that are actually supported and useful. Do not build a decorative integration panel around unsupported functionality.
+
+## 3. Architecture and implementation
+
+- Follow the existing monorepo architecture and coding conventions.
+- Use the shared Zod contracts in `contracts`.
+- Put CLI interaction behind a dedicated backend service.
+- Expose narrowly scoped API endpoints.
+- Validate and sanitize all inputs.
+- Avoid shell injection; prefer safe process invocation with argument arrays.
+- Handle missing CLI, unavailable sessions, authentication failures, malformed output, timeouts, and non-zero exit codes gracefully.
+- Never expose access tokens, credentials, or private session content.
+- Do not execute arbitrary agents or commands through public API endpoints.
+- Respect existing Auth0 authentication and authorization boundaries.
+- Show only genuine DevRelay data in the frontend, with clear unavailable/partial states.
+
+## 4. Frontend
+
+Integrate the functionality into the existing Integrations page.
+
+- Maintain the established Gothic archive visual language.
+- Clearly distinguish DevRelay data from Entire provenance data.
+- Show the actual CLI/version and connection status where available.
+- Do not invent sessions, agents, execution histories, metrics, or success states.
+- Explain limitations when a capability is unavailable.
+
+## 5. Testing
+
+Add tests for:
+- Successful CLI interaction.
+- Missing CLI.
+- Non-zero exit code.
+- Timeout.
+- Malformed or unexpected output.
+- Missing or unavailable session data.
+- Invalid user input.
+- Authentication and authorization boundaries.
+- Any newly implemented functionality.
+
+Run:
+
+`npm run check`
+
+Report the actual test count and results. Do not fabricate verification.
+
+## 6. Strict scope boundaries
+
+- Do not modify MongoDB, Gemma, TabPFN, Auth0, or Entire integrations.
+- Do not duplicate Entire's checkpoint/provenance functionality.
+- Do not change existing Git history, branches, or unrelated working-tree changes.
+- Do not reset, reinitialize, commit, or push anything.
+- Do not expose secrets or add local environment files to Git.
+- Do not introduce unnecessary dependencies.
+- Do not expand into unrelated product features.
+
+## 7. Completion report
+
+When finished, provide:
+1. DevRelay version and installation/configuration details.
+2. Officially supported capabilities verified in this environment.
+3. Capabilities actually integrated.
+4. Architecture and API endpoints added.
+5. Frontend changes.
+6. Security and failure-handling measures.
+7. Tests added and complete `npm run check` results.
+8. Files changed.
+9. Remaining limitations and manual configuration required.
+
+Stop after the report. Do not begin another integration.
+
+---
+
+i want you toThe user explicitly authorizes committing and pushing the completed Keys of the Departed project to its existing GitHub repository.
+Repository: E:\keys-of-the-departed
+Remote: [https://github.com/justsamridhi/keys-of-the-departed.git](https://github.com/justsamridhi/keys-of-the-departed.git)
+Perform the following carefully:
+Inspect the current Git state:
+git status
+git branch --show-current
+git remote -v
+git diff --stat
+git diff --cached --stat
+Review all accumulated changes from the completed phases:
+MongoDB Atlas
+Gemma 3
+TabPFN
+Auth0 approval workflow and sandbox remediation
+Entire
+DevRelay
+Check for sensitive files and generated artifacts:
+Never commit .env, .env.local, .env.production, credentials, access tokens, private keys, or secrets.
+Do not commit node_modules, build output, Python virtual environments, caches, or downloaded model weights.
+Ensure .env.example files contain placeholders only.
+Preserve existing Git history and branches.
+Run:
+npm run check
+Do not proceed if it fails. Report the actual failure.
+Review the final staged diff. Stage only intended project source, tests, documentation, configuration, and assets. Do not discard unrelated working-tree changes.
+Create one clear commit with this message:
+feat: complete AI-powered identity investigation integrations
+Push the current intended branch to its existing upstream remote. If no upstream exists, verify the current branch and push it to origin with upstream tracking. Do not force-push.
+Verify:
+git status
+git log -1 --oneline
+git remote -v
+Report the commit hash, branch, push result, files committed, test results, and any remaining uncommitted changes.
+The user has explicitly authorized this commit and push. Do not reset, rebase, force-push, rewrite history, or delete unrelated work.
