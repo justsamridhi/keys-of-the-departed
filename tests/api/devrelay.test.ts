@@ -224,7 +224,29 @@ describe(
       });
 
       it("DEVRELAY-11: Returns 404 for non-existent session ID on DEV", async () => {
-        const res = await request(app).get("/api/devrelay/sessions/99999999");
+        const notFoundRunner: DevRelayRunner = (_exe, _args) => {
+          const err = new Error("404 Not Found: Session not found") as Error & {
+            stderr: string;
+            status: number;
+          };
+          err.stderr = "404 Not Found: Session 99999999 not found";
+          err.status = 1;
+          throw err;
+        };
+
+        const notFoundService = new DevrelayService({ runner: notFoundRunner });
+        const testApp = createApp(
+          baseConfig,
+          {},
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          notFoundService,
+        );
+
+        const res = await request(testApp).get("/api/devrelay/sessions/99999999");
         expect(res.status).toBe(404);
         expect(res.body.error).toContain("Agent session not found");
       });
@@ -265,7 +287,32 @@ describe(
 
     describe("GET /api/devrelay/diagnostics", () => {
       it("DEVRELAY-13: Returns doctor diagnostics conforming to DevRelayDoctorDiagnosticSchema", async () => {
-        const res = await request(app).get("/api/devrelay/diagnostics");
+        const doctorRunner: DevRelayRunner = () => {
+          return `
+DevRelay Doctor Diagnostics
+Platform: linux-x64
+Binary: /usr/local/bin/devrelay
+DEV account: connected (username: justsamridhi)
+MLH account: connected
+Skills:
+  ✓ 3 installed in /home/runner/.config/devrelay/skills
+0 issue(s) found
+`;
+        };
+
+        const doctorService = new DevrelayService({ runner: doctorRunner });
+        const testApp = createApp(
+          baseConfig,
+          {},
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          doctorService,
+        );
+
+        const res = await request(testApp).get("/api/devrelay/diagnostics");
         expect(res.status).toBe(200);
 
         const parsed = DevRelayDoctorDiagnosticSchema.safeParse(res.body);

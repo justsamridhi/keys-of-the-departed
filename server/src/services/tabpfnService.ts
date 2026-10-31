@@ -69,7 +69,7 @@ export class TabPfnService {
           } catch {
             // Ignore kill errors
           }
-          resolve(this.createFallbackSummary(accounts, "model_unavailable", 35000));
+          resolve(this.createFallbackSummary(accounts, "model_unavailable", 35000, records));
         }
       }, this.timeoutMs);
 
@@ -86,7 +86,7 @@ export class TabPfnService {
           isSettled = true;
           clearTimeout(timer);
           console.warn("[TabPfnService] Child process error:", err.message);
-          resolve(this.createFallbackSummary(accounts, "model_unavailable", 0));
+          resolve(this.createFallbackSummary(accounts, "model_unavailable", 0, records));
         }
       });
 
@@ -99,7 +99,7 @@ export class TabPfnService {
           console.warn(
             `[TabPfnService] Subprocess exited with code ${code}. Stderr: ${stderr.slice(0, 300)}`,
           );
-          return resolve(this.createFallbackSummary(accounts, "model_unavailable", 0));
+          return resolve(this.createFallbackSummary(accounts, "model_unavailable", 0, records));
         }
 
         try {
@@ -119,11 +119,11 @@ export class TabPfnService {
               "[TabPfnService] Validation error on TabPFN output:",
               validated.error.errors,
             );
-            resolve(this.createFallbackSummary(accounts, "model_unavailable", 0));
+            resolve(this.createFallbackSummary(accounts, "model_unavailable", 0, records));
           }
         } catch (parseErr) {
           console.warn("[TabPfnService] Failed to parse output:", parseErr);
-          resolve(this.createFallbackSummary(accounts, "model_unavailable", 0));
+          resolve(this.createFallbackSummary(accounts, "model_unavailable", 0, records));
         }
       });
 
@@ -135,7 +135,7 @@ export class TabPfnService {
           isSettled = true;
           clearTimeout(timer);
           console.warn("[TabPfnService] Stdin write error:", writeErr);
-          resolve(this.createFallbackSummary(accounts, "model_unavailable", 0));
+          resolve(this.createFallbackSummary(accounts, "model_unavailable", 0, records));
         }
       }
     });
@@ -148,6 +148,7 @@ export class TabPfnService {
     accounts: ArchiveAccount[],
     status: "model_unavailable" | "simulated",
     latencyMs: number,
+    records: EvidenceRecord[] = [],
   ): TabPfnSummary {
     const now = new Date();
     const rankings = accounts.map((acc, idx) => {
@@ -171,6 +172,18 @@ export class TabPfnService {
         }
       } else {
         missing.push("last_used_at_unrecorded");
+      }
+
+      if (!acc.permissions || acc.permissions.length === 0) {
+        missing.push("permissions_empty");
+      }
+
+      const accId = acc.account_id || "";
+      const matchingRecords = records.filter(
+        (r) => (r.content && r.content.includes(accId)) || r.actor_account_id === accId,
+      );
+      if (matchingRecords.length === 0) {
+        missing.push("evidence_records_unlinked");
       }
 
       if (acc.owner_status === "no_evidence") {
@@ -217,7 +230,7 @@ export class TabPfnService {
           repo_count: 1,
           recent_deploy_count: 0,
           account_kind_code: acc.kind === "service_account" ? 2 : acc.kind === "deploy_key" ? 1 : 0,
-          evidence_record_count: 1,
+          evidence_record_count: matchingRecords.length,
           has_conflicting_ownership: acc.owner_status === "conflicting",
         },
         contributing_factors: factors.length > 0 ? factors : ["Operational baseline"],
