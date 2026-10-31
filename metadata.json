@@ -3,7 +3,7 @@
   "checkpoint_id": "01M69H7E26F5VH12Q13HSVSRH1",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 25,
+  "checkpoints_count": 40,
   "files_touched": [
     ".gitignore",
     ".prettierignore",
@@ -11,6 +11,7 @@
     "client/.env.example",
     "client/package.json",
     "client/src/App.tsx",
+    "client/src/auth/AuthProvider.tsx",
     "client/src/auth/apiClient.ts",
     "client/src/components/AuthModal.tsx",
     "client/src/components/Footer.tsx",
@@ -32,6 +33,7 @@
     "client/src/pages/SignUpPage.tsx",
     "client/src/pages/UploadPage.tsx",
     "client/src/theme.css",
+    "client/src/vite-env.d.ts",
     "client/tsconfig.tsbuildinfo",
     "client/vite.config.ts",
     "contracts/src/index.ts",
@@ -47,11 +49,13 @@
     "server/.env.example",
     "server/package.json",
     "server/src/app.ts",
+    "server/src/auth/jwt.ts",
     "server/src/config.ts",
     "server/src/db/checkConnection.ts",
     "server/src/db/collections.ts",
     "server/src/db/connection.ts",
     "server/src/db/seed.ts",
+    "server/src/db/testAtlasConnection.ts",
     "server/src/evaluation/frozenDataset.ts",
     "server/src/evaluation/runBenchmark.ts",
     "server/src/fixtures/syntheticAccounts.ts",
@@ -77,6 +81,7 @@
     "tests/ai/tabpfn_prioritization.test.ts",
     "tests/api/accounts.test.ts",
     "tests/api/approvals.test.ts",
+    "tests/api/auth.test.ts",
     "tests/api/cases.test.ts",
     "tests/api/devrelay.test.ts",
     "tests/api/investigations.test.ts",
@@ -85,12 +90,16 @@
     "tests/db/mongodb.test.ts",
     "tests/db/persistence_and_isolation.test.ts",
     "tests/db/testMongoDb.ts",
+    "tests/helpers/authHelper.ts",
     "tests/package.json",
     "tests/tsconfig.json",
     "tests/ui/archive.test.ts",
     "tests/ui/auth.test.ts",
     "tests/ui/case.test.ts",
     "tests/ui/dashboard.test.ts",
+    "tests/ui/frontendAuth.test.ts",
+    "tests/ui/interaction_redesign.test.ts",
+    "tests/ui/product_refocus.test.ts",
     "tests/ui/ritual.test.ts"
   ],
   "sessions": [
@@ -123,6 +132,12 @@
       "transcript": "/4/full.jsonl",
       "content_hash": "/4/content_hash.txt",
       "prompt": "/4/prompt.txt"
+    },
+    {
+      "metadata": "/5/metadata.json",
+      "transcript": "/5/full.jsonl",
+      "content_hash": "/5/content_hash.txt",
+      "prompt": "/5/prompt.txt"
     }
   ]
 }

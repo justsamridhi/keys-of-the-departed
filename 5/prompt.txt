@@ -1,0 +1,1846 @@
+Act as a senior full-stack engineer and application security auditor. Perform a READ-ONLY audit of authentication in the existing Keys of the Departed repository.
+
+Repository: `E:\keys-of-the-departed`
+
+## Objective
+
+Determine whether Sign In, Sign Up, session management, and protected actions are genuinely implemented and functional, or whether they are only simulated through local state.
+
+Do not modify any files during this task.
+
+## 1. Inspect the complete authentication flow
+
+Inspect:
+- `client/src/components/AuthModal.tsx`
+- `client/src/components/TopBar.tsx`
+- `client/src/App.tsx`
+- Authentication-related pages, hooks, contexts, and utilities.
+- `server/src/config.ts`
+- `server/src/app.ts`
+- `server/src/index.ts`
+- Authentication-related middleware and routes.
+- `client/package.json` and `server/package.json`.
+- Relevant tests.
+
+Trace these user journeys:
+
+A. Sign Up
+- What happens when a user submits an email and password?
+- Is an actual Auth0 signup flow initiated?
+- Is an account created by an identity provider?
+- Is the password securely handled?
+- What happens on invalid input and duplicate accounts?
+
+B. Sign In
+- Does it authenticate against Auth0?
+- Is an access token actually obtained?
+- Is the token validated by the backend?
+- Does the application create a genuine authenticated session?
+
+C. Session management
+- Where is the session stored?
+- Is `localStorage` storing only display information, or is it being treated as proof of authentication?
+- Does refresh preserve a valid session?
+- Does sign-out invalidate or clear the actual session?
+- Can a user forge an authenticated state by editing localStorage?
+
+D. Protected actions
+- Are investigation creation, file upload, and revocation approval protected on the backend, or only hidden/intercepted in the frontend?
+- Can unauthenticated users call protected API routes directly?
+- Are scopes and permissions checked server-side?
+
+## 2. Verify Auth0 configuration
+
+Inspect the existing Auth0 configuration and identify:
+- Whether the Regular Web Application and SPA applications are used correctly.
+- Whether Authorization Code Flow with PKCE is implemented for the React SPA.
+- Whether the API audience is configured correctly.
+- Whether issuer, audience, signature, expiry, and scopes are validated by the backend.
+- Whether any Client Secret is incorrectly exposed to the frontend.
+- Whether the CIBA flow is real or only a simulated modal.
+
+Do not expose secret values in your report.
+
+## 3. Test and report
+
+Run relevant authentication tests. Inspect actual implementation, not just task descriptions or documentation.
+
+Classify every capability as:
+- IMPLEMENTED AND VERIFIED
+- IMPLEMENTED BUT NOT VERIFIED
+- SIMULATED
+- NOT IMPLEMENTED
+- MISCONFIGURED
+
+For each finding, provide:
+- File and relevant line numbers.
+- Actual code behavior.
+- What a user would experience.
+- Security implications.
+- Exact missing work required.
+
+## 4. Environment configuration
+
+Identify the exact environment variables required for authentication, where each belongs, and whether the application currently reads them.
+
+Do not print secret values. Do not create or modify `.env` files.
+
+## Constraints
+
+- READ-ONLY: do not edit, create, delete, or reformat files.
+- Do not install packages.
+- Do not modify Auth0 dashboard settings.
+- Do not create fake authentication to make tests pass.
+- Do not claim Auth0 integration based on the existence of environment variables.
+- Do not commit, push, reset, or revert anything.
+
+Finish with a concise authentication readiness report and a prioritized implementation plan. Stop and wait for approval.
+
+---
+
+# Keys of the Departed — Step 1: Real Backend Authentication
+
+Act as a senior backend security engineer. Implement the first stage of real Auth0 authentication in the existing project.
+
+Repository: `E:\keys-of-the-departed`
+
+## Objective
+
+Implement Auth0 JWT verification middleware and protect sensitive API mutation routes.
+
+This task is strictly backend-only. Do not implement the React Auth0 SDK or modify frontend authentication yet.
+
+## 1. Inspect before implementation
+
+Read:
+- `server/src/config.ts`
+- `server/src/app.ts`
+- `server/src/index.ts`
+- `server/package.json`
+- `server/.env.example`
+- Existing authentication and API tests.
+- Existing Auth0 API configuration documented in project files.
+
+Existing Auth0 API audience:
+
+`https://keys-of-the-departed-api`
+
+The API has these configured permissions:
+- `read:cases`
+- `read:records`
+- `create:investigations`
+- `approve:revocations`
+
+The `approve:revocations` permission has deliberately not been granted to the SPA.
+
+## 2. Correct the server Auth0 configuration
+
+Implement the minimum configuration required for an Auth0 resource server:
+
+- `AUTH0_DOMAIN`
+- `AUTH0_AUDIENCE`
+
+Use the existing Zod configuration pattern.
+
+Important:
+- Do not require `AUTH0_CLIENT_SECRET` for JWT verification.
+- Do not use a Client Secret to validate incoming bearer tokens.
+- Do not expose secrets to the frontend.
+- Do not silently enable authentication bypass when configuration is missing.
+- When Auth0 is not configured, protected routes must fail closed with a clear server-side configuration error, not accept anonymous requests.
+
+Do not remove unrelated environment variables.
+
+## 3. Implement JWT authentication middleware
+
+Use `express-oauth2-jwt-bearer` unless the existing architecture provides a demonstrably better maintained solution.
+
+Validate:
+- JWT signature using Auth0 JWKS.
+- Issuer.
+- Audience.
+- Expiration.
+- Token validity.
+
+Implement reusable middleware for:
+- Authentication.
+- Scope/permission enforcement.
+
+Return:
+- `401 Unauthorized` for missing, malformed, invalid, or expired tokens.
+- `403 Forbidden` for authenticated users without the required permission.
+- Appropriate server errors for unavailable or invalid authentication configuration.
+
+Do not trust user identity, email, roles, or scopes supplied in request bodies or frontend state.
+
+## 4. Protect existing API mutations
+
+Protect these routes:
+
+- `POST /api/investigations`
+- `POST /api/investigations/:id/upload`
+- `POST /api/investigations/:id/process`
+
+Require the existing `create:investigations` permission.
+
+Do not accidentally break:
+- Public health endpoints.
+- Existing read-only demo browsing, unless the current security specification explicitly requires protection.
+- Existing repository interfaces.
+- Fixture mode.
+- MongoDB integration.
+
+Do not invent additional permissions or change the Auth0 dashboard configuration.
+
+## 5. Add security tests
+
+Add automated API tests that verify:
+
+1. Missing bearer token → 401.
+2. Malformed bearer token → 401.
+3. Invalid signature → 401.
+4. Wrong issuer → 401.
+5. Wrong audience → 401.
+6. Expired token → 401.
+7. Valid token with insufficient scope → 403.
+8. Valid token with `create:investigations` → request passes authentication and reaches the route handler.
+
+Use local mocked JWKS or deterministic test signing keys. Do not depend on the real Auth0 tenant or external network during automated tests.
+
+Ensure tests do not weaken production middleware.
+
+## 6. Documentation and environment examples
+
+Update `server/.env.example` with the exact variables required for JWT verification.
+
+Do not add fake values that look like real credentials.
+
+Document which variables are required and why.
+
+Do not modify the actual `.env` file or print existing secret values.
+
+## 7. Constraints
+
+- Do not modify any frontend files.
+- Do not implement Auth0 CIBA.
+- Do not implement revocation endpoints.
+- Do not modify MongoDB repositories or seed data.
+- Do not change existing API response contracts unnecessarily.
+- Do not replace authentication with localStorage or hardcoded test users.
+- Do not add a development bypass.
+- Do not commit, push, reset, revert, or delete existing work.
+
+## 8. Verification
+
+Run:
+- Relevant backend authentication tests.
+- Backend typecheck.
+- Backend build.
+- Root `npm run check`.
+
+Report:
+- Files changed.
+- Middleware design.
+- Routes protected.
+- Exact test results.
+- Any remaining limitations.
+
+Stop after this backend stage. Do not proceed to frontend integration without approval.
+
+---
+
+Perform a focused, READ-ONLY security review of the investigation GET endpoints in Keys of the Departed.
+
+Repository: `E:\keys-of-the-departed`
+
+Inspect:
+- `server/src/app.ts`
+- `server/src/repositories/investigationsRepository.ts`
+- `server/src/repositories/mongoInvestigationsRepository.ts`
+- Fixture investigation repository and data models.
+- Relevant API tests.
+- Auth0 permission configuration documented in the project.
+
+Investigate these routes:
+- GET /api/investigations
+- GET /api/investigations/:id
+- GET /api/investigations/:id/findings
+
+Answer these questions:
+
+1. Can anonymous users retrieve investigations created by other users?
+2. Can they retrieve uploaded evidence or extracted findings?
+3. Does MongoDB persistence make these endpoints expose non-synthetic user data?
+4. Are investigation records associated with an authenticated Auth0 `sub` or owner ID?
+5. Can one authenticated user access another user's investigations?
+6. Are fixture/demo investigations distinguishable from real user-created investigations?
+
+Determine the correct access-control design.
+
+Important:
+- Synthetic demo cases may remain publicly readable.
+- Private user-created investigations and uploaded evidence must not be publicly accessible.
+- Do not use `create:investigations` as a substitute for a read permission without explaining the trade-off.
+- If a new permission such as `read:investigations` is necessary, identify it explicitly.
+- Check whether ownership isolation is required in addition to scopes.
+
+Do not modify files, install packages, change Auth0 settings, or run database seed scripts.
+
+Return a concise report with the exact exposure risks and recommended implementation. Stop and wait for approval.
+
+---
+
+# Keys of the Departed — Investigation Ownership & Read Authorization
+
+Act as a senior backend security engineer. Implement secure ownership isolation and authorization for investigation data.
+
+Repository: `E:\keys-of-the-departed`
+
+The previous read-only security audit confirmed:
+- Investigation GET endpoints are public.
+- MongoDB queries return investigations without ownership filtering.
+- Investigation documents have no Auth0 owner ID.
+- Uploaded evidence and extracted findings can be retrieved anonymously.
+- Authenticated users can potentially access other users' investigations.
+
+This task fixes those vulnerabilities.
+
+## 1. Inspect before editing
+
+Read:
+- `contracts/src/index.ts`
+- `server/src/app.ts`
+- `server/src/auth/jwt.ts`
+- `server/src/repositories/investigationsRepository.ts`
+- `server/src/repositories/mongoInvestigationsRepository.ts`
+- Repository interfaces and fixture implementations.
+- Existing investigation tests.
+- `docs/SPEC.md` and `docs/DECISIONS.md`.
+
+Preserve existing repository architecture and contracts wherever possible.
+
+## 2. Add explicit ownership and demo classification
+
+Update investigation contracts and persistence models.
+
+Add:
+- `owner_id`: Auth0 subject identifier for private user-created investigations.
+- `is_demo`: explicit boolean classification, defaulting to `false`.
+
+Rules:
+- Real user-created investigations MUST receive `owner_id` from the verified JWT `req.auth.payload.sub`.
+- The client must never supply or override `owner_id`.
+- Synthetic demo investigations must be explicitly marked `is_demo: true`.
+- Demo investigations must not have an owner.
+- Never infer demo status from an investigation ID, name, or bundle ID.
+- Existing documents without `is_demo` must be treated as non-demo.
+- Existing documents without `owner_id` must not be assigned to an arbitrary user.
+
+Keep Zod validation and TypeScript types consistent across contracts, fixtures, MongoDB repositories, and tests.
+
+## 3. Update investigation creation
+
+Modify the authenticated creation workflow.
+
+When `POST /api/investigations` succeeds:
+- Extract the verified Auth0 subject from `req.auth.payload.sub`.
+- Pass it separately into the repository creation operation.
+- Persist it as `owner_id`.
+- Explicitly set `is_demo: false`.
+
+Do not accept ownership from request body data.
+
+Preserve the existing `create:investigations` permission requirement.
+
+## 4. Implement secure read authorization
+
+Introduce the dedicated permission:
+
+`read:investigations`
+
+Use the existing JWT authentication and permission middleware.
+
+Expected behavior:
+
+### GET /api/investigations
+
+- Anonymous caller: return explicitly marked synthetic demo investigations only.
+- Authenticated caller with `read:investigations`: return demo investigations plus investigations owned by that caller.
+- Never return another user's private investigations.
+- Authenticated caller without the required permission: return 403.
+
+### GET /api/investigations/:id
+
+- Public demo investigation: allow anonymous read.
+- Private investigation: require valid JWT, `read:investigations`, and matching `owner_id`.
+- If a private investigation belongs to another user, return 404 to avoid resource enumeration.
+- If the record is missing, return 404.
+
+### GET /api/investigations/:id/findings
+
+Apply exactly the same access-control rules as the investigation detail route.
+
+Do not allow public access to private uploaded files, raw records, discovered accounts, or findings.
+
+## 5. Repository-level isolation
+
+Update repository interfaces and implementations so access filtering occurs at the data-access layer as well as the route layer.
+
+MongoDB:
+- Filter private records by `owner_id`.
+- Include only explicitly marked demo records in public reads.
+- Use safe MongoDB queries that do not expose documents with missing ownership.
+- Add appropriate indexes for owner-based queries and demo lookups.
+
+Fixture repository:
+- Preserve existing synthetic demo workflows.
+- Ensure fixture data is explicitly classified.
+- Ensure private fixture investigations, if present, obey ownership checks.
+
+Do not rely exclusively on frontend restrictions or route-level filtering.
+
+## 6. Add automated security tests
+
+Add tests covering:
+
+1. Anonymous user can list demo investigations only.
+2. Anonymous user cannot list private investigations.
+3. Anonymous user can retrieve a demo investigation.
+4. Anonymous user cannot retrieve private investigation details.
+5. Anonymous user cannot retrieve private findings.
+6. User A can create an investigation and becomes its owner.
+7. User A can retrieve their own investigation.
+8. User A can retrieve their own findings.
+9. User A cannot retrieve User B's investigation.
+10. User A cannot retrieve User B's findings.
+11. A request body attempting to spoof `owner_id` is ignored.
+12. A document with missing `owner_id` and no explicit demo classification is not publicly exposed.
+13. Authenticated users without `read:investigations` receive 403 for private data.
+14. Demo investigations remain publicly accessible.
+15. Existing investigation creation and processing workflows still work with valid authentication.
+
+Test both fixture and MongoDB repository behavior where practical.
+
+Use mocked MongoDB collections for automated tests. Do not depend on live Atlas.
+
+## 7. Auth0 permission configuration
+
+The backend must enforce `read:investigations`.
+
+Do not change the Auth0 dashboard yourself.
+
+Document that this permission must be added to the existing Auth0 API and granted to the SPA application before authenticated private reads can work.
+
+Do not substitute `create:investigations` for read permission.
+
+## 8. Backward compatibility and data safety
+
+- Do not delete or overwrite existing MongoDB documents.
+- Do not run migrations against live Atlas.
+- Do not run seed scripts.
+- Do not assign owners to legacy records.
+- Do not weaken authentication on existing protected mutations.
+- Preserve synthetic demo browsing.
+- Preserve existing API response shapes unless a contract change is necessary.
+
+## 9. Verification
+
+Run:
+- Relevant investigation API tests.
+- Ownership and authorization tests.
+- MongoDB repository tests.
+- Typecheck.
+- Backend build.
+- Root `npm run check`.
+
+Report:
+- Exact files changed.
+- Schema changes.
+- MongoDB query changes.
+- Authorization behavior for every GET route.
+- Test results.
+- Any legacy-data limitations.
+
+Do not commit, push, reset, revert, or delete existing work.
+
+Stop after implementation and verification. Do not proceed to frontend Auth0 integration.
+
+---
+
+Act as a senior full-stack engineer specializing in React, TypeScript, and Auth0 security.
+
+Implement the frontend Auth0 integration for **Keys of the Departed**. The backend JWT authentication and ownership authorization are already implemented. Your task is to connect the existing React frontend to that backend without redesigning the application.
+
+## Existing architecture
+- Monorepo with npm workspaces: `client`, `server`, `contracts`, `tests`.
+- Frontend: React 18, Vite 6, TypeScript.
+- Backend: Express, TypeScript.
+- Auth0 SPA application: `Keys of the Departed SPA`.
+- API audience: `https://keys-of-the-departed-api`.
+- Frontend environment file: `client/.env.local` (already created).
+- Backend protects investigation creation, upload, and processing with `create:investigations`.
+- Private investigation reads require `read:investigations`.
+- Backend derives ownership from the verified Auth0 `sub` claim. Never accept owner IDs from the frontend.
+
+## Required implementation
+
+1. Inspect the existing frontend authentication components, routing, API client, environment configuration, and tests before making changes.
+2. Integrate the official `@auth0/auth0-react` SDK using Authorization Code Flow with PKCE.
+3. Configure the Auth0 provider using:
+   - `VITE_AUTH0_DOMAIN`
+   - `VITE_AUTH0_CLIENT_ID`
+   - `VITE_AUTH0_AUDIENCE`
+   - Redirect URI: current application origin.
+4. Request only these scopes:
+   `openid profile email read:investigations create:investigations`
+5. Implement real login, logout, authentication loading, and authenticated-user state.
+6. Replace the existing simulated login/localStorage authentication wherever it conflicts with real Auth0 authentication. Do not store access tokens manually in localStorage.
+7. Create or update a centralized API authentication mechanism that obtains an access token through `getAccessTokenSilently()` and sends it as:
+   `Authorization: Bearer <access_token>`
+8. Use authenticated requests for private investigation reads and all protected mutation endpoints.
+9. Preserve public demo investigation access where the backend allows it.
+10. Handle 401, 403, token acquisition errors, and unauthenticated states clearly. Never silently treat a failed authenticated request as successful.
+11. Preserve the existing UI, Gothic design system, routes, guided tour, demo workflow, and synthetic fixtures. Do not redesign pages.
+12. Do not introduce a client secret, machine-to-machine flow, or `approve:revocations` scope.
+13. Do not implement CIBA, production revocation, or unrelated integrations in this task.
+
+## Important constraints
+- Do not modify `server/.env`.
+- Do not print or expose environment variable values in logs, reports, or screenshots.
+- Do not change backend authorization policy or Auth0 permissions.
+- Do not weaken existing security checks to make the UI work.
+- Do not remove demo functionality.
+- Keep changes focused and minimal.
+
+## Execution protocol
+First inspect the project and report:
+- Existing frontend auth implementation.
+- API request locations requiring tokens.
+- Proposed files to change.
+- Whether `@auth0/auth0-react` needs installation.
+
+If a package installation is required, tell me the exact package and command and wait for approval before installing.
+
+After approval, implement the integration, add or update focused tests, and run `npm run check` from the repository root.
+
+Finally report changed files, authentication flows implemented, test results, and any remaining manual configuration. Do not claim real Auth0 login was verified unless you actually completed a browser login against the tenant.
+
+---
+
+The Auth0 React SDK has already been installed manually from the repository root.
+
+Package: @auth0/auth0-react
+Version: 2.30.0
+Workspace: @keys/client
+
+Do NOT run npm install again.
+
+Proceed with the frontend Auth0 integration described in your previous inspection report.
+
+Important requirements:
+1. Inspect the current code again before editing.
+2. Use Auth0 Authorization Code Flow with PKCE.
+3. Preserve the existing UI, routes, guided tour, and public demo.
+4. Remove simulated authentication and kotd_user persistence where they conflict with Auth0.
+5. Use getAccessTokenSilently() for protected API calls.
+6. Attach Bearer tokens to create, upload, process, and private investigation read requests.
+7. Never store tokens manually in localStorage.
+8. Fail closed if authentication or token acquisition fails.
+9. Never introduce a client secret into frontend code.
+10. Do not grant or request approve:revocations.
+11. Do not modify server/.env or backend authorization policies.
+
+Also:
+- Check whether the npm install-script warnings affect esbuild or the build.
+- Do not run npm audit fix or npm audit fix --force.
+- Do not approve install scripts without reporting why each is needed.
+
+Implement focused tests and run npm run check from the repository root.
+
+Report changed files, test results, unresolved warnings, and manual Auth0 configuration still required.
+
+---
+
+The first real Auth0 browser test exposed a bug.
+
+When I click "SIGN IN TO SANCTUARY" in AuthModal, the old local email/password validation runs and displays:
+- Email address is required.
+- Password is required.
+
+The browser does not redirect to Auth0 Universal Login.
+
+Expected behavior:
+- Clicking the Sign In button must immediately invoke Auth0 `loginWithRedirect()`.
+- It must not require an email or password in our local modal.
+- Auth0 Universal Login must handle credential collection.
+- Preserve the existing Gothic modal design and the Guest Demo option.
+- The Register tab must invoke `loginWithRedirect()` with `screen_hint: "signup"`.
+- Remove obsolete local credential validation and simulated authentication handlers where no longer needed.
+
+Inspect AuthModal.tsx and the complete authentication event flow. Also inspect AuthPage.tsx and SignUpPage.tsx for the same issue.
+
+Implement the smallest correct fix. Do not redesign the UI or modify backend authentication.
+
+Add focused tests proving:
+1. Sign In invokes loginWithRedirect without requiring local credentials.
+2. Register invokes loginWithRedirect with screen_hint="signup".
+3. Guest Demo remains functional.
+4. No local password or email validation blocks Auth0 redirection.
+
+Run the relevant tests and frontend build. Report the exact changes.
+
+---
+
+# KEYS OF THE DEPARTED — PRODUCT REFOCUS & INVESTIGATION WORKFLOW REDESIGN
+
+PROJECT: `E:\keys-of-the-departed`
+
+Act as a senior product engineer, full-stack architect, and security-focused UX designer.
+
+We need to refocus the existing application around its original purpose: Ghost Account Hunter.
+
+This is a targeted product redesign, not a complete rewrite.
+
+The priority is to make the application understandable, usable, and technically credible as a machine-identity investigation platform.
+
+Do not spend time adding decorative interactions while the core investigation workflow remains unclear.
+
+# PART 1 — RESTORE THE PRODUCT PURPOSE
+
+Keys of the Departed investigates forgotten, stale, orphaned, and insufficiently documented machine identities.
+
+Examples:
+- Deployment keys.
+- Service accounts.
+- CI/CD credentials.
+- Automation accounts.
+- Bots.
+- Other non-human identities with retained access.
+
+Typical scenario:
+
+An employee or intern creates a deployment key, service account, or automation identity. They leave the organization or change responsibilities, but the machine identity remains active. Its owner, purpose, permissions, and legitimate use may no longer be clear.
+
+The platform must help security engineers investigate these identities using engineering evidence.
+
+It must:
+1. Identify machine identities.
+2. Reconstruct ownership and purpose from available evidence.
+3. Inspect recorded activity and permissions.
+4. Verify AI-generated claims against exact source evidence.
+5. Identify missing or contradictory provenance.
+6. Prioritize identities for human investigation.
+7. Present defensible findings and recommended next steps.
+
+IMPORTANT:
+We are not investigating employees' personal accounts.
+We are investigating machine identities and the access they retain.
+
+Absence of ownership evidence does not prove maliciousness.
+
+# PART 2 — REDESIGN THE LANDING PAGE
+
+The landing page must immediately explain what the product does.
+
+The existing Gothic Día de los Muertos aesthetic can remain, but it must support the security product rather than obscure it.
+
+Keep:
+- Original Hunter artwork as a brand character.
+- Golden Book artwork where it contributes to the visual identity.
+- Antique gold, crimson, parchment, and near-black palette.
+- Existing typography and original assets.
+- Existing guided demo where useful.
+
+Change:
+- Make the product purpose understandable within the first screen.
+- Explain forgotten machine identities and retained access.
+- Use a clear primary CTA: "Start an Investigation".
+- Provide a separate CTA: "Explore Synthetic Demo".
+- Make it obvious that the application investigates machine/service identities using uploaded engineering records.
+
+Remove:
+- Browser SpeechSynthesis narrator.
+- Typewriter narration gimmick.
+- Repeated Free Spirit, Inner Loop, Begin, and Keeper's Ritual marketing sections.
+- Unnecessary decorative interactions that compete with the product workflow.
+
+Do not delete existing reusable assets or unrelated working pages without justification.
+
+# PART 3 — MAKE NEW INVESTIGATION THE CENTRAL WORKFLOW
+
+This is the most important part.
+
+A new user must be able to understand exactly how to use the product.
+
+Create a clear New Investigation entry point.
+
+## Step 1: Investigation details
+
+Provide appropriate inputs:
+- Investigation name.
+- Organization or project identifier.
+- Optional investigation description.
+- Optional date range, if supported by uploaded evidence.
+
+Do not collect unnecessary information.
+
+## Step 2: Evidence upload
+
+Build a clear upload interface for structured evidence bundles.
+
+The original MVP supports JSON and CSV inputs.
+
+Support the following evidence categories where the existing parsers and contracts permit:
+
+1. Machine identity inventory.
+2. IAM policies and permissions.
+3. Personnel or directory records.
+4. Repository commits.
+5. Deployment and CI/CD records.
+6. Engineering tickets or project records.
+
+For each uploaded file:
+- Display its filename.
+- Display its detected file type and evidence category.
+- Show upload and validation status.
+- Show parsing errors clearly.
+- Allow removal before submission.
+- Provide sample templates or example schemas so users understand the expected input.
+
+Do not claim support for arbitrary file types unless implemented.
+
+Do not silently accept files that the parser cannot understand.
+
+## Step 3: Investigation configuration
+
+Provide only meaningful settings.
+
+Include:
+- Inactivity threshold, with a documented default and user-adjustable value.
+- Optional date range when supported.
+- Evidence categories included in the investigation.
+- Clear explanation of how these settings affect the analysis.
+
+Do not invent risk thresholds, severity scores, or configuration options that the backend cannot use.
+
+## Step 4: Validate before processing
+
+Before running an investigation:
+- Validate file structure.
+- Validate required fields.
+- Report missing or malformed records.
+- Show how many identity records were discovered.
+- Show which evidence categories are available.
+- Let the user review the upload summary.
+
+Only enable processing when the required inputs are valid.
+
+## Step 5: Process investigation
+
+Use the existing backend workflow.
+
+The intended architecture is:
+
+- Gemma: proposes ownership and purpose hypotheses using uploaded engineering records.
+- Deterministic verifier: validates claims, source references, exact quotations, and entity matches.
+- TabPFN: later ranks investigation priority using defensible features.
+- MongoDB Atlas: persists investigations, evidence, findings, and reviewer decisions.
+- Auth0: authenticates investigators and controls access.
+- Render: hosts the application.
+
+IMPORTANT:
+Do not display integrations as active if they are not implemented and connected.
+
+Do not fabricate model output or claim that processing has succeeded when it has not.
+
+# PART 4 — INVESTIGATION RESULTS
+
+The results view should answer five questions:
+
+1. What machine identities were discovered?
+2. Who or what appears to own them?
+3. What evidence supports that conclusion?
+4. What permissions and activity are recorded?
+5. What requires human review?
+
+For each identity, display:
+- Identity name or identifier.
+- Identity type.
+- Recorded owner, if present.
+- Proposed owner hypothesis, if generated.
+- Intended purpose, if supported.
+- Recorded permissions.
+- Last activity, if available.
+- Evidence citations.
+- Verification status.
+- Reason codes for rejected claims.
+- Recommended next investigation step.
+
+Preserve existing evidence statuses:
+- Verified
+- Supported
+- Conflicting
+- No Evidence
+
+Preserve existing deterministic reason codes R1-R5.
+
+Do not turn these statuses into invented risk or maliciousness scores.
+
+Keep AI-generated hypotheses visually distinct from verified findings.
+
+# PART 5 — DASHBOARD REDESIGN
+
+Remove the current synthetic demonstration statistics from the normal user workspace.
+
+Remove fabricated:
+- 40-identity totals.
+- Four chamber counts.
+- Attribution statistics.
+- Synthetic recent investigation entries.
+- Synthetic reviewer workload.
+
+A newly registered user with no investigations should see:
+
+- A clear empty workspace.
+- A brief explanation of the product.
+- A prominent "Start an Investigation" action.
+- An explanation of which files they can upload.
+
+For users with real investigations, show statistics derived from their actual accessible data.
+
+Useful dashboard information:
+- Total identities discovered.
+- Investigations completed.
+- Items requiring human review.
+- Verification status breakdown.
+
+Only show these values when backed by actual records.
+
+Remove the Recent Investigations panel from the primary dashboard if it adds no useful functionality. Actual investigation history belongs in the Investigations section.
+
+# PART 6 — ARCHIVE REDESIGN
+
+The Archive must represent machine identities discovered through actual investigations.
+
+Normal workspace:
+- Show only identities from investigations accessible to the current user.
+- No synthetic account names.
+- No unexplained placeholder identities.
+- No fallback to demo records when real data is empty.
+
+Preserve useful functionality:
+- Search.
+- Identity type filtering.
+- Evidence-status filtering.
+- Pagination.
+- Dossier navigation.
+
+The four existing chambers may remain as a secondary classification mechanism if their definitions and underlying data support them.
+
+They must not replace the evidence-verification statuses.
+
+# PART 7 — STRICT DEMO SEPARATION
+
+Synthetic records must only be visible after an explicit demo action.
+
+Demo entry points:
+- Explore Synthetic Demo.
+- Existing Demo Tour.
+- Explicit Guest Demo entry.
+
+Demo Mode:
+- Uses the existing synthetic dataset.
+- Clearly displays "DEMO MODE — SYNTHETIC DATA".
+- Preserves synthetic dossiers and guided interactions.
+
+Normal workspace:
+- Never mixes demo and real records.
+- Never uses synthetic data to fill empty dashboard statistics.
+- Never assigns demo records to authenticated users.
+- Never displays demo records as actual organizational findings.
+
+Use existing `owner_id` and `is_demo` distinctions where available.
+
+IMPORTANT:
+Frontend filtering is not sufficient.
+
+Inspect backend API routes and repositories supplying:
+- Dashboard statistics.
+- Investigation lists.
+- Archive identities.
+- Evidence records.
+- Findings.
+
+Verify that normal user requests do not receive synthetic fixtures.
+
+Do not weaken authentication or ownership checks to make the UI work.
+
+If server-side changes are required, document them rather than silently changing security behavior.
+
+# PART 8 — REMOVE UNNECESSARY PRODUCT ELEMENTS
+
+Review the current Dashboard and landing page critically.
+
+Remove or simplify elements that do not directly help a security investigator:
+- Decorative sections with no product functionality.
+- Fabricated investigation history.
+- Repeated slogans.
+- Unexplained chamber statistics.
+- Unimplemented integration claims.
+- Decorative actions that have no meaningful outcome.
+
+Do not remove functional evidence views, investigation workflows, or security safeguards.
+
+# PART 9 — SECURITY AND DATA INTEGRITY
+
+Preserve:
+- Auth0 Authorization Code Flow with PKCE.
+- Authenticated API requests.
+- Backend `owner_id` enforcement.
+- `is_demo` separation.
+- Deterministic evidence verification.
+- Human approval boundaries.
+
+Never:
+- Expose credentials or secrets.
+- Automatically revoke production credentials.
+- Treat missing ownership as maliciousness.
+- Invent evidence or source quotations.
+- Invent AI results.
+- Invent activity data.
+- Claim an integration is active when it is not.
+- Mix one user's private investigations with another's.
+
+# PART 10 — IMPLEMENTATION PROCESS
+
+Before editing:
+
+1. Inspect the current frontend routes and pages.
+2. Inspect NewInvestigationPage and upload components.
+3. Inspect upload validation and supported JSON/CSV schemas.
+4. Inspect DashboardPage and ArchivePage data sources.
+5. Inspect backend investigation APIs and repositories.
+6. Inspect current Auth0 and ownership enforcement.
+7. Identify which workflows are genuinely implemented versus simulated.
+
+Then provide a concise implementation plan.
+
+Implement in focused stages. Do not rewrite unrelated modules.
+
+Do not install new packages without asking.
+
+Do not modify Auth0, MongoDB production data, or deployment configuration without explicit approval.
+
+# PART 11 — VERIFICATION
+
+Run:
+- Frontend formatting check.
+- Frontend lint.
+- TypeScript checks.
+- Relevant frontend tests.
+- Frontend production build.
+- Root npm run check if shared contracts or backend code change.
+
+Test:
+1. A new user sees an empty real workspace.
+2. A user can start an investigation.
+3. JSON/CSV uploads are validated correctly.
+4. Invalid files produce useful errors.
+5. The upload summary accurately reflects the submitted records.
+6. Processing uses the actual backend workflow.
+7. Results display evidence and verification status.
+8. Demo data only appears after explicit demo entry.
+9. Real user data remains owner-isolated.
+10. Auth0 login and logout continue to work.
+
+Final report:
+- Exact files changed.
+- Actual workflows implemented.
+- Upload formats and schemas supported.
+- Backend functionality used.
+- Demo versus real data behavior.
+- Tests and build results.
+- Known limitations.
+- Remaining integration work.
+
+Do not claim a workflow works unless it has been tested.
+
+Do not commit or push changes.
+
+---
+
+# KEYS OF THE DEPARTED — INTERACTION REDESIGN & DEMO MODE CORRECTION
+
+Project directory: `E:\keys-of-the-departed`
+
+Act as a senior frontend engineer, interaction designer, and product UX architect.
+
+This is a targeted product experience refinement. Do not rebuild the application or introduce unrelated features.
+
+The objective is to make the landing page memorable, restore the original Hunter and Golden Book interactions, create a meaningful Free Spirit experience, and correct demo-mode isolation.
+
+Preserve the existing Gothic Día de los Muertos identity, original artwork, React architecture, Auth0 authentication, hash routing, and investigation workflow.
+
+---
+
+## PART 1 — LANDING PAGE: RESTORE THE INTERACTIVE HUNTER
+
+The current landing page has the Hunter artwork, but the original intended interaction is missing.
+
+The Hunter must become an interactive narrator.
+
+### On hover or keyboard focus
+
+1. Trigger a subtle visual response:
+   - Gentle illumination around the Hunter.
+   - Small movement or glow.
+   - No excessive animation.
+2. Display a dialogue panel with a typewriter effect.
+3. Speak the same dialogue using browser SpeechSynthesis.
+4. The dialogue should appear beside the Hunter without covering the main heading or primary CTA.
+
+Use this dialogue:
+
+"Welcome, investigator.
+
+The engineer may have departed, but their machine identities remain.
+
+Every forgotten key has a history. Every permission deserves scrutiny.
+
+Tell me... are you a Free Spirit?
+
+If you seek answers, open the Golden Book."
+
+### Interaction requirements
+
+- Do not repeatedly restart speech while the pointer remains over the Hunter.
+- Repeated interactions must stop previous narration before starting another.
+- Provide a mute/sound control.
+- Stop speech when navigating away or unmounting.
+- Respect reduced-motion preferences.
+- Provide a graceful fallback if SpeechSynthesis is unavailable.
+- Make the Hunter keyboard-accessible.
+
+### On click
+
+Navigate to the existing Free Spirit page.
+
+The Hunter's role is to invite the visitor into the experience.
+
+Do not make the Hunter a decorative button without functionality.
+
+---
+
+## PART 2 — RESTORE THE GOLDEN BOOK
+
+The original Golden Book PNG, including its visual treatment and words emerging from the book, has disappeared from the hero.
+
+This must be restored.
+
+Inspect the original assets directory and identify the correct Golden Book image.
+
+Requirements:
+
+1. Restore the original transparent PNG.
+2. Preserve its aspect ratio and transparency.
+3. Position it in the foreground beside the Hunter.
+4. Ensure it remains clearly visible without hover.
+5. Correct z-index and stacking contexts.
+6. Ensure the Hunter does not obscure the book.
+7. Restore the original emerging-words visual treatment if the relevant asset or implementation exists.
+
+### Hover and focus
+
+- Bring the book slightly forward.
+- Add a restrained golden glow.
+- Use a subtle scale and depth transition.
+- Display the label: "Open the Golden Book".
+
+### Click
+
+Navigate to the existing synthetic Archive experience.
+
+Use the existing hash-routing architecture and explicitly activate demo mode.
+
+The book should not navigate to the real user's private archive.
+
+Make the entire book keyboard-accessible.
+
+### Composition
+
+The Hunter and Golden Book should be two distinct interactive elements:
+
+- Hunter → Free Spirit.
+- Golden Book → Synthetic Demo Archive.
+
+Neither should overlap the heading or the Start an Investigation CTA.
+
+Test desktop, tablet and mobile layouts.
+
+---
+
+## PART 3 — REDESIGN THE FREE SPIRIT PAGE
+
+The current Free Spirit experience needs a meaningful interactive redesign.
+
+Do not delete the page or reduce it to a static marketing section.
+
+Create a five-question interactive experience titled:
+
+"ARE YOU A FREE SPIRIT?"
+
+Opening narrative:
+
+"Every investigator enters the archive with a different instinct. Some follow evidence. Some question everything. Some protect what others overlook.
+
+Discover the investigator within you."
+
+### Question 1 — What draws you to the unknown?
+
+- Discovering hidden patterns.
+- Solving difficult mysteries.
+- Protecting what others overlook.
+- Creating something new.
+
+### Question 2 — When evidence contradicts your expectations, what do you do?
+
+- Follow the evidence.
+- Investigate every contradiction.
+- Question the source.
+- Reconsider my assumptions.
+
+### Question 3 — What kind of investigator are you?
+
+- The Archivist — preserves and connects records.
+- The Seeker — follows unexplained trails.
+- The Sentinel — watches over access and permissions.
+- The Alchemist — connects seemingly unrelated clues.
+
+### Question 4 — What would you never compromise?
+
+- Truth.
+- Privacy.
+- Accountability.
+- Curiosity.
+
+### Question 5 — Choose your guiding principle.
+
+- Trust, but verify.
+- Every key has a history.
+- Absence of evidence is not evidence of guilt.
+- Leave no unexplained access behind.
+
+### Interaction design
+
+- Show one question at a time.
+- Provide visible progress, such as 2 of 5.
+- Allow users to go back and change answers.
+- Use accessible selection controls.
+- Provide restrained transitions.
+- Do not require registration to complete the experience.
+- Keep answers in local component state.
+- Do not send personal answers to the backend.
+
+### Final result: Investigator Identity Card
+
+Generate a polished Gothic profile card based on the selected answers.
+
+Include:
+
+- Investigator archetype.
+- A short description generated from the selected answers using deterministic frontend logic.
+- Their chosen guiding principle.
+- Their other selected answers.
+- An original decorative seal or suitable existing project asset.
+- A clear "Begin Investigation" action.
+- A "Return to the Archive" action.
+- An option to save or download the profile card if practical.
+
+Important:
+This is a creative identity experience, not a psychological assessment, personality diagnosis, security assessment, or access-risk score.
+
+Do not invent an AI integration for this feature.
+
+Preserve the existing Free Spirit route and make sure all navigation works.
+
+---
+
+## PART 4 — DEMO MODE MUST BE EXPLICIT AND ISOLATED
+
+There is currently a persistent DEMO MODE — SYNTHETIC DATA indicator appearing in the dashboard.
+
+This is incorrect when the user is in their real workspace.
+
+### Expected behavior
+
+**Normal workspace:**
+
+- No demo banner.
+- No synthetic account counts.
+- No synthetic archive entries.
+- No fabricated recent investigations.
+- No synthetic chamber statistics.
+- Show only records belonging to the authenticated user.
+- A new user should see a clean empty state and a Start an Investigation action.
+
+**Demo workspace:**
+
+- Synthetic data is visible only after explicit demo entry.
+- Display a persistent DEMO MODE — SYNTHETIC DATA banner.
+- Clearly label synthetic identities and investigation records.
+- Never merge synthetic records with private user records.
+
+### Entry points
+
+Demo mode can be entered through:
+
+1. The Explore Synthetic Demo landing CTA.
+2. The Golden Book.
+3. The existing Demo Tour or demo navigation action, where appropriate.
+
+All entry points must use the same canonical demo-mode state.
+
+### Exit Demo must actually work
+
+The current Exit Demo / Real Workspace control is not functioning correctly.
+
+Fix the underlying routing and state handling.
+
+When the user clicks Exit Demo:
+
+- Clear demo-mode state.
+- Navigate to the real workspace.
+- Refresh the correct real workspace data.
+- Remove the synthetic banner.
+- Remove all demo-only records.
+- Preserve Auth0 authentication.
+- Do not log the user out.
+- Do not modify or delete synthetic records from the backend.
+
+When the user enters demo mode again, synthetic data should return.
+
+Do not rely on a stale React state variable or inconsistent query parameters.
+
+Audit the existing `?demo=true` and hash-routing implementation. Establish one consistent source of truth for demo mode.
+
+---
+
+## PART 5 — DASHBOARD AND NAVIGATION CLARITY
+
+The dashboard must distinguish between:
+
+1. Real investigator workspace.
+2. Synthetic demonstration workspace.
+
+The interface should make it immediately obvious which workspace the user is viewing.
+
+### Real workspace
+
+A new user should see:
+
+- Welcome / investigator workspace heading.
+- Start New Investigation.
+- A short explanation of supported evidence files.
+- A clean empty state.
+- No synthetic activity.
+
+### Demo workspace
+
+Show synthetic accounts, chamber classifications, example investigations and demonstration findings only here.
+
+Keep the existing dashboard's investigation features intact.
+
+Do not remove real investigation history or user-owned data.
+
+Ensure the navigation includes an obvious way to return to the appropriate workspace.
+
+---
+
+## PART 6 — STRICT BOUNDARIES
+
+- Do not rebuild the application.
+- Do not modify Auth0 authentication or backend authorization.
+- Do not modify the evidence parser or investigation processing pipeline.
+- Do not install new dependencies.
+- Do not integrate ElevenLabs yet.
+- Do not invent AI functionality.
+- Do not delete FreeSpiritPage.
+- Do not delete original assets.
+- Do not replace original artwork with generated or stock images.
+- Do not break the guided tour.
+- Do not alter private investigation records.
+- Do not change existing user ownership or database data.
+- Do not introduce synthetic data into normal workspace responses.
+
+Inspect the actual code and existing assets before editing.
+
+Keep the implementation focused on the specified experience.
+
+---
+
+## PART 7 — TESTING AND VERIFICATION
+
+Run the relevant frontend tests, TypeScript checks, lint and production build.
+
+Add or update tests for:
+
+1. Hunter hover/focus narration.
+2. Speech interruption and repeated interaction.
+3. Hunter click → Free Spirit.
+4. Golden Book visibility and interaction.
+5. Golden Book click → explicit synthetic demo archive.
+6. Free Spirit five-question progression.
+7. Back navigation and answer preservation.
+8. Correct profile card generation.
+9. Normal workspace never displaying synthetic data.
+10. Demo workspace displaying synthetic data.
+11. Exit Demo returning to the authenticated real workspace.
+12. Re-entering Demo restoring synthetic data.
+13. Mobile layout and accessible keyboard interactions.
+
+Do not claim visual browser verification unless it was actually performed.
+
+At completion, report:
+
+- Exact files modified.
+- Interaction changes.
+- Routing changes.
+- Demo-mode corrections.
+- Tests passed and failed.
+- Any remaining limitations.
+
+Do not proceed to backend or external partner integrations as part of this task.
+
+---
+
+# Keys of the Departed — Final Hero Interaction & Workspace Correction
+
+**Project:** `E:\keys-of-the-departed`
+
+Act as a senior frontend engineer and interaction designer. Improve the existing implementation. Do not rebuild the application or change its core investigation architecture.
+
+## PART 1 — Hunter: mysterious female narrator
+
+The Hunter is the interactive narrator of the archive.
+
+### Required behaviour
+- Hovering over the Hunter reveals her dialogue with a restrained typewriter or progressive text-reveal effect.
+- Attempt to play the narration using the browser SpeechSynthesis API.
+- Select the best available female-sounding English voice from `speechSynthesis.getVoices()`.
+- Prefer voices with reliable English language metadata and female-sounding voice names where available.
+- If no suitable voice exists, use the best available English voice and retain a working silent dialogue experience.
+- Add a small replay/mute control.
+- Cancel previous utterances before starting new speech.
+- Stop speech when the component unmounts or the user navigates away.
+- Prevent overlapping narration on repeated interactions.
+- Respect reduced-motion preferences.
+
+Important: Some browsers restrict speech initiated by hover. Handle speech failures gracefully and provide click/keyboard activation as an explicit fallback. Never claim that a female voice is guaranteed on every device.
+
+### Dialogue
+
+"The engineer is gone... but the keys remain.
+
+Every forgotten machine identity has a history.
+
+Some keys still open doors their owners have long since left behind.
+
+Tell me, investigator... are you a Free Spirit?
+
+The Golden Book holds your next destination."
+
+Keep the dialogue within a compact panel near the Hunter. It must never overflow the viewport or obscure the main heading and CTA.
+
+## PART 2 — Golden Book: central foreground composition
+
+The existing transparent Golden Book PNG has disappeared from its intended composition or is positioned too far toward the corner.
+
+Correct this.
+
+- Keep the Hunter toward the right side of the hero.
+- Move the Golden Book toward the lower-centre foreground, visually between the hero text and Hunter without obstructing either.
+- Increase its visibility and recognizable size.
+- Preserve the original PNG transparency and aspect ratio.
+- Correct z-index, positioning and stacking contexts.
+- Give the book a restrained golden glow on hover and keyboard focus.
+- Ensure the book remains visible even before interaction.
+
+### Emerging words
+
+The existing emerging machine-identity words are currently flowing above the visible screen.
+
+Replace the current uncontrolled animation with a contained animation:
+
+- Words should emerge from the open pages of the book.
+- Use staggered upward movement and a subtle fade.
+- Keep every word within a defined animation container.
+- Clip overflow within that container, not the entire hero.
+- Do not allow text to travel beyond the viewport.
+- Use a small number of legible words, such as `DEPLOY KEY`, `SERVICE ACCOUNT`, and `RETAINED ACCESS`.
+- Avoid excessive particles, random movement or distracting effects.
+
+The book should be a clear interactive object, not a tiny decoration.
+
+### Navigation
+
+Clicking the Golden Book should navigate to the existing Free Spirit route `#/spirit`.
+
+The Hunter should also lead users to the Free Spirit experience when activated.
+
+Both interactions must work with keyboard navigation.
+
+## PART 3 — Free Spirit experience
+
+Preserve the existing five-question experience and identity-card functionality.
+
+Review its presentation for:
+- Clear question hierarchy.
+- Visible progress.
+- Answer preservation when navigating backwards.
+- Responsive layout.
+- A polished investigator identity card.
+- Working Begin Investigation and Explore Demo actions.
+
+Do not add more questions or unnecessary profile fields without a clear reason.
+
+## PART 4 — Demo data isolation
+
+This is a critical requirement.
+
+Synthetic machine identities, sample accounts, fixture investigations, synthetic dashboard counts and synthetic archive records must only appear when the user explicitly enters Demo Mode.
+
+### Normal workspace
+- No synthetic accounts.
+- No sample identities.
+- No invented investigation history.
+- No synthetic dashboard statistics.
+- No synthetic chamber counts.
+- No demo-only banners or demo labels.
+- Show a proper empty state when the user has not created an investigation.
+- Provide clear actions to create an investigation and upload evidence.
+
+### Demo workspace
+- Synthetic records are visible only after an explicit demo action.
+- Clearly label the environment `DEMO MODE — SYNTHETIC DATA`.
+- Provide a working Exit Demo action.
+
+### Exit Demo
+- Clear the demo query parameter and demo state.
+- Reload the appropriate real workspace data.
+- Never fall back to synthetic fixtures silently.
+- Preserve authenticated ownership and authorization boundaries.
+
+Test anonymous and authenticated workspaces separately. In particular, verify that one authenticated user cannot see another user's private investigations.
+
+Do not weaken existing Auth0 authentication, permission checks, or repository ownership filtering to make the UI appear functional.
+
+## PART 5 — Dashboard usability
+
+Review the dashboard as a real product workspace.
+
+A new user should immediately understand how to use the application.
+
+The primary workflow should be:
+
+1. Create a machine-identity investigation.
+2. Enter an investigation name and organization/project identifier.
+3. Upload relevant engineering evidence.
+4. Review extracted machine identities and ownership claims.
+5. Inspect source citations and deterministic verification.
+6. Review conflicting or unsupported findings.
+7. Make an informed human decision.
+
+Remove or hide redundant dashboard content that does not support this workflow.
+
+Specifically:
+- Do not show fabricated Recent Investigations in a normal workspace.
+- Do not show synthetic identity counts outside Demo Mode.
+- Keep upload and new-investigation actions easy to find.
+- Provide useful empty states rather than unexplained blank panels or loading skeletons.
+- Ensure loading, empty, error and populated states are distinct.
+
+Do not remove legitimate audit history belonging to the authenticated user.
+
+## PART 6 — Verification
+
+Run:
+
+- `npm run format:check`
+- `npm run lint`
+- `npm run typecheck`
+- `npm test`
+- `npm run build`
+
+Add or update tests for:
+- Female voice preference and fallback.
+- Speech interruption and cleanup.
+- Hover and keyboard narration behaviour.
+- Golden Book visibility and navigation.
+- Bounded emerging-word animation structure.
+- Demo versus real workspace separation.
+- Exit Demo behaviour.
+- Authenticated investigation ownership.
+- Dashboard empty/loading/error states.
+
+Report exact changed files, tests and results.
+
+Do not claim browser visual verification unless you actually perform it. Do not modify backend business logic unnecessarily. Do not install new packages or integrate ElevenLabs in this task.
+
+---
+
+# Keys of the Departed — Hero Interaction Correction
+
+**Role:** Senior Frontend Engineer and Interaction Designer  
+**Project:** `E:\keys-of-the-departed`
+
+This is a targeted correction to the existing landing-page hero. Do not rebuild the landing page or modify unrelated application functionality.
+
+## 1. Golden Book — Make It the Central Interactive Object
+
+The existing Golden Book PNG is currently too small and positioned too far to the left.
+
+Correct its composition:
+
+- Make the book noticeably larger while preserving its original aspect ratio and transparency.
+- Position it around the lower-center portion of the hero, making it the central interactive focal point.
+- Keep the Hunter positioned to the right of the book, slightly behind it visually if necessary.
+- Maintain sufficient separation between the two objects.
+- Do not cover the hero heading, description, or primary CTA.
+- Preserve the existing Gothic visual identity and original assets.
+
+### Emerging words animation
+
+Create a restrained animation in which machine-identity terms appear to emerge from the open pages.
+
+Use these terms:
+- DEPLOY KEY
+- SERVICE ACCOUNT
+- RETAINED ACCESS
+- AUTOMATION TOKEN
+
+Requirements:
+- Words should originate visually from the book's open pages.
+- Use staggered upward movement, subtle opacity transitions, and restrained golden illumination.
+- Keep the animation within a dedicated bounded container.
+- Prevent text from escaping the book area or overflowing the viewport.
+- Avoid excessive particles, distracting effects, or continuous movement.
+- Respect `prefers-reduced-motion`.
+
+The book should remain recognizable and visible even when no animation is playing.
+
+### Book navigation
+
+Clicking or keyboard-activating the Golden Book must navigate to the existing Free Spirit experience:
+
+`#/spirit`
+
+This must be its only navigation destination.
+
+## 2. Hunter — Narrator, Not Navigation
+
+The Hunter currently navigates to the same Free Spirit page as the book. This is incorrect.
+
+**Remove navigation from the Hunter completely.**
+
+The Hunter's purpose is to act as the mysterious narrator of the archive.
+
+Interaction:
+- On hover, reveal her dialogue.
+- On click, play or replay her narration.
+- Keep the existing female-voice preference using browser SpeechSynthesis.
+- Preserve the existing replay and mute controls.
+- Prevent overlapping speech.
+- Provide graceful fallback when speech synthesis is unavailable.
+- Stop active speech when appropriate during unmount or interruption.
+
+The Hunter must never navigate to the Free Spirit page.
+
+## 3. Fix the Dialogue Panel — Critical Readability Issue
+
+The current dialogue panel is overflowing and clipping its text. At different browser zoom levels, parts of the dialogue become difficult or impossible to read.
+
+Redesign its positioning and dimensions.
+
+Requirements:
+
+- Keep the entire dialogue inside the visible hero viewport.
+- Position it near the Hunter without covering her face or the Golden Book.
+- Give it a predictable maximum width and height.
+- Allow text to wrap naturally.
+- Do not allow typewriter text to extend outside its container.
+- Keep replay and sound controls visible.
+- Ensure the final line of dialogue is never clipped.
+- Do not position the panel outside the viewport using fixed offsets.
+- Use responsive CSS rather than relying on a single desktop coordinate.
+
+If the full dialogue cannot fit comfortably, use a compact dialogue panel with controlled internal scrolling or a staged reveal. Prioritize readability over preserving the current typewriter effect.
+
+Test the layout at:
+- 100% browser zoom.
+- 80% browser zoom.
+- 75% browser zoom.
+- Desktop, tablet, and mobile viewport widths.
+
+The panel must remain readable and must not disappear behind the navigation bar or viewport boundaries.
+
+## 4. Clear Separation of Interactions
+
+The intended interaction model is:
+
+| Element | Interaction | Result |
+|---|---|---|
+| Hunter | Hover | Reveal dialogue |
+| Hunter | Click | Play/replay narration |
+| Golden Book | Hover/focus | Visual emphasis and emerging words |
+| Golden Book | Click/Enter/Space | Navigate to `#/spirit` |
+| Replay | Click | Replay narration |
+| Sound | Click | Toggle narration |
+
+There must be no duplicate navigation behaviour.
+
+## 5. Preserve Existing Functionality
+
+Do not:
+- Modify Auth0 authentication.
+- Modify backend APIs or repositories.
+- Modify dashboard or archive functionality.
+- Change demo-mode isolation.
+- Delete or rebuild FreeSpiritPage.
+- Change the existing five-question Free Spirit flow.
+- Install additional packages.
+- Introduce ElevenLabs or external voice services.
+- Replace the original Hunter or Golden Book assets.
+
+## 6. Verification
+
+Inspect the existing implementation before editing.
+
+After implementation:
+
+1. Verify the Golden Book is larger and centrally positioned.
+2. Verify emerging words originate from the pages and remain bounded.
+3. Verify the Hunter does not navigate.
+4. Verify the Golden Book navigates to `#/spirit`.
+5. Verify narration remains female-voice-preferred and does not overlap.
+6. Verify dialogue text is completely readable.
+7. Test at 100%, 80%, and 75% zoom.
+8. Test desktop and mobile layouts.
+9. Run frontend typecheck, lint, relevant tests, and production build.
+
+Report:
+- Exact files modified.
+- What changed.
+- Test results.
+- Any remaining limitations.
+
+Do not claim browser verification unless the actual application was opened and tested in a browser.
+
+---
+
+it is fucking overlapping minimize the book size and try to fix this  situataion
+
+---
+
+make it less cluthered it looks full of texts
+
+---
+
+laos this section also has many problems fix this
+
+---
+
+fix this
+
+---
+
+# PHASE 1 — MONGODB ATLAS + BACKEND PERSISTENCE
+
+**Role:** Senior Backend Engineer and Database Architect.
+
+**Project:** `E:\keys-of-the-departed`
+
+**Objective:** Complete and verify the real MongoDB Atlas persistence layer and connect it to the existing investigation workflow.
+
+This is the first implementation milestone. Do not implement other partner integrations.
+
+## 1. Inspect before editing
+
+Inspect the existing:
+
+- MongoDB connection manager.
+- Collection definitions and indexes.
+- MongoDB repository implementations.
+- In-memory repositories.
+- Repository interfaces.
+- Application dependency injection and repository selection.
+- Investigation API routes.
+- Upload and processing workflow.
+- Auth0 ownership enforcement.
+- Shared Zod contracts.
+- Existing database and API tests.
+
+Identify the existing implementation gaps. Reuse existing code wherever possible.
+
+## 2. Implement actual MongoDB repository selection
+
+Ensure the application uses MongoDB repositories when a valid MongoDB connection is available.
+
+Requirements:
+
+- MongoDB connection must be initialized correctly.
+- Repository composition must select MongoDB implementations.
+- In-memory fixtures must not silently receive real user data.
+- If MongoDB is unavailable, return a clear service-unavailable response for operations requiring persistence.
+- Do not report successful persistence when data was only stored in memory.
+- Keep explicitly synthetic demo data separate from private user data.
+
+## 3. Complete investigation persistence
+
+Verify and implement persistence for:
+
+- Investigation metadata.
+- Authenticated owner ID.
+- Uploaded file metadata.
+- Parsed engineering records.
+- Extracted machine identities.
+- Candidate claims.
+- Deterministic verification results.
+- Investigation processing status.
+- Creation and update timestamps.
+
+Use the existing schemas and contracts.
+
+Do not invent additional domain fields without documenting why they are required.
+
+## 4. Complete the user workflow
+
+Verify this complete sequence:
+
+1. Authenticated user creates an investigation.
+2. Backend derives owner identity from the verified Auth0 JWT.
+3. User uploads engineering records.
+4. Backend validates and ingests the records.
+5. Investigation is processed.
+6. Results are persisted.
+7. User retrieves the investigation and its results.
+8. Backend restarts.
+9. The same user retrieves the same investigation and results.
+
+This must work against the real MongoDB repository, not only mocked tests.
+
+## 5. Security and isolation
+
+Enforce:
+
+- Every private investigation belongs to its authenticated owner.
+- Never trust client-supplied owner IDs.
+- Users cannot read or modify another user's investigation.
+- Anonymous users can only access explicitly public synthetic demo data.
+- MongoDB queries must enforce ownership at database level.
+- Preserve existing Auth0 permissions.
+- Do not expose MongoDB credentials or internal connection details.
+- Return 404 for private resources that do not belong to the caller where appropriate.
+
+## 6. Database reliability
+
+Check:
+
+- Required indexes.
+- Duplicate investigation IDs.
+- Duplicate upload handling.
+- Connection failures.
+- Connection recovery.
+- Database timeouts.
+- Partial write failures.
+- Concurrent updates.
+- Consistency between investigation metadata and stored results.
+
+Use transactions only where supported and justified. Do not assume Atlas transaction availability without checking deployment configuration.
+
+Avoid destructive migrations.
+
+## 7. Edge-case testing
+
+Add or update tests for:
+
+- MongoDB not configured.
+- Invalid connection URI.
+- MongoDB unavailable.
+- Connection timeout.
+- Database recovery.
+- Duplicate investigation creation.
+- Duplicate upload.
+- Empty upload.
+- Invalid upload.
+- Oversized upload.
+- Processing failure.
+- Partial persistence failure.
+- Concurrent requests.
+- Unauthorized access.
+- Cross-user access.
+- Legacy documents without owner IDs.
+- Restart persistence.
+- Demo/private data isolation.
+
+Use mocked repositories for isolated tests and a real Atlas integration test only with explicit configuration and a safe test database.
+
+Never delete existing user data to make tests pass.
+
+## 8. Frontend integration
+
+Ensure the existing frontend can:
+
+- Create investigations.
+- Upload records.
+- Display actual processing status.
+- Retrieve persisted results.
+- Display meaningful loading, success and error states.
+- Distinguish records ingested from claims verified.
+- Avoid displaying fabricated success states.
+
+Do not redesign unrelated pages.
+
+## 9. Verification gate
+
+Run:
+
+- Relevant MongoDB tests.
+- API tests.
+- Ownership and security tests.
+- Frontend integration tests.
+- Formatting.
+- Lint.
+- TypeScript.
+- Full test suite.
+- Production build.
+
+If possible, perform a real Atlas test using a dedicated test database without touching production or existing user data.
+
+## 10. Final report
+
+Report:
+
+1. Exact files changed.
+2. MongoDB repository selection behaviour.
+3. Actual persistence workflow.
+4. Database indexes.
+5. Security and ownership guarantees.
+6. Edge cases tested.
+7. Test counts and results.
+8. Whether a real Atlas connection was verified.
+9. Whether restart persistence was demonstrated.
+10. Remaining blockers.
+
+**Strict boundaries:**
+
+- Do not implement Gemma.
+- Do not implement TabPFN.
+- Do not implement Auth0 approval workflows.
+- Do not implement Entire or DevRelay.
+- Do not add vector search.
+- Do not install unnecessary packages.
+- Do not print secrets.
+- Do not seed, migrate or delete existing Atlas data without approval.
+- Do not commit or push without approval.
+
+Complete this milestone and STOP. Wait for review and explicit approval before proceeding to the next partner integration.
