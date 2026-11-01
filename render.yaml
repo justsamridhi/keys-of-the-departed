@@ -4,27 +4,44 @@ services:
     env: node
     plan: free
     region: oregon
-    buildCommand: npm ci && npm run build
+
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start
     healthCheckPath: /healthz
+
     envVars:
       - key: NODE_ENV
         value: production
+
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
+
+      - key: NPM_CONFIG_INCLUDE
+        value: dev
+
       - key: PORT
         value: 10000
+
       - key: NODE_VERSION
         value: 22
+
       - key: MONGODB_URI
         sync: false
+
       - key: MONGODB_DB_NAME
         value: keys_of_the_departed
+
       - key: AUTH0_DOMAIN
         sync: false
+
       - key: AUTH0_AUDIENCE
         sync: false
+
       - key: VITE_AUTH0_DOMAIN
         sync: false
+
       - key: VITE_AUTH0_CLIENT_ID
         sync: false
+
       - key: VITE_AUTH0_AUDIENCE
         sync: false
